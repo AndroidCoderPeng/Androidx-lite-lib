@@ -37,7 +37,7 @@ public class BroadcastManager {
     /**
      * 添加单个Action,广播的初始化
      */
-    public void addAction(String action, BroadcastReceiver receiver) {
+    public void addAction(BroadcastReceiver receiver, String action) {
         try {
             IntentFilter filter = new IntentFilter();
             filter.addAction(action);
