@@ -1,14 +1,23 @@
 package com.pengxh.androidx.lib;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.pengxh.androidx.lib.databinding.ActivityMainBinding;
+import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
+import com.pengxh.androidx.lite.utils.ColorUtil;
 
-import android.os.Bundle;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected void setupTopBarLayout() {
+
+    }
+
+    @Override
+    protected void initData() {
+        viewBinding.layout.setBackgroundColor(ColorUtil.randomColor());
+    }
+
+    @Override
+    protected void initEvent() {
+
     }
 }
