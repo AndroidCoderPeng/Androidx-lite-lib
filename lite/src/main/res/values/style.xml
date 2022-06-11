@@ -34,4 +34,13 @@
         <item name="android:windowEnterAnimation">@anim/action_sheet_in</item>
         <item name="android:windowExitAnimation">@anim/action_sheet_out</item>
     </style>
+
+    <declare-styleable name="CircleProgressBar">
+        <!--进度条底色-->
+        <attr name="pg_backgroundColor" format="color" />
+        <!--进度条前景色-->
+        <attr name="pg_foregroundColor" format="color" />
+        <!--文字-->
+        <attr name="pg_text" format="string" />
+    </declare-styleable>
 </resources>
