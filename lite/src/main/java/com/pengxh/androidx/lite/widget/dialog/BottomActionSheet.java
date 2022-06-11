@@ -1,0 +1,146 @@
+package com.pengxh.androidx.lite.widget.dialog;
+
+import android.app.Dialog;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.pengxh.androidx.lite.R;
+import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
+
+/**
+ * 底部列表Sheet
+ */
+public class BottomActionSheet extends Dialog {
+
+
+    private final Context ctx;
+    private final String[] sheetItems;
+    private final OnActionSheetListener sheetListener;
+
+    public static class Builder {
+        private Context context;
+        private String[] actionItems;
+        private OnActionSheetListener listener;
+
+        public Builder setContext(Context context) {
+            this.context = context;
+            return this;
+        }
+
+        public Builder setActionItemTitle(String[] items) {
+            this.actionItems = items;
+            return this;
+        }
+
+        public Builder setOnActionSheetListener(OnActionSheetListener listener) {
+            this.listener = listener;
+            return this;
+        }
+
+        public BottomActionSheet build() {
+            return new BottomActionSheet(this);
+        }
+    }
+
+    private BottomActionSheet(Builder builder) {
+        super(builder.context, R.style.UserDefinedActionStyle);
+        this.ctx = builder.context;
+        this.sheetItems = builder.actionItems;
+        this.sheetListener = builder.listener;
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DialogLayoutParam.resetBottomParams(this, R.style.ActionSheetDialogAnimation, 1);
+        setContentView(R.layout.bottom_action_sheet);
+        setCancelable(true);
+        setCanceledOnTouchOutside(true);
+
+        ListView itemListView = findViewById(R.id.itemListView);
+        itemListView.setAdapter(new ItemListAdapter(ctx));
+        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                dismiss();
+                sheetListener.onActionItemClick(position);
+            }
+        });
+
+        TextView sheetCancelView = findViewById(R.id.sheetCancelView);
+        sheetCancelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+    }
+
+    public interface OnActionSheetListener {
+        void onActionItemClick(int position);
+    }
+
+    class ItemListAdapter extends BaseAdapter {
+
+        private final LayoutInflater inflater;
+
+        ItemListAdapter(Context context) {
+            this.inflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public int getCount() {
+            return sheetItems.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return sheetItems[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup viewGroup) {
+            ItemViewHolder holder;
+            if (convertView == null) {
+                holder = new ItemViewHolder();
+                convertView = inflater.inflate(R.layout.item_action_sheet, null);
+                holder.sheetItemView = convertView.findViewById(R.id.sheetItemView);
+                convertView.setTag(holder);
+            } else {
+                holder = (ItemViewHolder) convertView.getTag();
+            }
+            if (position == 0) {
+                holder.sheetItemView.setBackgroundResource(R.drawable.sheet_item_top_selector);
+            } else if (position == sheetItems.length - 1) {
+                holder.sheetItemView.setBackgroundResource(R.drawable.sheet_item_bottom_selector);
+            } else {
+                holder.sheetItemView.setBackgroundResource(R.drawable.sheet_item_middle_selector);
+            }
+            holder.sheetItemView.setText(sheetItems[position]);
+            holder.sheetItemView.setTextSize(16);
+            //需要动态设置item的高度
+            AbsListView.LayoutParams param = new AbsListView.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, DeviceSizeUtil.dp2px(ctx, 44));
+            convertView.setLayoutParams(param);
+            return convertView;
+        }
+    }
+
+    static class ItemViewHolder {
+        TextView sheetItemView;
+    }
+}
