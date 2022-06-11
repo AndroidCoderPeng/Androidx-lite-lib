@@ -74,7 +74,7 @@ public class BroadcastManager {
         try {
             Intent intent = new Intent();
             intent.setAction(action);
-            intent.putExtra("DataMessage", msg);
+            intent.putExtra(Constant.BROADCAST_INTENT_DATA_KEY, msg);
             Log.d(TAG, "BroadcastMessage ===> " + msg);
             context.sendBroadcast(intent);
         } catch (Exception e) {
