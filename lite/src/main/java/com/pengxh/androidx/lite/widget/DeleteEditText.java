@@ -46,7 +46,6 @@ public class DeleteEditText extends AppCompatEditText implements View.OnFocusCha
         setClearIconVisible(false);
         setOnFocusChangeListener(this);
         addTextChangedListener(this);
-        setSingleLine();//只允许单行输入
     }
 
     @Override
