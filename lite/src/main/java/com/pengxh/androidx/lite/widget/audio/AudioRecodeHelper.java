@@ -2,7 +2,6 @@ package com.pengxh.androidx.lite.widget.audio;
 
 import android.media.MediaRecorder;
 import android.os.Handler;
-import android.util.Log;
 
 import com.pengxh.androidx.lite.utils.Constant;
 
@@ -47,7 +46,7 @@ public class AudioRecodeHelper {
             startTime = System.currentTimeMillis();
             updateMicStatus();
         } catch (IllegalStateException | IOException e) {
-            Log.i(TAG, "call startAmr(File mRecAudioFile) failed!" + e.getMessage());
+            e.printStackTrace();
         }
     }
 
