@@ -1,12 +1,21 @@
 package com.pengxh.androidx.lite.utils;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,5 +132,41 @@ public class StringUtil {
         s = m.replaceAll("");
         //再过滤空格
         return s.trim().replace(" ", "");
+    }
+
+    //获取SimSerialNumber
+    @SuppressLint({"HardwareIds"})
+    public static String obtainSimCardSerialNumber(Context context) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            //Android 10改为获取Android_ID
+            return Settings.System.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        } else {
+            TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            Class<?> telephonyClass;
+            try {
+                telephonyClass = Class.forName(telephony.getClass().getName());
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    return "";
+                }
+                String imei = telephony.getDeviceId();
+                if (TextUtils.isEmpty(imei)) {
+                    Method m = telephonyClass.getMethod("getSimSerialNumber", int.class);
+                    //主卡，卡1
+                    String mainCard = (String) m.invoke(telephony, 0);
+                    //副卡，卡2
+                    String otherCard = (String) m.invoke(telephony, 1);
+                    if (TextUtils.isEmpty(mainCard)) {
+                        return otherCard;
+                    } else {
+                        return mainCard;
+                    }
+                } else {
+                    return imei;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
     }
 }
