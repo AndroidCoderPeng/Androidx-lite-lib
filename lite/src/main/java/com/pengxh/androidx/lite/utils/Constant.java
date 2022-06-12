@@ -21,4 +21,9 @@ public class Constant {
     public static final int MAX_LENGTH = 1000 * 60 * 5;
 
     public static final long HTTP_TIMEOUT = 15;
+
+    /**
+     * 连接超时时间10s
+     */
+    public static final long MAX_CONNECT_TIME = 10000L;
 }
