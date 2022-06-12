@@ -34,4 +34,11 @@
         <item name="android:windowEnterAnimation">@anim/action_sheet_in</item>
         <item name="android:windowExitAnimation">@anim/action_sheet_out</item>
     </style>
+
+    <style name="PopupAnimation">
+        <!-- 指定显示的动画xml -->
+        <item name="android:windowEnterAnimation">@anim/popup_show</item>
+        <!-- 指定消失的动画xml -->
+        <item name="android:windowExitAnimation">@anim/popup_hide</item>
+    </style>
 </resources>

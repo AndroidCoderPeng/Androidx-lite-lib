@@ -1,8 +1,15 @@
 package com.pengxh.androidx.lite.utils;
 
+import android.content.Context;
+import android.os.Environment;
+
 import java.io.File;
+import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class FileUtil {
     private static final String TAG = "FileUtil";
@@ -57,5 +64,19 @@ public class FileUtil {
         } else if (file.exists()) {
             file.delete();
         }
+    }
+
+    public static File createAudioFile(Context context) {
+        File audioDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_MUSIC), "");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA).format(new Date());
+        File audioFile = new File(audioDir + File.separator + "AUD_" + timeStamp + ".m4a");
+        if (!audioFile.exists()) {
+            try {
+                audioFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return audioFile;
     }
 }

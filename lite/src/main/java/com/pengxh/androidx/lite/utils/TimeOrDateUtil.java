@@ -62,4 +62,12 @@ public class TimeOrDateUtil {
         }
         return 0;
     }
+
+    /**
+     * 时间戳转分秒
+     */
+    public static String millsToTime(long millSeconds) {
+        dateFormat = new SimpleDateFormat("mm:ss", Locale.CHINA);
+        return dateFormat.format(new Date(millSeconds));
+    }
 }
