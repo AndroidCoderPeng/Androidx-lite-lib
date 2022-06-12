@@ -6,10 +6,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
-import androidx.annotation.ColorRes;
+import androidx.annotation.ColorInt;
 
 public class ImmerseStatusBarUtil {
-    public static void setColor(Activity activity, @ColorRes int color) {
+    public static void setColor(Activity activity, @ColorInt int color) {
         //限制android系统的版本
         // 设置状态栏透明
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -31,7 +31,7 @@ public class ImmerseStatusBarUtil {
      * @param color    状态栏颜色值
      * @return 状态栏矩形条
      */
-    private static View createStatusView(Activity activity, int color) {
+    private static View createStatusView(Activity activity, @ColorInt int color) {
         // 获得状态栏高度
         int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
         int statusBarHeight = activity.getResources().getDimensionPixelSize(resourceId);

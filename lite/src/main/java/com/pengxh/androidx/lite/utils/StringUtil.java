@@ -109,4 +109,19 @@ public class StringUtil {
         }
         return null;
     }
+
+    /**
+     * 过滤空格，回车
+     */
+    public static String filterString(String s) {
+        if (TextUtils.isEmpty(s)) {
+            return s;
+        }
+        //先过滤回车换行
+        Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+        Matcher m = p.matcher(s);
+        s = m.replaceAll("");
+        //再过滤空格
+        return s.trim().replace(" ", "");
+    }
 }
