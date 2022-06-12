@@ -53,9 +53,9 @@ public class CircleProgressBar extends View {
         super(context, attrs, defStyleAttr);
         this.context = context;
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleProgressBar, defStyleAttr, 0);
-        backgroundColor = a.getColor(R.styleable.CircleProgressBar_pg_backgroundColor, Color.parseColor("#D3D3D3"));
-        foregroundColor = a.getColor(R.styleable.CircleProgressBar_pg_foregroundColor, Color.parseColor("#0000FF"));
-        text = a.getString(R.styleable.CircleProgressBar_pg_text);
+        backgroundColor = a.getColor(R.styleable.CircleProgressBar_cpb_backgroundColor, Color.parseColor("#D3D3D3"));
+        foregroundColor = a.getColor(R.styleable.CircleProgressBar_cpb_foregroundColor, Color.parseColor("#0000FF"));
+        text = a.getString(R.styleable.CircleProgressBar_cpb_text);
         a.recycle();
         //初始化画笔
         initPaint();
@@ -119,7 +119,7 @@ public class CircleProgressBar extends View {
             viewWidth = widthSpecSize;
         } else {
             // wrap_content
-            viewWidth = DeviceSizeUtil.dp2px(context, 120);
+            viewWidth = DeviceSizeUtil.dp2px(context, 150);
         }
         // 获取高
         int viewHeight;
@@ -128,7 +128,7 @@ public class CircleProgressBar extends View {
             viewHeight = heightSpecSize;
         } else {
             // wrap_content
-            viewHeight = DeviceSizeUtil.dp2px(context, 120);
+            viewHeight = DeviceSizeUtil.dp2px(context, 150);
         }
         //园半径等于View宽或者高的一半
         this.radius = (viewWidth - DeviceSizeUtil.dp2px(context, 20)) >> 1;
