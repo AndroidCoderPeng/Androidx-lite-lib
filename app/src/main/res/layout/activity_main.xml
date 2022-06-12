@@ -6,28 +6,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/deleteEditText">
-
-        <com.pengxh.androidx.lite.widget.NoScrollViewPager
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-
-    <com.pengxh.androidx.lite.widget.DeleteEditText
-        android:id="@+id/deleteEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/button"
-        android:layout_margin="30dp"
-        android:background="@color/purple_200"
-        android:gravity="center"
-        android:paddingHorizontal="5dp"
-        android:paddingVertical="10dp"
-        android:text="Hello World!" />
-
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
