@@ -1,0 +1,7 @@
+{
+  "code": 200,
+  "type": "SMS",
+  "data": "This is a short message from 203",
+  "message": "请求成功",
+  "success": true
+}

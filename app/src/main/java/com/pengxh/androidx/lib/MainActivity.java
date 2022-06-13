@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.pengxh.androidx.lib.databinding.ActivityMainBinding;
 import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
-import com.pengxh.androidx.lite.utils.SaveKeyValues;
 
 public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
@@ -19,7 +18,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
     protected void initData() {
-        SaveKeyValues.initSharedPreferences(this);
+
     }
 
     @Override

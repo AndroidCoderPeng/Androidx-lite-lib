@@ -91,7 +91,7 @@ public class FileUtil {
         return audioFile;
     }
 
-    public static File downloadFilePath(Context context) {
+    public static File createDownloadFileDir(Context context) {
         File downloadDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "");
         if (!downloadDir.exists()) {
             downloadDir.mkdir();
