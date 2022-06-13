@@ -12,12 +12,6 @@ import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
-/**
- * @author: Pengxh
- * @email: 290677893@qq.com
- * @description: TODO
- * @date: 2020/2/19 16:03
- */
 public class WelcomeActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
 
     private static final int PERMISSIONS_CODE = 999;

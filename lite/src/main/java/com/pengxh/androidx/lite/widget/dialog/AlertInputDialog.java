@@ -10,12 +10,14 @@ import android.widget.TextView;
 
 import com.pengxh.androidx.lite.R;
 import com.pengxh.androidx.lite.widget.DeleteEditText;
+import com.pengxh.androidx.lite.widget.EasyToast;
 
 /**
  * 输入对话框
  */
 public class AlertInputDialog extends Dialog {
 
+    private final Context context;
     private final String title;
     private final String hint;
     private final String positiveBtn;
@@ -67,6 +69,7 @@ public class AlertInputDialog extends Dialog {
 
     private AlertInputDialog(Builder builder) {
         super(builder.context, R.style.UserDefinedDialogStyle);
+        this.context = builder.context;
         this.title = builder.title;
         this.hint = builder.hint;
         this.positiveBtn = builder.positiveBtn;
@@ -119,7 +122,7 @@ public class AlertInputDialog extends Dialog {
                 if (listener != null) {
                     String inputValue = dialogInputView.getText().toString().trim();
                     if (TextUtils.isEmpty(inputValue)) {
-                        //TODO 添加Toast
+                        EasyToast.show(context, "输入错误，请检查！");
                         return;
                     }
                     listener.onConfirmClick(inputValue);

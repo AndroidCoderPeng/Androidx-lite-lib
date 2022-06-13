@@ -131,7 +131,6 @@ public class BLEManager {
         }
         this.discoveredListener = listener;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-//            bluetoothAdapter.startLeScan(scanCallback);
             bluetoothAdapter.getBluetoothLeScanner().startScan(scanCallback);
         }
         //设定最长扫描时间
