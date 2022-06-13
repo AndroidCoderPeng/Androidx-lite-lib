@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.pengxh.androidx.lite.R;
 import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
 
+import java.util.List;
+
 /**
  * 底部列表Sheet
  */
@@ -23,12 +25,12 @@ public class BottomActionSheet extends Dialog {
 
 
     private final Context ctx;
-    private final String[] sheetItems;
+    private final List<String> sheetItems;
     private final OnActionSheetListener sheetListener;
 
     public static class Builder {
         private Context context;
-        private String[] actionItems;
+        private List<String> actionItems;
         private OnActionSheetListener listener;
 
         public Builder setContext(Context context) {
@@ -36,7 +38,7 @@ public class BottomActionSheet extends Dialog {
             return this;
         }
 
-        public Builder setActionItemTitle(String[] items) {
+        public Builder setActionItemTitle(List<String> items) {
             this.actionItems = items;
             return this;
         }
@@ -100,12 +102,12 @@ public class BottomActionSheet extends Dialog {
 
         @Override
         public int getCount() {
-            return sheetItems.length;
+            return sheetItems.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return sheetItems[position];
+            return sheetItems.get(position);
         }
 
         @Override
@@ -126,12 +128,12 @@ public class BottomActionSheet extends Dialog {
             }
             if (position == 0) {
                 holder.sheetItemView.setBackgroundResource(R.drawable.sheet_item_top_selector);
-            } else if (position == sheetItems.length - 1) {
+            } else if (position == sheetItems.size() - 1) {
                 holder.sheetItemView.setBackgroundResource(R.drawable.sheet_item_bottom_selector);
             } else {
                 holder.sheetItemView.setBackgroundResource(R.drawable.sheet_item_middle_selector);
             }
-            holder.sheetItemView.setText(sheetItems[position]);
+            holder.sheetItemView.setText(sheetItems.get(position));
             holder.sheetItemView.setTextSize(16);
             //需要动态设置item的高度
             AbsListView.LayoutParams param = new AbsListView.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, DeviceSizeUtil.dp2px(ctx, 44));
