@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.pengxh.androidx.lite.R;
+import com.pengxh.androidx.lite.utils.ColorUtil;
 import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
 import com.pengxh.androidx.lite.utils.WeakReferenceHandler;
 
@@ -54,7 +55,7 @@ public class CircleProgressBar extends View {
         this.context = context;
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleProgressBar, defStyleAttr, 0);
         backgroundColor = a.getColor(R.styleable.CircleProgressBar_cpb_backgroundColor, Color.parseColor("#D3D3D3"));
-        foregroundColor = a.getColor(R.styleable.CircleProgressBar_cpb_foregroundColor, Color.parseColor("#0000FF"));
+        foregroundColor = a.getColor(R.styleable.CircleProgressBar_cpb_foregroundColor, ColorUtil.convertColor(context,R.color.blue));
         text = a.getString(R.styleable.CircleProgressBar_cpb_text);
         a.recycle();
         //初始化画笔

@@ -13,6 +13,9 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+
 import com.pengxh.androidx.lite.R;
 import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
 
@@ -26,11 +29,13 @@ public class BottomActionSheet extends Dialog {
 
     private final Context ctx;
     private final List<String> sheetItems;
+    private final int itemTextColor;
     private final OnActionSheetListener sheetListener;
 
     public static class Builder {
         private Context context;
         private List<String> actionItems;
+        private int color;
         private OnActionSheetListener listener;
 
         public Builder setContext(Context context) {
@@ -40,6 +45,11 @@ public class BottomActionSheet extends Dialog {
 
         public Builder setActionItemTitle(List<String> items) {
             this.actionItems = items;
+            return this;
+        }
+
+        public Builder setItemTextColor(@ColorInt int color) {
+            this.color = color;
             return this;
         }
 
@@ -57,6 +67,7 @@ public class BottomActionSheet extends Dialog {
         super(builder.context, R.style.UserDefinedActionStyle);
         this.ctx = builder.context;
         this.sheetItems = builder.actionItems;
+        this.itemTextColor = builder.color;
         this.sheetListener = builder.listener;
     }
 
@@ -135,6 +146,7 @@ public class BottomActionSheet extends Dialog {
             }
             holder.sheetItemView.setText(sheetItems.get(position));
             holder.sheetItemView.setTextSize(16);
+            holder.sheetItemView.setTextColor(itemTextColor);
             //需要动态设置item的高度
             AbsListView.LayoutParams param = new AbsListView.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, DeviceSizeUtil.dp2px(ctx, 44));
             convertView.setLayoutParams(param);
