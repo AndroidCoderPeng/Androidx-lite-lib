@@ -3,6 +3,7 @@ package com.pengxh.androidx.lite.widget.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.ColorRes;
 
 import com.pengxh.androidx.lite.R;
 import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
@@ -75,7 +75,7 @@ public class BottomActionSheet extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DialogLayoutParam.resetBottomParams(this, R.style.ActionSheetDialogAnimation, 1);
+        DialogLayoutParam.resetParams(this, Gravity.BOTTOM, R.style.ActionSheetDialogAnimation, 1);
         setContentView(R.layout.bottom_action_sheet);
         setCancelable(true);
         setCanceledOnTouchOutside(true);
