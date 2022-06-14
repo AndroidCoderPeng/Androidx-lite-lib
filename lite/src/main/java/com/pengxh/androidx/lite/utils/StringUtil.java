@@ -12,6 +12,8 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Administrator on 2018/11/16.
  */
-
+@SuppressLint("MissingPermission")
 public class StringUtil {
     private static final String TAG = "StringUtil";
 
@@ -168,5 +170,12 @@ public class StringUtil {
             }
         }
         return "";
+    }
+
+    public static String toJson(Object o) {
+        if (o == null) {
+            return "";
+        }
+        return new Gson().toJson(o);
     }
 }

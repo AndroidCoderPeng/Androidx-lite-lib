@@ -29,6 +29,9 @@ public class PageNavigationManager {
      */
     public static void finishCurrentActivity() {
         Activity activity = activityStack.pop();
+        if (activity == null) {
+            return;
+        }
         activity.finish();
     }
 

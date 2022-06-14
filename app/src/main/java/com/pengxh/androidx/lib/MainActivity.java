@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.pengxh.androidx.lib.databinding.ActivityMainBinding;
 import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
-import com.pengxh.androidx.lite.widget.EasyToast;
 
 public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
@@ -27,7 +26,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
         viewBinding.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EasyToast.show(context, "MainActivity");
+
             }
         });
     }

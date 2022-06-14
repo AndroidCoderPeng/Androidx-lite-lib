@@ -16,6 +16,11 @@ public class Constant {
     public static final String BIG_IMAGE_INTENT_DATA_KEY = "ImageData";
 
     /**
+     * 页面跳转Intent Data Key
+     */
+    public static final String INTENT_PARAM = "intentParam";
+
+    /**
      * 最大录音时长5分钟
      */
     public static final int MAX_LENGTH = 1000 * 60 * 5;
