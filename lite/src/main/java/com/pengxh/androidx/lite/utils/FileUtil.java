@@ -77,6 +77,20 @@ public class FileUtil {
         }
     }
 
+    public static File createLogFile(Context context) {
+        File documentDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd", Locale.CHINA).format(new Date());
+        File logFile = new File(documentDir.toString() + File.separator + "Log_" + timeStamp + ".txt");
+        if (!logFile.exists()) {
+            try {
+                logFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return logFile;
+    }
+
     public static File createAudioFile(Context context) {
         File audioDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_MUSIC), "");
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA).format(new Date());
