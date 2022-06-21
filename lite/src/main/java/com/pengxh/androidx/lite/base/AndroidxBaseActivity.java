@@ -51,7 +51,7 @@ public abstract class AndroidxBaseActivity<VB extends ViewBinding> extends AppCo
             broadcastManager.addAction(new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (ContextUtil.isNetworkConnected(context)) {
+                    if (!ContextUtil.isNetworkConnected(context)) {
                         try {
                             new NoNetworkDialog.Builder()
                                     .setContext(context)

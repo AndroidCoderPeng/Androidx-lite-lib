@@ -75,7 +75,7 @@
                 android:background="@drawable/dialog_button_selector"
                 android:gravity="center"
                 android:text="确定"
-                android:textColor="@color/red"
+                android:textColor="@color/blue"
                 android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
