@@ -81,6 +81,7 @@ public class ChangePasswordDialog extends Dialog {
                     return;
                 }
                 listener.onConfirmClick(oldPwd, newPwd);
+                dismiss();
             }
         });
     }
