@@ -1,11 +1,14 @@
 package com.pengxh.androidx.lib;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.View;
 
 import com.pengxh.androidx.lib.databinding.ActivityMainBinding;
 import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
+import com.pengxh.androidx.lite.utils.ImageUtil;
 import com.pengxh.androidx.lite.widget.EasyPopupWindow;
 
 public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
@@ -22,7 +25,9 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
     protected void initData() {
-
+        //原型图片
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.test);
+        viewBinding.imageView.setImageDrawable(ImageUtil.createRoundDrawable(this, bitmap, 0, 0));
     }
 
     @Override
