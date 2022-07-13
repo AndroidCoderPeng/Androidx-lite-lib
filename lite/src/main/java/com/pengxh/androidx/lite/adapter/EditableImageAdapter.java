@@ -2,6 +2,7 @@ package com.pengxh.androidx.lite.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,19 @@ import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 数量可编辑图片适配器
+ */
 @SuppressLint("NotifyDataSetChanged")
 public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdapter.ItemViewHolder> {
 
+    private static final String TAG = "EditableImageAdapter";
     private final Context context;
     private final int imageCountLimit;
     private List<String> imageData = new ArrayList<>();
+    private float leftMargin = 0f;
+    private float rightMargin = 0f;
+    private int padding = 0;
 
     public EditableImageAdapter(Context context, int imageCountLimit) {
         this.context = context;
@@ -36,26 +44,33 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
     }
 
     public void deleteImage(int position) {
-        if (imageData.size() != 0) {
+        if (!imageData.isEmpty()) {
             imageData.remove(position);
             notifyDataSetChanged();
         }
+    }
+
+    /**
+     * @param leftMargin  RecyclerView左边距
+     * @param rightMargin RecyclerView右边距
+     * @param padding     RecyclerView内边距
+     */
+    public void setImageMargins(float leftMargin, float rightMargin, float padding) {
+        this.leftMargin = leftMargin;
+        this.rightMargin = rightMargin;
+        this.padding = DeviceSizeUtil.dp2px(context, padding);
     }
 
     @NonNull
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ImageView imageView = new ImageView(context);
-        /**
-         * CarrView水平外边距5dp
-         * RelativeLayout水平内边距10dp
-         * RecyclerView左边距100dp
-         * */
-        int realWidth = DeviceSizeUtil.getScreenWidth(context) - DeviceSizeUtil.dp2px(context, 130);
-        int margins = DeviceSizeUtil.dp2px(context, 3);
-        int itemSize = (realWidth - 4 * margins) / 2;
+        int realWidth = DeviceSizeUtil.getScreenWidth(context)
+                - DeviceSizeUtil.dp2px(context, leftMargin)
+                - DeviceSizeUtil.dp2px(context, rightMargin);
+        int itemSize = (realWidth - 4 * padding) / 3;
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(itemSize, itemSize);
-        params.setMargins(margins, margins, margins, margins);
+        params.setMargins(padding, padding, padding, padding);
         params.gravity = Gravity.CENTER;
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setLayoutParams(params);
@@ -70,7 +85,11 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
                 @Override
                 public void onClick(View v) {
                     //添加图片
-                    mOnItemClickListener.onAddImageClick();
+                    if (itemClickListener == null) {
+                        Log.e(TAG, "onClick: itemClickListener not init");
+                        return;
+                    }
+                    itemClickListener.onAddImageClick();
                 }
             });
         } else {
@@ -79,7 +98,11 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
                 @Override
                 public void onClick(View v) {
                     // 点击操作，查看大图
-                    mOnItemClickListener.onItemClick(position);
+                    if (itemClickListener == null) {
+                        Log.e(TAG, "onClick: itemClickListener not init");
+                        return;
+                    }
+                    itemClickListener.onItemClick(position);
                 }
             });
             // 长按监听
@@ -87,7 +110,11 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
                 @Override
                 public boolean onLongClick(View v) {
                     //长按删除
-                    mOnItemClickListener.onItemLongClick(v, position);
+                    if (itemClickListener == null) {
+                        Log.e(TAG, "onClick: itemClickListener not init");
+                        return true;
+                    }
+                    itemClickListener.onItemLongClick(v, position);
                     return true;
                 }
             });
@@ -96,18 +123,17 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
 
     @Override
     public int getItemCount() {
-        // 满imageCountLimit张图就不让其添加新图
-        if (imageData != null && imageData.size() >= imageCountLimit) {
+        if (imageData.size() >= imageCountLimit) {
             return imageCountLimit;
         } else {
-            return imageData == null ? 1 : imageData.size() + 1;
+            return imageData.size() + 1;
         }
     }
 
-    private OnItemClickListener mOnItemClickListener;
+    private OnItemClickListener itemClickListener;
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.mOnItemClickListener = onItemClickListener;
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
     public interface OnItemClickListener {
