@@ -65,7 +65,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ImageView imageView = new ImageView(context);
-        int realWidth = DeviceSizeUtil.getScreenWidth(context)
+        int realWidth = DeviceSizeUtil.obtainScreenWidth(context)
                 - DeviceSizeUtil.dp2px(context, leftMargin)
                 - DeviceSizeUtil.dp2px(context, rightMargin);
         int itemSize = (realWidth - 4 * padding) / 3;

@@ -21,7 +21,7 @@ public class EasyToast {
                 DeviceSizeUtil.dp2px(context, 20), DeviceSizeUtil.dp2px(context, 10),
                 DeviceSizeUtil.dp2px(context, 20), DeviceSizeUtil.dp2px(context, 10)
         );
-        toast.setGravity(Gravity.BOTTOM, 0, DeviceSizeUtil.dp2px(context, 80));
+        toast.setGravity(Gravity.BOTTOM, 0, DeviceSizeUtil.dp2px(context, 90));
         toast.setView(textView);
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.show();

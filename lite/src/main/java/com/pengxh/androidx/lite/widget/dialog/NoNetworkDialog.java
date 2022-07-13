@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.pengxh.androidx.lite.R;
+import com.pengxh.androidx.lite.utils.DialogLayoutParam;
 
 public class NoNetworkDialog extends Dialog {
 
@@ -44,6 +46,14 @@ public class NoNetworkDialog extends Dialog {
         setContentView(R.layout.dialog_no_network);
         setCancelable(false);
         setCanceledOnTouchOutside(false);
+
+        ImageView dismissView = findViewById(R.id.dismissView);
+        dismissView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 
         Button dialogButton = findViewById(R.id.dialogButton);
         dialogButton.setOnClickListener(new View.OnClickListener() {

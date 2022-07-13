@@ -15,6 +15,9 @@ import androidx.core.app.ActivityCompat;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
@@ -98,30 +101,6 @@ public class StringUtil {
     }
 
     /**
-     * 获取本地Asserts文件内容
-     */
-    public static String readAssetsFile(Context context, String fileName) {
-        try {
-            InputStreamReader inputStreamReader = new InputStreamReader(context.getAssets().open(fileName));
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            StringBuilder data = new StringBuilder();
-            String s;
-            try {
-                while ((s = bufferedReader.readLine()) != null) {
-                    data.append(s);
-                }
-                Log.d(TAG, "readAssetsFile ===> " + data);
-                return data.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
      * 过滤空格，回车
      */
     public static String filterString(String s) {
@@ -177,5 +156,21 @@ public class StringUtil {
             return "";
         }
         return new Gson().toJson(o);
+    }
+
+    /**
+     * @param log 待写入的内容
+     */
+    public static void writeToFile(File file, String log) {
+        try {
+            FileWriter fileWriter = new FileWriter(file, true);
+            BufferedWriter writer = new BufferedWriter(fileWriter);
+            writer.write(log);
+            writer.newLine(); //换行
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

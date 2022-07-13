@@ -67,7 +67,7 @@ public class ImageUtil {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             image.compressToJpeg(new Rect(0, 0, width, height), 80, outputStream);
             final Bitmap bmp = BitmapFactory.decodeByteArray(outputStream.toByteArray(), 0, outputStream.size());
-            bitmap = rotateImageView(-90, bmp);
+            bitmap = rotateImage(-90, bmp);
             outputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -78,7 +78,7 @@ public class ImageUtil {
     /**
      * 旋转图片
      */
-    public static Bitmap rotateImageView(int angle, Bitmap bitmap) {
+    public static Bitmap rotateImage(int angle, Bitmap bitmap) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         // 创建新的图片

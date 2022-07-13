@@ -18,6 +18,7 @@ import androidx.annotation.ColorInt;
 
 import com.pengxh.androidx.lite.R;
 import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
+import com.pengxh.androidx.lite.utils.DialogLayoutParam;
 
 import java.util.List;
 

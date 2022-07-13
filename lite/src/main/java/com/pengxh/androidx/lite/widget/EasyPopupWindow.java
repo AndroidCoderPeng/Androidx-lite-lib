@@ -19,7 +19,7 @@ public class EasyPopupWindow extends PopupWindow {
     private OnPopupWindowClickListener clickListener;
 
     public EasyPopupWindow(Context context) {
-        setWidth((int) (DeviceSizeUtil.getScreenWidth(context) * 0.3));
+        setWidth((int) (DeviceSizeUtil.obtainScreenWidth(context) * 0.3));
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setOutsideTouchable(true);
         setFocusable(true);

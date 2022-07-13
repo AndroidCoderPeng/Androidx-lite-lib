@@ -12,8 +12,8 @@ import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
 public class AudioPopupWindow {
     public static void create(Context context, IWindowListener listener) {
         View view = View.inflate(context, R.layout.popu_microphone, null);
-        int popWidth = (int) (DeviceSizeUtil.getScreenWidth(context) * 0.35);
-        int popHeight = (int) (DeviceSizeUtil.getScreenWidth(context) * 0.30);
+        int popWidth = (int) (DeviceSizeUtil.obtainScreenWidth(context) * 0.35);
+        int popHeight = (int) (DeviceSizeUtil.obtainScreenWidth(context) * 0.30);
         PopupWindow window = new PopupWindow(view, popWidth, popHeight, true);
         window.setAnimationStyle(R.style.PopupAnimation);
 

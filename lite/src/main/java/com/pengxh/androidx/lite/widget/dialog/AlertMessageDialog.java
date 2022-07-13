@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.pengxh.androidx.lite.R;
+import com.pengxh.androidx.lite.utils.DialogLayoutParam;
 
 /**
  * 普通提示对话框对话框

@@ -2,13 +2,19 @@ package com.pengxh.androidx.lite.utils;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.pengxh.androidx.lite.callback.OnDownloadListener;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -77,6 +83,30 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 获取本地Asserts文件内容
+     */
+    public static String readAssetsFile(Context context, String fileName) {
+        try {
+            InputStreamReader inputStreamReader = new InputStreamReader(context.getAssets().open(fileName));
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder data = new StringBuilder();
+            String s;
+            try {
+                while ((s = bufferedReader.readLine()) != null) {
+                    data.append(s);
+                }
+                Log.d(TAG, "readAssetsFile ===> " + data);
+                return data.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static File createLogFile(Context context) {
         File documentDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "");
         String timeStamp = new SimpleDateFormat("yyyyMMdd", Locale.CHINA).format(new Date());
@@ -113,7 +143,7 @@ public class FileUtil {
         return downloadDir;
     }
 
-    public static void downloadFile(String url, String downloadDir, IDownloadListener listener) {
+    public static void downloadFile(String url, String downloadDir, OnDownloadListener listener) {
         OkHttpClient httpClient = new OkHttpClient();
         Request request = new Request.Builder().get().url(url).build();
         Call newCall = httpClient.newCall(request);
@@ -173,11 +203,22 @@ public class FileUtil {
         });
     }
 
-    public interface IDownloadListener {
-        void onDownloadStart(long totalBytes);
-
-        void onProgressChanged(long currentBytes);
-
-        void onDownloadEnd(File file);
+    public static String read(File file) {
+        StringBuilder builder;
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            String line = bufferedReader.readLine();
+            builder = new StringBuilder();
+            while (line != null) {
+                builder.append(line);
+                builder.append("\n");
+                line = bufferedReader.readLine();
+            }
+            bufferedReader.close();
+            return builder.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

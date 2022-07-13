@@ -1,4 +1,4 @@
-package com.pengxh.androidx.lite.widget.dialog;
+package com.pengxh.androidx.lite.utils;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -7,8 +7,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.StyleRes;
-
-import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
 
 public class DialogLayoutParam {
     public static void resetParams(Dialog dialog, double ratio) {
@@ -19,7 +17,7 @@ public class DialogLayoutParam {
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         window.getDecorView().setBackgroundColor(Color.TRANSPARENT);
         WindowManager.LayoutParams params = window.getAttributes();
-        params.width = (int) (DeviceSizeUtil.getScreenWidth(dialog.getContext()) * ratio);
+        params.width = (int) (DeviceSizeUtil.obtainScreenWidth(dialog.getContext()) * ratio);
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(params);
     }
@@ -35,7 +33,7 @@ public class DialogLayoutParam {
         //设置Dialog出现的动画
         window.setWindowAnimations(resId);
         WindowManager.LayoutParams params = window.getAttributes();
-        params.width = (int) (DeviceSizeUtil.getScreenWidth(dialog.getContext()) * ratio);
+        params.width = (int) (DeviceSizeUtil.obtainScreenWidth(dialog.getContext()) * ratio);
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(params);
     }

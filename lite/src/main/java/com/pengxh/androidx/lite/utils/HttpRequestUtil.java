@@ -2,6 +2,8 @@ package com.pengxh.androidx.lite.utils;
 
 import android.util.Log;
 
+import com.pengxh.androidx.lite.callback.OnHttpRequestListener;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -20,7 +22,7 @@ import rx.schedulers.Schedulers;
 public class HttpRequestUtil {
     private static final String TAG = "HttpRequestHelper";
 
-    public static void doRequest(Request request, IHttpRequestListener listener) {
+    public static void doRequest(Request request, OnHttpRequestListener listener) {
         Observable.create(new Observable.OnSubscribe<Response>() {
             @Override
             public void call(Subscriber<? super Response> subscriber) {
@@ -61,11 +63,5 @@ public class HttpRequestUtil {
                 listener.onSuccess(response);
             }
         });
-    }
-
-    public interface IHttpRequestListener {
-        void onSuccess(Response response);
-
-        void onFailure(Throwable throwable);
     }
 }
