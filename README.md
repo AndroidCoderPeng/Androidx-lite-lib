@@ -57,4 +57,4 @@ new AlertControlDialog.Builder()
 其他的就不一一列举了，有用得到的可以自己试试~~~
 
 详细功能架构图如下所示：
-![框架功能图](https://github.com/AndroidCoderPeng/Androidx-lite-lib/blob/main/lite/src/main/assets/Androidx-lite-lib.png)
+![框架功能图](https://github.com/AndroidCoderPeng/Androidx-lite-lib/blob/main/app/src/main/assets/Androidx-lite-lib.png)
