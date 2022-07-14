@@ -7,7 +7,7 @@ Android依赖库，Android-library升级兼容到Androidx
 
 1、在项目的build.gradle里面添加如下代码块：
 
-```
+```gradle
 allprojects {
     repositories {
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
@@ -20,7 +20,7 @@ allprojects {
 
 2、在APP的build.gradle中添加如下代码块：
 
-```
+```gradle
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //基础依赖库
@@ -29,12 +29,12 @@ dependencies {
 ```
 
 3、最后点击Sync同步一下就可以用了，例如要跳转页面，一行代码解决：
-```
+```java
 ContextUtil.navigatePageTo(context, BluetoothActivity.class);
 ```
 
 又或者要使用对话框
-```
+```java
 new AlertControlDialog.Builder()
     .setContext(this)
     .setTitle("这里是标题")
