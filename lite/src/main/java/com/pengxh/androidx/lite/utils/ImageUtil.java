@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
@@ -20,6 +21,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -39,11 +41,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class ImageUtil {
+
+    private static final String TAG = "ImageUtil";
 
     /**
      * @param context
@@ -73,6 +78,45 @@ public class ImageUtil {
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+    /**
+     * CameraX 原始预览Image数据（imageProxy.format == ImageFormat.YUV_420_888）转Bitmap
+     * CameraX 预览Image数据（imageProxy.format == ImageFormat.JPEG）转Bitmap
+     */
+    public static Bitmap imageToBitmap(Image image, int format) {
+        if (format == ImageFormat.YUV_420_888) {
+            Image.Plane[] planes = image.getPlanes();
+
+            ByteBuffer yBuffer = planes[0].getBuffer();
+            ByteBuffer uBuffer = planes[1].getBuffer();
+            ByteBuffer vBuffer = planes[2].getBuffer();
+
+            int ySize = yBuffer.remaining();
+            int uSize = uBuffer.remaining();
+            int vSize = vBuffer.remaining();
+
+            byte[] nv21 = new byte[ySize + uSize + vSize];
+            //U and V are swapped
+            yBuffer.get(nv21, 0, ySize);
+            vBuffer.get(nv21, ySize, vSize);
+            uBuffer.get(nv21, ySize + vSize, uSize);
+
+            YuvImage yuvImage = new YuvImage(nv21, ImageFormat.NV21, image.getWidth(), image.getHeight(), null);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            yuvImage.compressToJpeg(new Rect(0, 0, yuvImage.getWidth(), yuvImage.getHeight()), 75, out);
+
+            byte[] imageBytes = out.toByteArray();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            return rotateImage(-90, bitmap);
+        } else if (format == ImageFormat.JPEG) {
+            ByteBuffer buffer = image.getPlanes()[0].getBuffer();
+            byte[] bytes = new byte[buffer.capacity()];
+            buffer.get(bytes);
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
+        }
+        Log.e(TAG, "ImageToBitmap: ImageFormat error");
+        return null;
     }
 
     /**
