@@ -92,6 +92,7 @@ public class BottomActionSheet extends Dialog {
         });
 
         TextView sheetCancelView = findViewById(R.id.sheetCancelView);
+        sheetCancelView.setTextColor(itemTextColor);
         sheetCancelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
