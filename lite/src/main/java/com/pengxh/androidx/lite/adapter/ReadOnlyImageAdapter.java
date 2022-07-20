@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.pengxh.androidx.lite.R;
+import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +24,12 @@ import java.util.List;
 public class ReadOnlyImageAdapter extends BaseAdapter {
 
     private final Context context;
+    private final int screenWidth;
     private final List<String> images = new ArrayList<>();
 
     public ReadOnlyImageAdapter(Context mContext) {
         this.context = mContext;
+        this.screenWidth = DeviceSizeUtil.obtainScreenWidth(context);
     }
 
     public void setImageList(@Nullable List<String> imageUrlList) {
@@ -66,6 +70,11 @@ public class ReadOnlyImageAdapter extends BaseAdapter {
                 .load(images.get(position))
                 .apply(new RequestOptions().error(R.mipmap.load_image_error))
                 .into(holder.imageView);
+        //动态设置图片高度，和图片宽度保持一致
+        int padding = convertView.getPaddingLeft() + convertView.getPaddingRight();
+        int imageSize = (screenWidth - padding) / 3;
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageSize, imageSize);
+        holder.imageView.setLayoutParams(params);
         return convertView;
     }
 

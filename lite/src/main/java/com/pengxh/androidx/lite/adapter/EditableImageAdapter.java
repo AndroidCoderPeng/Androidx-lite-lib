@@ -3,7 +3,7 @@ package com.pengxh.androidx.lite.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,14 +28,21 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
     private static final String TAG = "EditableImageAdapter";
     private final Context context;
     private final int imageCountLimit;
+    private final int screenWidth;
+    private final float spacing;
+    private final LayoutInflater layoutInflater;
     private List<String> imageData = new ArrayList<>();
-    private float leftMargin = 0f;
-    private float rightMargin = 0f;
-    private int padding = 0;
 
-    public EditableImageAdapter(Context context, int imageCountLimit) {
+    /**
+     * @param imageCountLimit 最多显示几张图片
+     * @param spacing         RecyclerView边距，左右外边距+ImageView内边距,单位dp
+     */
+    public EditableImageAdapter(Context context, int imageCountLimit, float spacing) {
         this.context = context;
         this.imageCountLimit = imageCountLimit;
+        this.spacing = spacing;
+        this.screenWidth = DeviceSizeUtil.obtainScreenWidth(context);
+        this.layoutInflater = LayoutInflater.from(context);
     }
 
     public void setupImage(List<String> images) {
@@ -50,35 +57,15 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
         }
     }
 
-    /**
-     * @param leftMargin  RecyclerView左边距
-     * @param rightMargin RecyclerView右边距
-     * @param padding     RecyclerView内边距
-     */
-    public void setImageMargins(float leftMargin, float rightMargin, float padding) {
-        this.leftMargin = leftMargin;
-        this.rightMargin = rightMargin;
-        this.padding = DeviceSizeUtil.dp2px(context, padding);
-    }
-
     @NonNull
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ImageView imageView = new ImageView(context);
-        int realWidth = DeviceSizeUtil.obtainScreenWidth(context)
-                - DeviceSizeUtil.dp2px(context, leftMargin)
-                - DeviceSizeUtil.dp2px(context, rightMargin);
-        int itemSize = (realWidth - 4 * padding) / 3;
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(itemSize, itemSize);
-        params.setMargins(padding, padding, padding, padding);
-        params.gravity = Gravity.CENTER;
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setLayoutParams(params);
-        return new ItemViewHolder(imageView);
+        return new ItemViewHolder(layoutInflater.inflate(R.layout.item_gridview_editable, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        configImageParams(holder.imageView, position);
         if (position == getItemCount() - 1 && imageData.size() < imageCountLimit) {
             holder.imageView.setImageResource(R.drawable.ic_add_pic);
             holder.imageView.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +108,19 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
         }
     }
 
+    private void configImageParams(ImageView imageView, int position) {
+        int totalPadding = DeviceSizeUtil.dp2px(context, spacing) * 4;
+        int imageSize = (screenWidth - totalPadding) / 3;
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageSize, imageSize);
+        if (position >= 3 && position <= 5) {
+            params.setMargins(0, DeviceSizeUtil.dp2px(context, spacing), 0, DeviceSizeUtil.dp2px(context, spacing));
+        } else {
+            params.setMargins(0, 0, 0, 0);
+        }
+        imageView.setLayoutParams(params);
+    }
+
     @Override
     public int getItemCount() {
         if (imageData.size() >= imageCountLimit) {
@@ -149,7 +149,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
 
         private ItemViewHolder(View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView;
+            imageView = itemView.findViewById(R.id.imageView);
         }
     }
 }
