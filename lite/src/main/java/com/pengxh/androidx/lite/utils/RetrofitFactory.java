@@ -4,15 +4,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory;
-
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class RetrofitFactory {
     private static final String TAG = "RetrofitFactory";
@@ -32,9 +30,8 @@ public class RetrofitFactory {
         OkHttpClient httpClient = builder.addInterceptor(interceptor).build();
         return new Retrofit.Builder()
                 .baseUrl(httpConfig)
-                .addConverterFactory(ScalarsConverterFactory.create())          //字符串转换器
-                .addConverterFactory(GsonConverterFactory.create())             //Gson转换器
-                .addCallAdapterFactory(CoroutineCallAdapterFactory.create())    //协程请求适配器
+                .addConverterFactory(GsonConverterFactory.create())//Gson转换器
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(httpClient) //log拦截器
                 .build().create(tClass);
     }
