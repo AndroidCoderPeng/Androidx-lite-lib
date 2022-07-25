@@ -1,8 +1,13 @@
-package com.pengxh.androidx.lib;
+package com.pengxh.androidx.lib.view;
 
 import android.content.Context;
 
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.pengxh.androidx.lib.databinding.ActivityMainBinding;
+import com.pengxh.androidx.lib.model.ImageListModel;
+import com.pengxh.androidx.lib.vm.NetworkViewModel;
 import com.pengxh.androidx.lite.adapter.EditableImageAdapter;
 import com.pengxh.androidx.lite.adapter.ReadOnlyImageAdapter;
 import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
@@ -34,14 +39,25 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
     @Override
     protected void initData() {
         ReadOnlyImageAdapter readOnlyImageAdapter = new ReadOnlyImageAdapter(this);
-        readOnlyImageAdapter.setImageList(images);
-        viewBinding.readonlyGridView.setAdapter(readOnlyImageAdapter);
+        EditableImageAdapter editableImageAdapter = new EditableImageAdapter(this, 9, 3f);
+
+        NetworkViewModel viewModel = new ViewModelProvider(this).get(NetworkViewModel.class);
+        viewModel.obtainImageList("头条", 0);
+        viewModel.imageResultModel.observe(this, new Observer<ImageListModel>() {
+            @Override
+            public void onChanged(ImageListModel imageListModel) {
+                readOnlyImageAdapter.setImageList(imageListModel.getImages());
+                viewBinding.readonlyGridView.setAdapter(readOnlyImageAdapter);
+
+                editableImageAdapter.setupImage(imageListModel.getImages());
+                viewBinding.editableGridView.setAdapter(editableImageAdapter);
+            }
+        });
     }
+
 
     @Override
     protected void initEvent() {
-        EditableImageAdapter editableImageAdapter = new EditableImageAdapter(this, 9, 3f);
-        editableImageAdapter.setupImage(images);
-        viewBinding.editableGridView.setAdapter(editableImageAdapter);
+
     }
 }

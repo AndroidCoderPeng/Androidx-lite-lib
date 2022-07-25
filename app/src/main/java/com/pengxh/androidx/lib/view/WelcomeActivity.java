@@ -1,12 +1,13 @@
-package com.pengxh.androidx.lib;
+package com.pengxh.androidx.lib.view;
 
 import android.Manifest;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.pengxh.androidx.lite.utils.ContextUtil;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class WelcomeActivity extends AppCompatActivity implements EasyPermission
     }
 
     private void startMainActivity() {
-        startActivity(new Intent(this, MainActivity.class));
+        ContextUtil.navigatePageTo(this, MainActivity.class);
         finish();
     }
 
