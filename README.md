@@ -24,7 +24,7 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //基础依赖库
-    implementation 'com.github.AndroidCoderPeng:Androidx-lite-lib:1.0.4'
+    implementation 'com.github.AndroidCoderPeng:Androidx-lite-lib:1.0.6'
 }
 ```
 
