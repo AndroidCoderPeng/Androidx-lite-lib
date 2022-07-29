@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
-    app:cardCornerRadius="10dp">
+    android:padding="@dimen/lib_dp_5"
+    app:cardCornerRadius="@dimen/lib_dp_10">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,12 +15,12 @@
         <TextView
             android:id="@+id/dialogTitleView"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
+            android:layout_height="@dimen/lib_dp_45"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="请设置标题"
             android:textColor="@color/lib_text_color"
-            android:textSize="16sp" />
+            android:textSize="@dimen/lib_sp_16" />
 
         <TextView
             android:id="@+id/dialogMessageView"
@@ -28,19 +28,19 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="10dp"
+            android:paddingHorizontal="@dimen/lib_dp_20"
+            android:paddingBottom="@dimen/lib_dp_15"
             android:text="请设置弹窗信息"
             android:textColor="@color/lib_text_color" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#808080" />
+            android:layout_height="@dimen/lib_px_1"
+            android:background="@color/lib_line_color" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="44dp"
+            android:layout_height="@dimen/lib_dp_45"
             android:orientation="horizontal">
 
             <Button
@@ -52,12 +52,12 @@
                 android:gravity="center"
                 android:text="取消"
                 android:textColor="@color/red"
-                android:textSize="16sp" />
+                android:textSize="@dimen/lib_sp_16" />
 
             <View
-                android:layout_width="1px"
+                android:layout_width="@dimen/lib_px_1"
                 android:layout_height="match_parent"
-                android:background="#808080" />
+                android:background="@color/lib_line_color" />
 
             <Button
                 android:id="@+id/dialogConfirmButton"
@@ -68,7 +68,7 @@
                 android:gravity="center"
                 android:text="确定"
                 android:textColor="@color/blue"
-                android:textSize="16sp" />
+                android:textSize="@dimen/lib_sp_16" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
