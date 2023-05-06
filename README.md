@@ -1,9 +1,12 @@
 # Androidx-lite-lib
+
 Android依赖库，Android-library升级兼容到Androidx
 
-[![](https://jitpack.io/v/AndroidCoderPeng/Androidx-lite-lib.svg)](https://jitpack.io/#AndroidCoderPeng/Androidx-lite-lib)
+## 使用说明
 
-使用方式
+### 引入方式
+#### 最新版本: [![](https://jitpack.io/v/AndroidCoderPeng/Androidx-lite-lib.svg)](https://jitpack.io/#AndroidCoderPeng/Androidx-lite-lib)
+
 
 1、在项目的build.gradle里面添加如下代码块：
 
@@ -24,13 +27,13 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //基础依赖库
-    implementation 'com.github.AndroidCoderPeng:Androidx-lite-lib:1.0.6'
+    implementation 'com.github.AndroidCoderPeng:Androidx-lite-lib:latest.integration'
 }
 ```
 
 3、最后点击Sync同步一下就可以用了，例如要跳转页面，一行代码解决：
 ``` java
-ContextUtil.navigatePageTo(context, BluetoothActivity.class);
+ContextHub.navigatePageTo(context, BluetoothActivity.class);
 ```
 
 又或者要使用对话框
@@ -57,4 +60,4 @@ new AlertControlDialog.Builder()
 其他的就不一一列举了，有用得到的可以自己试试~~~
 
 详细功能架构图如下所示：
-![框架功能图](https://github.com/AndroidCoderPeng/Androidx-lite-lib/blob/main/app/src/main/assets/Androidx-lite-lib.png)
+![框架功能图](Androidx-lite-lib.png)
