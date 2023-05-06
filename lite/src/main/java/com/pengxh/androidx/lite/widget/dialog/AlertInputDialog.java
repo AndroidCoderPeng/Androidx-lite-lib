@@ -9,9 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.utils.DialogLayoutParam;
+import com.pengxh.androidx.lite.hub.DialogHub;
+import com.pengxh.androidx.lite.hub.StringHub;
 import com.pengxh.androidx.lite.widget.DeleteEditText;
-import com.pengxh.androidx.lite.widget.EasyToast;
 
 /**
  * 输入对话框
@@ -81,7 +81,7 @@ public class AlertInputDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DialogLayoutParam.resetParams(this, 0.8);
+        DialogHub.resetParams(this, 0.8);
         setContentView(R.layout.dialog_input);
         setCanceledOnTouchOutside(false);
         initView();
@@ -123,7 +123,7 @@ public class AlertInputDialog extends Dialog {
                 if (listener != null) {
                     String inputValue = dialogInputView.getText().toString().trim();
                     if (TextUtils.isEmpty(inputValue)) {
-                        EasyToast.show(context, "输入错误，请检查！");
+                        StringHub.show(context, "输入错误，请检查！");
                         return;
                     }
                     listener.onConfirmClick(inputValue);

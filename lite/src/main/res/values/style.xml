@@ -46,14 +46,4 @@
         <item name="android:windowEnterAnimation">@anim/action_dialog_show</item>
         <item name="android:windowExitAnimation">@anim/action_dialog_hide</item>
     </style>
-
-    <style name="ActivityInOutAnimation" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--进入-->
-        <item name="android:activityOpenEnterAnimation">@anim/activity_in</item>
-        <item name="android:activityOpenExitAnimation">@anim/activity_out</item>
-
-        <!--退出-->
-        <item name="android:activityCloseEnterAnimation">@anim/activity_in</item>
-        <item name="android:activityCloseExitAnimation">@anim/activity_out</item>
-    </style>
 </resources>

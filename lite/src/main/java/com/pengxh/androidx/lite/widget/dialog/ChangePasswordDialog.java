@@ -9,9 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.utils.DialogLayoutParam;
-import com.pengxh.androidx.lite.utils.StringUtil;
-import com.pengxh.androidx.lite.widget.EasyToast;
+import com.pengxh.androidx.lite.hub.DialogHub;
+import com.pengxh.androidx.lite.hub.StringHub;
 
 public class ChangePasswordDialog extends Dialog {
 
@@ -46,7 +45,7 @@ public class ChangePasswordDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DialogLayoutParam.resetParams(this, 0.85);
+        DialogHub.resetParams(this, 0.85);
         setContentView(R.layout.dialog_change_pwd);
         setCancelable(true);
         setCanceledOnTouchOutside(true);
@@ -62,23 +61,23 @@ public class ChangePasswordDialog extends Dialog {
                 String newPwd = newPwdView.getText().toString();
                 String confirmPwd = confirmPwdView.getText().toString();
                 if (TextUtils.isEmpty(oldPwd)) {
-                    EasyToast.show(context, "请输入原密码");
+                    StringHub.show(context, "请输入原密码");
                     return;
                 }
                 if (TextUtils.isEmpty(newPwd)) {
-                    EasyToast.show(context, "请输入新密码");
+                    StringHub.show(context, "请输入新密码");
                     return;
                 }
                 if (TextUtils.isEmpty(confirmPwd)) {
-                    EasyToast.show(context, "请再次确认密码");
+                    StringHub.show(context, "请再次确认密码");
                     return;
                 }
-                if (!StringUtil.isLetterAndDigit(newPwd)) {
-                    EasyToast.show(context, "新密码需包含数字和字母");
+                if (!StringHub.isLetterAndDigit(newPwd)) {
+                    StringHub.show(context, "新密码需包含数字和字母");
                     return;
                 }
                 if (!newPwd.equals(confirmPwd)) {
-                    EasyToast.show(context, "新密码和确认密码不一致，请检查");
+                    StringHub.show(context, "新密码和确认密码不一致，请检查");
                     return;
                 }
                 listener.onConfirmClick(oldPwd, newPwd);

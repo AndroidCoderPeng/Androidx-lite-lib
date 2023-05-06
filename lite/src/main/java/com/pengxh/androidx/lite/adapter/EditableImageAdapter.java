@@ -14,7 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
+import com.pengxh.androidx.lite.hub.ContextHub;
+import com.pengxh.androidx.lite.hub.FloatHub;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
         this.context = context;
         this.imageCountLimit = imageCountLimit;
         this.spacing = spacing;
-        this.screenWidth = DeviceSizeUtil.obtainScreenWidth(context);
+        this.screenWidth = ContextHub.getScreenWidth(context);
         this.layoutInflater = LayoutInflater.from(context);
     }
 
@@ -109,12 +110,12 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
     }
 
     private void configImageParams(ImageView imageView, int position) {
-        int totalPadding = DeviceSizeUtil.dp2px(context, spacing) * 4;
+        int totalPadding = FloatHub.dp2px(context, spacing) * 4;
         int imageSize = (screenWidth - totalPadding) / 3;
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageSize, imageSize);
         if (position >= 3 && position <= 5) {
-            params.setMargins(0, DeviceSizeUtil.dp2px(context, spacing), 0, DeviceSizeUtil.dp2px(context, spacing));
+            params.setMargins(0, FloatHub.dp2px(context, spacing), 0, FloatHub.dp2px(context, spacing));
         } else {
             params.setMargins(0, 0, 0, 0);
         }

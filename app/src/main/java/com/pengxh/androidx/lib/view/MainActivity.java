@@ -1,6 +1,7 @@
 package com.pengxh.androidx.lib.view;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,6 +12,7 @@ import com.pengxh.androidx.lib.vm.NetworkViewModel;
 import com.pengxh.androidx.lite.adapter.EditableImageAdapter;
 import com.pengxh.androidx.lite.adapter.ReadOnlyImageAdapter;
 import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
+import com.pengxh.androidx.lite.hub.ContextHub;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +35,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
     protected void setupTopBarLayout() {
-
+        Log.d(TAG, "setupTopBarLayout: " + ContextHub.getStatusBarHeight(this));
     }
 
     @Override
@@ -58,6 +60,11 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
     protected void initEvent() {
+
+    }
+
+    @Override
+    protected void observeRequestState() {
 
     }
 }

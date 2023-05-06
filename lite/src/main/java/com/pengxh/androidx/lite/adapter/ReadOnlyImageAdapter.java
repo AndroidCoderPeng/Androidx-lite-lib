@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
+import com.pengxh.androidx.lite.hub.ContextHub;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class ReadOnlyImageAdapter extends BaseAdapter {
 
     public ReadOnlyImageAdapter(Context mContext) {
         this.context = mContext;
-        this.screenWidth = DeviceSizeUtil.obtainScreenWidth(context);
+        this.screenWidth = ContextHub.getScreenWidth(context);
     }
 
     public void setImageList(@Nullable List<String> imageUrlList) {

@@ -8,7 +8,9 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.ColorInt;
 
-public class ImmerseStatusBarUtil {
+import com.pengxh.androidx.lite.hub.ContextHub;
+
+public class ImmerseStatusBarManager {
     public static void setColor(Activity activity, @ColorInt int color) {
         //限制android系统的版本
         // 设置状态栏透明
@@ -32,9 +34,7 @@ public class ImmerseStatusBarUtil {
      * @return 状态栏矩形条
      */
     private static View createStatusView(Activity activity, @ColorInt int color) {
-        // 获得状态栏高度
-        int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        int statusBarHeight = activity.getResources().getDimensionPixelSize(resourceId);
+        int statusBarHeight = ContextHub.getStatusBarHeight(activity);
         // 绘制一个和状态栏一样高的矩形
         View statusView = new View(activity);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight);

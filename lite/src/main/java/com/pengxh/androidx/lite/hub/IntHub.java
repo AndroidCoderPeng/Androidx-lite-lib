@@ -1,14 +1,16 @@
-package com.pengxh.androidx.lite.utils;
+package com.pengxh.androidx.lite.hub;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 
 import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
 import java.util.Random;
 
-public class ColorUtil {
+public class IntHub {
     /**
      * 随机颜色
      */
@@ -25,5 +27,12 @@ public class ColorUtil {
      */
     public static int convertColor(Context context, @ColorRes int res) {
         return ContextCompat.getColor(context, res);
+    }
+
+    /**
+     * res转Drawable
+     */
+    public static Drawable convertDrawable(Context context, @DrawableRes int res) {
+        return ContextCompat.getDrawable(context, res);
     }
 }

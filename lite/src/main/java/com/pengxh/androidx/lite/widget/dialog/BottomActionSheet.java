@@ -17,8 +17,8 @@ import android.widget.TextView;
 import androidx.annotation.ColorInt;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
-import com.pengxh.androidx.lite.utils.DialogLayoutParam;
+import com.pengxh.androidx.lite.hub.DialogHub;
+import com.pengxh.androidx.lite.hub.FloatHub;
 
 import java.util.List;
 
@@ -76,7 +76,7 @@ public class BottomActionSheet extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DialogLayoutParam.resetParams(this, Gravity.BOTTOM, R.style.ActionSheetDialogAnimation, 1);
+        DialogHub.resetParams(this, Gravity.BOTTOM, R.style.ActionSheetDialogAnimation, 1);
         setContentView(R.layout.bottom_action_sheet);
         setCancelable(true);
         setCanceledOnTouchOutside(true);
@@ -150,7 +150,7 @@ public class BottomActionSheet extends Dialog {
             holder.sheetItemView.setTextSize(16);
             holder.sheetItemView.setTextColor(itemTextColor);
             //需要动态设置item的高度
-            AbsListView.LayoutParams param = new AbsListView.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, DeviceSizeUtil.dp2px(ctx, 44));
+            AbsListView.LayoutParams param = new AbsListView.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, FloatHub.dp2px(ctx, 44));
             convertView.setLayoutParams(param);
             return convertView;
         }

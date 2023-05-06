@@ -19,8 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.utils.ColorUtil;
-import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
+import com.pengxh.androidx.lite.hub.FloatHub;
+import com.pengxh.androidx.lite.hub.IntHub;
 import com.pengxh.androidx.lite.utils.WeakReferenceHandler;
 
 /**
@@ -55,7 +55,7 @@ public class CircleProgressBar extends View {
         this.context = context;
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleProgressBar, defStyleAttr, 0);
         backgroundColor = a.getColor(R.styleable.CircleProgressBar_cpb_backgroundColor, Color.parseColor("#D3D3D3"));
-        foregroundColor = a.getColor(R.styleable.CircleProgressBar_cpb_foregroundColor, ColorUtil.convertColor(context,R.color.blue));
+        foregroundColor = a.getColor(R.styleable.CircleProgressBar_cpb_foregroundColor, IntHub.convertColor(context,R.color.blue));
         text = a.getString(R.styleable.CircleProgressBar_cpb_text);
         a.recycle();
         //初始化画笔
@@ -77,7 +77,7 @@ public class CircleProgressBar extends View {
         backgroundPaint = new Paint();
         backgroundPaint.setColor(backgroundColor);
         backgroundPaint.setStyle(Paint.Style.STROKE);
-        backgroundPaint.setStrokeWidth(DeviceSizeUtil.dp2px(context, 12));
+        backgroundPaint.setStrokeWidth(FloatHub.dp2px(context, 12));
         backgroundPaint.setStrokeCap(Paint.Cap.ROUND);//圆头
         backgroundPaint.setAntiAlias(true);
 
@@ -85,7 +85,7 @@ public class CircleProgressBar extends View {
         foregroundPaint = new Paint();
         foregroundPaint.setColor(foregroundColor);
         foregroundPaint.setStyle(Paint.Style.STROKE);
-        foregroundPaint.setStrokeWidth(DeviceSizeUtil.dp2px(context, 12));
+        foregroundPaint.setStrokeWidth(FloatHub.dp2px(context, 12));
         foregroundPaint.setStrokeCap(Paint.Cap.ROUND);//圆头
         foregroundPaint.setAntiAlias(true);
 
@@ -94,7 +94,7 @@ public class CircleProgressBar extends View {
         textPaint.setAntiAlias(true);
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setColor(Color.parseColor("#333333"));
-        textPaint.setTextSize(DeviceSizeUtil.sp2px(context, 14));
+        textPaint.setTextSize(FloatHub.sp2px(context, 14));
     }
 
     //计算出中心位置，便于定位
@@ -120,7 +120,7 @@ public class CircleProgressBar extends View {
             viewWidth = widthSpecSize;
         } else {
             // wrap_content
-            viewWidth = DeviceSizeUtil.dp2px(context, 150);
+            viewWidth = FloatHub.dp2px(context, 150);
         }
         // 获取高
         int viewHeight;
@@ -129,10 +129,10 @@ public class CircleProgressBar extends View {
             viewHeight = heightSpecSize;
         } else {
             // wrap_content
-            viewHeight = DeviceSizeUtil.dp2px(context, 150);
+            viewHeight = FloatHub.dp2px(context, 150);
         }
         //园半径等于View宽或者高的一半
-        this.radius = (viewWidth - DeviceSizeUtil.dp2px(context, 20)) >> 1;
+        this.radius = (viewWidth - FloatHub.dp2px(context, 20)) >> 1;
         setMeasuredDimension(viewWidth, viewHeight);
     }
 

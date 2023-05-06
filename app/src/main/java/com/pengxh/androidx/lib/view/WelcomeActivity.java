@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.pengxh.androidx.lite.utils.ContextUtil;
+import com.pengxh.androidx.lite.hub.ContextHub;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class WelcomeActivity extends AppCompatActivity implements EasyPermission
     }
 
     private void startMainActivity() {
-        ContextUtil.navigatePageTo(this, MainActivity.class);
+        ContextHub.navigatePageTo(this, MainActivity.class);
         finish();
     }
 

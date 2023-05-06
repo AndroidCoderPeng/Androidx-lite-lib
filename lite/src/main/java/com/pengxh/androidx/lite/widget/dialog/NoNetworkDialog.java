@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.utils.DialogLayoutParam;
+import com.pengxh.androidx.lite.hub.DialogHub;
 
 public class NoNetworkDialog extends Dialog {
 
@@ -42,7 +42,7 @@ public class NoNetworkDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DialogLayoutParam.resetParams(this, Gravity.CENTER, R.style.UserDefinedAnimation, 0.85f);
+        DialogHub.resetParams(this, Gravity.CENTER, R.style.UserDefinedAnimation, 0.85f);
         setContentView(R.layout.dialog_no_network);
         setCancelable(false);
         setCanceledOnTouchOutside(false);

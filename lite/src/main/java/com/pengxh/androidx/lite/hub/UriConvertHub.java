@@ -1,4 +1,4 @@
-package com.pengxh.androidx.lite.utils;
+package com.pengxh.androidx.lite.hub;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-public class UriConvert {
+public class UriConvertHub {
     public static String realFilePath(Context context, Uri uri) {
         String path = "";
         if (uri.getScheme().equals(ContentResolver.SCHEME_FILE)) {

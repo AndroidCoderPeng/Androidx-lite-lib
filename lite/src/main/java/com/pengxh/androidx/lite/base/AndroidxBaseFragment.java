@@ -38,6 +38,7 @@ public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragm
         }
         setupTopBarLayout();
         initData();
+        observeRequestState();
         initEvent();
         return viewBinding.getRoot();
     }
@@ -48,6 +49,11 @@ public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragm
      * 初始化默认数据
      */
     protected abstract void initData();
+
+    /**
+     * 数据请求状态监听
+     */
+    protected abstract void observeRequestState();
 
     /**
      * 初始化业务逻辑

@@ -24,9 +24,9 @@ public class RetrofitFactory {
         });
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS);
+                .connectTimeout(Constant.HTTP_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(Constant.HTTP_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(Constant.HTTP_TIMEOUT, TimeUnit.SECONDS);
         OkHttpClient httpClient = builder.addInterceptor(interceptor).build();
         return new Retrofit.Builder()
                 .baseUrl(httpConfig)

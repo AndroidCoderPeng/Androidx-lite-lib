@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--圆形头像框属性-->
-    <declare-styleable name="CircleImageView">
-        <attr name="border_width" format="dimension" />
-        <attr name="border_color" format="color" />
-    </declare-styleable>
-
     <declare-styleable name="CircleProgressBar">
         <!--进度条底色-->
         <attr name="cpb_backgroundColor" format="color" />
@@ -29,5 +23,12 @@
         <attr name="air_ring_background" format="color" />
         <attr name="air_ring_width" format="dimension" />
         <attr name="air_ring_radius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="SteeringWheelController">
+        <attr name="controller_backgroundColor" format="color" />
+        <attr name="controller_borderColor" format="color" />
+        <attr name="controller_outerCircleDiameter" format="integer" />
+        <attr name="controller_borderStroke" format="integer" />
     </declare-styleable>
 </resources>

@@ -7,13 +7,13 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.utils.DeviceSizeUtil;
+import com.pengxh.androidx.lite.hub.ContextHub;
 
 public class AudioPopupWindow {
     public static void create(Context context, IWindowListener listener) {
         View view = View.inflate(context, R.layout.popu_microphone, null);
-        int popWidth = (int) (DeviceSizeUtil.obtainScreenWidth(context) * 0.35);
-        int popHeight = (int) (DeviceSizeUtil.obtainScreenWidth(context) * 0.30);
+        int popWidth = (int) (ContextHub.getScreenWidth(context) * 0.30);
+        int popHeight = (int) (ContextHub.getScreenHeight(context) * 0.15);
         PopupWindow window = new PopupWindow(view, popWidth, popHeight, true);
         window.setAnimationStyle(R.style.PopupAnimation);
 

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/lib_dp_5"
+    app:cardCornerRadius="@dimen/lib_dp_10">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/lib_dialog_bg_color"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lib_dp_45"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="警告"
+            android:textColor="@color/lib_text_color"
+            android:textSize="@dimen/lib_sp_16" />
+
+        <TextView
+            android:id="@+id/dialogMessageView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/lib_dp_20"
+            android:paddingBottom="@dimen/lib_dp_15"
+            android:text="已在别的平台登录，当前设备已下线！"
+            android:textColor="@color/lib_text_color" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lib_px_1"
+            android:background="@color/lib_line_color" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lib_dp_45"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/dialogCancelButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/dialog_button_selector"
+                android:gravity="center"
+                android:text="直接退出"
+                android:textColor="@color/red"
+                android:textSize="@dimen/lib_sp_16" />
+
+            <View
+                android:layout_width="@dimen/lib_px_1"
+                android:layout_height="match_parent"
+                android:background="@color/lib_line_color" />
+
+            <Button
+                android:id="@+id/dialogConfirmButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/dialog_button_selector"
+                android:gravity="center"
+                android:text="重新登录"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/lib_sp_16" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

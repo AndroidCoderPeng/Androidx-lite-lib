@@ -1,14 +1,16 @@
-package com.pengxh.androidx.lite.utils;
+package com.pengxh.androidx.lite.hub;
 
 import android.text.TextUtils;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class TimeOrDateUtil {
+public class LongHub {
     private static SimpleDateFormat dateFormat;
 
     /**
@@ -45,24 +47,6 @@ public class TimeOrDateUtil {
     public static String timestampToTime(long millSeconds) {
         dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.CHINA);
         return dateFormat.format(new Date(millSeconds));
-    }
-
-    /**
-     * 时间转时间戳
-     */
-    public static long dateToTimestamp(String dateStr) {
-        try {
-            dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
-            Date date = dateFormat.parse(dateStr);
-            if (date != null) {
-                return date.getTime();
-            } else {
-                return 0;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     /**
@@ -129,5 +113,21 @@ public class TimeOrDateUtil {
             e.printStackTrace();
         }
         return true;
+    }
+
+    public static String formatFileSize(long size) {
+        String fileSize;
+        DecimalFormat df = new DecimalFormat("0.00");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        if (size < 1024) {
+            fileSize = df.format(size) + "B";
+        } else if (size < 1048576) {
+            fileSize = df.format(((double) size / 1024)) + "K";
+        } else if (size < 1073741824) {
+            fileSize = df.format(((double) size / 1048576)) + "M";
+        } else {
+            fileSize = df.format(((double) size / 1073741824)) + "G";
+        }
+        return fileSize;
     }
 }

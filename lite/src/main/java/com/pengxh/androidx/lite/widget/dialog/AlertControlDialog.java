@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.utils.DialogLayoutParam;
+import com.pengxh.androidx.lite.hub.DialogHub;
 
 
 /**
@@ -78,7 +78,7 @@ public class AlertControlDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DialogLayoutParam.resetParams(this, 0.8);
+        DialogHub.resetParams(this, 0.8);
         setContentView(R.layout.dialog_alert);
         setCancelable(false);
         setCanceledOnTouchOutside(false);

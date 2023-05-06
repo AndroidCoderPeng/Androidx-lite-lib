@@ -36,9 +36,5 @@
         </activity>
 
         <activity android:name=".view.MainActivity" />
-
-        <activity
-            android:name="com.pengxh.androidx.lite.activity.BigImageActivity"
-            android:theme="@style/Theme.BigImageActivity" />
     </application>
 </manifest>

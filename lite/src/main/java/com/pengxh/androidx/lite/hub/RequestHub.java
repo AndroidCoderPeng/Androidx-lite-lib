@@ -1,8 +1,9 @@
-package com.pengxh.androidx.lite.utils;
+package com.pengxh.androidx.lite.hub;
 
 import android.util.Log;
 
 import com.pengxh.androidx.lite.callback.OnHttpRequestListener;
+import com.pengxh.androidx.lite.utils.Constant;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,8 +20,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class HttpRequestUtil {
-    private static final String TAG = "HttpRequestHelper";
+public class RequestHub {
+    private static final String TAG = "RequestHub";
 
     public static void doRequest(Request request, OnHttpRequestListener listener) {
         Observable.create(new Observable.OnSubscribe<Response>() {
