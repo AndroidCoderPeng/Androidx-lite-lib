@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="@dimen/dp_100"
+    android:layout_marginHorizontal="@dimen/dp_5"
+    android:background="@drawable/bg_solid_layout_color_a_radius_5"
     android:orientation="horizontal"
-    android:paddingStart="10dp"
-    android:paddingTop="5dp"
-    android:paddingEnd="10dp"
-    android:paddingBottom="5dp">
+    android:padding="@dimen/dp_5">
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -17,11 +16,20 @@
             android:id="@+id/newsTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
+            android:layout_marginEnd="@dimen/dp_5"
             android:lines="3"
             android:text="包子铺 | 你们该知道的米兰时装周美包top10来啦"
             android:textColor="#000"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp_16" />
+
+        <ImageView
+            android:id="@+id/checkImageView"
+            android:layout_width="@dimen/pngSize"
+            android:layout_height="@dimen/pngSize"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:src="@drawable/tag_iv_selector" />
 
         <TextView
             android:id="@+id/newsSrc"
@@ -38,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="5dp"
+            android:layout_marginEnd="@dimen/dp_5"
             android:text="2020-02-24 14:39:04" />
     </RelativeLayout>
 

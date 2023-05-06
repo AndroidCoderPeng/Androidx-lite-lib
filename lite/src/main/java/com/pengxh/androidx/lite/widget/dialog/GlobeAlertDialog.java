@@ -30,7 +30,7 @@ public class GlobeAlertDialog extends DialogFragment {
         setStyle(STYLE_NO_TITLE, 0);
     }
 
-    interface OnDialogButtonClickListener {
+    public interface OnDialogButtonClickListener {
         void onConfirmClick();
 
         void onCancelClick();

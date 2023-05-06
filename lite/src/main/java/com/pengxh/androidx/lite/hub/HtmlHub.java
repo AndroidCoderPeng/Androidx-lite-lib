@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -24,6 +25,8 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class HtmlHub {
+    private static final String TAG = "HtmlHub";
+
     /**
      * 将html字符串中的图片加载出来 设置点击事件 然后TextView进行显示
      *
@@ -112,7 +115,11 @@ public class HtmlHub {
                 //查看大图
                 ArrayList<String> urls = new ArrayList<>();
                 urls.add(imageURL);
-                ContextHub.navigatePageTo(mActivity, bigImageActivity, 0, urls);
+                if (bigImageActivity == null) {
+                    Log.w(TAG, "ClickableImage onClick: ", new IllegalArgumentException("BigImageActivity not config"));
+                } else {
+                    ContextHub.navigatePageTo(mActivity, bigImageActivity, 0, urls);
+                }
             }
         }
     }
