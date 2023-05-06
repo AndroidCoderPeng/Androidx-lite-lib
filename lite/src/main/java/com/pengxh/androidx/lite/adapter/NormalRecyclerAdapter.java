@@ -47,15 +47,15 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
         });
     }
 
-    abstract void convertView(ViewHolder viewHolder, int position, T item);
+    public abstract void convertView(ViewHolder viewHolder, int position, T item);
 
     private OnItemClickedListener<T> itemClickedListener;
 
-    interface OnItemClickedListener<T> {
+    public interface OnItemClickedListener<T> {
         void onItemClicked(int position, T t);
     }
 
-    void setOnItemClickedListener(OnItemClickedListener<T> listener) {
+    public void setOnItemClickedListener(OnItemClickedListener<T> listener) {
         itemClickedListener = listener;
     }
 }

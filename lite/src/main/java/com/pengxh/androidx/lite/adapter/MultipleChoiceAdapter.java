@@ -64,15 +64,15 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
         });
     }
 
-    abstract void convertView(ViewHolder viewHolder, int position, T item);
+    public abstract void convertView(ViewHolder viewHolder, int position, T item);
 
     private OnItemCheckedListener<T> itemCheckedListener;
 
-    interface OnItemCheckedListener<T> {
+    public interface OnItemCheckedListener<T> {
         void onItemChecked(List<T> items);
     }
 
-    void setOnItemCheckedListener(OnItemCheckedListener<T> listener) {
+    public void setOnItemCheckedListener(OnItemCheckedListener<T> listener) {
         itemCheckedListener = listener;
     }
 }

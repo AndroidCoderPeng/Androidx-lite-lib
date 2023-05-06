@@ -4,6 +4,7 @@
     <color name="white">#FFFFFF</color>
     <color name="blue">#0000FF</color>
     <color name="red">#FF0000</color>
+    <color name="green">#FF09BB07</color>
 
     <color name="lib_dialog_bg_color">#F8F8F8</color>
     <color name="lib_text_color">#323232</color>

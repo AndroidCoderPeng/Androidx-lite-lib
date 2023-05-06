@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * 可以设置上下间距的RecyclerView分割线
  */
-class VerticalMarginItemDecoration extends RecyclerView.ItemDecoration {
+public class VerticalMarginItemDecoration extends RecyclerView.ItemDecoration {
 
     private final int topMargin;
     private final int bottomMargin;

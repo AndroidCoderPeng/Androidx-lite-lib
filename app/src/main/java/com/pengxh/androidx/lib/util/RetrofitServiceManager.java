@@ -13,7 +13,7 @@ public class RetrofitServiceManager {
             "https://way.jd.com", RetrofitService.class
     );
 
-    public static Observable<ResponseBody> obtainImageList(String channel, int start) {
-        return api.obtainImageList("e957ed7ad90436a57e604127d9d8fa32", channel, 15, start);
+    public static Observable<ResponseBody> getImageList(String channel, int start) {
+        return api.getImageList("e957ed7ad90436a57e604127d9d8fa32", channel, 15, start);
     }
 }

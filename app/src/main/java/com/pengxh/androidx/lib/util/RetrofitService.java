@@ -10,7 +10,7 @@ public interface RetrofitService {
      * https://way.jd.com/jisuapi/get?channel=头条&num=10&start=0&appkey=e957ed7ad90436a57e604127d9d8fa32
      */
     @GET("/jisuapi/get")
-    Observable<ResponseBody> obtainImageList(
+    Observable<ResponseBody> getImageList(
             @Query("appkey") String appkey,
             @Query("channel") String channel,
             @Query("num") int num,
