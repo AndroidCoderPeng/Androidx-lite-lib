@@ -12,6 +12,8 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 public class ViewHolder extends RecyclerView.ViewHolder {
 
     private final View convertView = itemView;
@@ -146,6 +148,21 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         View view = getView(idRes);
         if (view instanceof ImageView) {
             ((ImageView) view).setImageDrawable(drawable);
+        }
+        return this;
+    }
+
+    /**
+     * 设置ImageView显示图片
+     *
+     * @param idRes    控件ID
+     * @param imageUrl 图片网络地址
+     * @return holder
+     */
+    public ViewHolder setImageResource(@IdRes int idRes, String imageUrl) {
+        View view = getView(idRes);
+        if (view instanceof ImageView) {
+            Glide.with(convertView).load(imageUrl).into((ImageView) view);
         }
         return this;
     }

@@ -1,14 +1,12 @@
 package com.pengxh.androidx.lib.view;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 
-import com.bumptech.glide.Glide;
 import com.gyf.immersionbar.ImmersionBar;
 import com.pengxh.androidx.lib.R;
 import com.pengxh.androidx.lib.databinding.ActivityMainBinding;
@@ -26,7 +24,6 @@ import com.pengxh.androidx.lite.vm.LoadState;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
@@ -56,22 +53,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
                         if (Objects.equals(img, "") || img.endsWith(".gif")) {
                             viewHolder.setVisibility(R.id.newsPicture, View.GONE);
                         } else {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        Drawable drawable = Glide.with(context).load(img).submit().get();
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                viewHolder.setImageResource(R.id.newsPicture, drawable);
-                                            }
-                                        });
-                                    } catch (ExecutionException | InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }).start();
+                            viewHolder.setImageResource(R.id.newsPicture, img);
                         }
 
                         viewHolder.setText(R.id.newsTitle, item.getTitle())

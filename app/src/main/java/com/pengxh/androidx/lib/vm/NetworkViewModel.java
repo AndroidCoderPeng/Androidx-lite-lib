@@ -27,12 +27,12 @@ public class NetworkViewModel extends BaseViewModel {
         ObserverSubscriber.addSubscribe(dataObservable, new OnObserverCallback() {
             @Override
             public void onCompleted() {
-
+                loadState.setValue(LoadState.Success);
             }
 
             @Override
             public void onError(Throwable e) {
-
+                loadState.setValue(LoadState.Fail);
             }
 
             @Override
@@ -41,7 +41,6 @@ public class NetworkViewModel extends BaseViewModel {
                     String response = responseBody.string();
                     int responseCode = StringHelper.separateResponseCode(response);
                     if (responseCode == 10000) {
-                        loadState.setValue(LoadState.Success);
                         NewsDataModel resultModel = gson.fromJson(response, new TypeToken<NewsDataModel>() {
                         }.getType());
                         newsResultModel.setValue(resultModel);
