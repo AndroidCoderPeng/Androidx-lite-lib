@@ -38,7 +38,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
      * @param res 控件ID
      * @return 控件</ T>
      */
-    private <T extends View> T getView(@IdRes int res) {
+    public <T extends View> T getView(@IdRes int res) {
         View view = views.get(res);
         if (view == null) {
             view = convertView.findViewById(res);

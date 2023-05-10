@@ -20,24 +20,18 @@ import java.util.List;
 
 /**
  * 不可编辑图片适配器
+ * 仅支持 {@link android.widget.GridView}
  */
 public class ReadOnlyImageAdapter extends BaseAdapter {
 
     private final Context context;
     private final int screenWidth;
-    private final List<String> images = new ArrayList<>();
+    private List<String> images = new ArrayList<>();
 
-    public ReadOnlyImageAdapter(Context mContext) {
-        this.context = mContext;
+    public ReadOnlyImageAdapter(Context context, @Nullable List<String> images) {
+        this.context = context;
+        this.images = images;
         this.screenWidth = ContextHub.getScreenWidth(context);
-    }
-
-    public void setImageList(@Nullable List<String> imageUrlList) {
-        images.clear();
-        if (imageUrlList != null) {
-            images.addAll(imageUrlList);
-        }
-        notifyDataSetChanged();
     }
 
     @Override
@@ -59,7 +53,7 @@ public class ReadOnlyImageAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ItemViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_gridview_readonly, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_readonly_gv, null);
             holder = new ItemViewHolder();
             holder.imageView = convertView.findViewById(R.id.imageView);
             convertView.setTag(holder);
@@ -70,6 +64,7 @@ public class ReadOnlyImageAdapter extends BaseAdapter {
                 .load(images.get(position))
                 .apply(new RequestOptions().error(R.mipmap.load_image_error))
                 .into(holder.imageView);
+
         //动态设置图片高度，和图片宽度保持一致
         int padding = convertView.getPaddingLeft() + convertView.getPaddingRight();
         int imageSize = (screenWidth - padding) / 3;

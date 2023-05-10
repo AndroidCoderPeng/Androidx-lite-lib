@@ -23,8 +23,7 @@ import java.util.List;
 /**
  * 数量可编辑图片适配器
  */
-@SuppressLint("NotifyDataSetChanged")
-public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdapter.ItemViewHolder> {
+public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private static final String TAG = "EditableImageAdapter";
     private final Context context;
@@ -32,11 +31,13 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
     private final int screenWidth;
     private final float spacing;
     private final LayoutInflater layoutInflater;
-    private List<String> imageData = new ArrayList<>();
+    private List<String> images = new ArrayList<>();
 
     /**
-     * @param imageCountLimit 最多显示几张图片
-     * @param spacing         RecyclerView边距，左右外边距+ImageView内边距,单位dp
+     * 数量可编辑图片适配器
+     *
+     * @param imageCountLimit 最多显示几张图片，每行3张图片
+     * @param spacing         上下左右外边距，无需在 {@link androidx.recyclerview.widget.RecyclerView} 设置边距
      */
     public EditableImageAdapter(Context context, int imageCountLimit, float spacing) {
         this.context = context;
@@ -47,29 +48,33 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
     }
 
     public void setupImage(List<String> images) {
-        this.imageData = images;
-        notifyDataSetChanged();
+        this.images = images;
+        notifyItemRangeChanged(0, images.size());
     }
 
     public void deleteImage(int position) {
-        if (!imageData.isEmpty()) {
-            imageData.remove(position);
-            notifyDataSetChanged();
+        if (!images.isEmpty()) {
+            images.remove(position);
+            /**
+             * 发生变化的item数目
+             * */
+            notifyItemRangeRemoved(position, 1);
         }
     }
 
     @NonNull
     @Override
-    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ItemViewHolder(layoutInflater.inflate(R.layout.item_gridview_editable, parent, false));
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ViewHolder(layoutInflater.inflate(R.layout.item_editable_rv_g, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        configImageParams(holder.imageView, position);
-        if (position == getItemCount() - 1 && imageData.size() < imageCountLimit) {
-            holder.imageView.setImageResource(R.drawable.ic_add_pic);
-            holder.imageView.setOnClickListener(new View.OnClickListener() {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        ImageView imageView = holder.getView(R.id.imageView);
+        configImageParams(imageView, position);
+        if (position == getItemCount() - 1 && images.size() < imageCountLimit) {
+            imageView.setImageResource(R.drawable.ic_add_pic);
+            imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //添加图片
@@ -81,8 +86,8 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
                 }
             });
         } else {
-            Glide.with(context).load(imageData.get(position)).into(holder.imageView);
-            holder.imageView.setOnClickListener(new View.OnClickListener() {
+            Glide.with(context).load(images.get(position)).into(imageView);
+            imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // 点击操作，查看大图
@@ -90,11 +95,11 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
                         Log.e(TAG, "onClick: itemClickListener not init");
                         return;
                     }
-                    itemClickListener.onItemClick(position);
+                    itemClickListener.onItemClick(holder.getBindingAdapterPosition());
                 }
             });
             // 长按监听
-            holder.imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            imageView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     //长按删除
@@ -102,7 +107,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
                         Log.e(TAG, "onClick: itemClickListener not init");
                         return true;
                     }
-                    itemClickListener.onItemLongClick(v, position);
+                    itemClickListener.onItemLongClick(v, holder.getBindingAdapterPosition());
                     return true;
                 }
             });
@@ -110,24 +115,48 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
     }
 
     private void configImageParams(ImageView imageView, int position) {
-        int totalPadding = FloatHub.dp2px(context, spacing) * 4;
-        int imageSize = (screenWidth - totalPadding) / 3;
+        int temp = FloatHub.dp2px(context, spacing);
+        int imageSize = (screenWidth - temp * 3) / 3;
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageSize, imageSize);
-        if (position >= 3 && position <= 5) {
-            params.setMargins(0, FloatHub.dp2px(context, spacing), 0, FloatHub.dp2px(context, spacing));
-        } else {
-            params.setMargins(0, 0, 0, 0);
+        switch (position) {
+            case 0:
+                params.setMargins(temp, temp, temp >> 1, temp >> 1);
+                break;
+            case 1:
+                params.setMargins(temp >> 1, temp, temp >> 1, temp >> 1);
+                break;
+            case 2:
+                params.setMargins(temp >> 1, temp, temp, temp >> 1);
+                break;
+            case 3:
+                params.setMargins(temp, temp >> 1, temp >> 1, temp >> 1);
+                break;
+            case 4:
+                params.setMargins(temp >> 1, temp >> 1, temp >> 1, temp >> 1);
+                break;
+            case 5:
+                params.setMargins(temp >> 1, temp >> 1, temp, temp >> 1);
+                break;
+            case 6:
+                params.setMargins(temp, temp >> 1, temp >> 1, temp);
+                break;
+            case 7:
+                params.setMargins(temp >> 1, temp >> 1, temp >> 1, temp);
+                break;
+            case 8:
+                params.setMargins(temp >> 1, temp >> 1, temp, temp);
+                break;
         }
         imageView.setLayoutParams(params);
     }
 
     @Override
     public int getItemCount() {
-        if (imageData.size() >= imageCountLimit) {
+        if (images.size() >= imageCountLimit) {
             return imageCountLimit;
         } else {
-            return imageData.size() + 1;
+            return images.size() + 1;
         }
     }
 
@@ -143,14 +172,5 @@ public class EditableImageAdapter extends RecyclerView.Adapter<EditableImageAdap
         void onItemClick(int position);
 
         void onItemLongClick(View view, int position);
-    }
-
-    static class ItemViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView imageView;
-
-        private ItemViewHolder(View itemView) {
-            super(itemView);
-            imageView = itemView.findViewById(R.id.imageView);
-        }
     }
 }
