@@ -61,6 +61,18 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    public void setRefreshData(List<T> dataRows) {
+        this.dataRows.clear();
+        this.dataRows.addAll(dataRows);
+        notifyDataSetChanged();
+    }
+
+    public void setLoadMoreData(List<T> dataRows) {
+        this.dataRows.addAll(dataRows);
+        notifyItemRangeInserted(this.dataRows.size(), dataRows.size());
+    }
+
     public abstract void convertView(ViewHolder viewHolder, int position, T item);
 
     private OnItemCheckedListener<T> itemCheckedListener;
