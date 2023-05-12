@@ -192,7 +192,7 @@ public class ContextHub {
      * Dpi（dots per inch 像素密度）
      * Density 密度
      */
-    public static int getScreenDensity(Context context) {
+    public static Float getScreenDensity(Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(android.content.Context.WINDOW_SERVICE);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         Display display;
@@ -202,13 +202,13 @@ public class ContextHub {
             display = windowManager.getDefaultDisplay();
         }
         if (display == null) {
-            return 0;
+            return 0f;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return context.getResources().getConfiguration().densityDpi;
+            return context.getResources().getDisplayMetrics().density;
         } else {
             display.getMetrics(displayMetrics);
-            return (int) displayMetrics.density;
+            return displayMetrics.density;
         }
     }
 
