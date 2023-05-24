@@ -1,6 +1,7 @@
 package com.pengxh.androidx.lite.adapter;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.List;
  */
 public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
+    private static final String TAG = "NormalRecyclerAdapter";
     private final int xmlResource;
     private final List<T> dataRows;
 
@@ -42,6 +44,10 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (itemClickedListener == null) {
+                    Log.e(TAG, "onClick: itemClickListener not init");
+                    return;
+                }
                 itemClickedListener.onItemClicked(position, dataRows.get(position));
             }
         });
