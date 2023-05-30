@@ -1,6 +1,7 @@
 package com.pengxh.androidx.lite.adapter;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,11 @@ import java.util.List;
  */
 public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
+    private static final String TAG = "SingleChoiceAdapter";
     private final int xmlResource;
     private final List<T> dataRows;
     //选择的位置
-    private int selectedPosition = 0;
+    private int selectedPosition = -1;
 
     //临时记录上次选择的位置
     private int temp = -1;
@@ -49,13 +51,17 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (itemCheckedListener == null) {
+                    Log.e(TAG, "onClick: itemClickListener not init");
+                    return;
+                }
+
                 holder.itemView.setSelected(true);
                 temp = selectedPosition;
                 //设置新的位置
                 selectedPosition = holder.getLayoutPosition();
                 //更新旧位置
                 notifyItemChanged(temp);
-
                 itemCheckedListener.onItemChecked(position, dataRows.get(position));
             }
         });

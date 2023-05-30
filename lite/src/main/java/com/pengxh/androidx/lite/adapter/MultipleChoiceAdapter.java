@@ -1,6 +1,7 @@
 package com.pengxh.androidx.lite.adapter;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.util.Set;
  */
 public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
+    private static final String TAG = "MultipleChoiceAdapter";
     private final int xmlResource;
     private final List<T> dataRows;
     private final Set<Integer> multipleSelected = new HashSet<>();
@@ -49,6 +51,11 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (itemCheckedListener == null) {
+                    Log.e(TAG, "onClick: itemClickListener not init");
+                    return;
+                }
+
                 if (multipleSelected.contains(position)) {
                     multipleSelected.remove(position);
                     selectedItems.remove(dataRows.get(position));
@@ -58,7 +65,6 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
                     selectedItems.add(dataRows.get(position));
                     holder.itemView.setSelected(true);
                 }
-
                 itemCheckedListener.onItemChecked(selectedItems);
             }
         });
