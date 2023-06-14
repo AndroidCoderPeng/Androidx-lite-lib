@@ -32,7 +32,7 @@ public abstract class AndroidxBaseActivity<VB extends ViewBinding> extends AppCo
             }
             setContentView(viewBinding.getRoot());
             setupTopBarLayout();
-            initData();
+            initData(savedInstanceState);
             observeRequestState();
             initEvent();
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
@@ -48,7 +48,7 @@ public abstract class AndroidxBaseActivity<VB extends ViewBinding> extends AppCo
     /**
      * 初始化默认数据
      */
-    protected abstract void initData();
+    protected abstract void initData(@Nullable Bundle savedInstanceState);
 
     /**
      * 数据请求状态监听

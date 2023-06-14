@@ -1,5 +1,9 @@
 package com.pengxh.androidx.lib.view;
 
+import android.os.Bundle;
+
+import androidx.annotation.Nullable;
+
 import com.pengxh.androidx.lib.databinding.ActivityNewsDetailsBinding;
 import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
 import com.pengxh.androidx.lite.hub.ContextHub;
@@ -15,7 +19,7 @@ public class NewsDetailsActivity extends AndroidxBaseActivity<ActivityNewsDetail
     }
 
     @Override
-    protected void initData() {
+    protected void initData(@Nullable Bundle savedInstanceState) {
         ArrayList<String> params = getIntent().getStringArrayListExtra(Constant.INTENT_PARAM);
 
         viewBinding.newsTitle.setText(params.get(0));

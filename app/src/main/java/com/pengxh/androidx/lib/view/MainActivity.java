@@ -1,9 +1,11 @@
 package com.pengxh.androidx.lib.view;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -38,7 +40,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
     }
 
     @Override
-    protected void initData() {
+    protected void initData(@Nullable Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(this).get(NetworkViewModel.class);
         viewModel.getImageList("头条", 0);
         viewModel.newsResultModel.observe(this, new Observer<NewsDataModel>() {
