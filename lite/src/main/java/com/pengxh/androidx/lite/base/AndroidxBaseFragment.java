@@ -37,7 +37,7 @@ public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragm
             throw new NullPointerException();
         }
         setupTopBarLayout();
-        initData();
+        initData(savedInstanceState);
         observeRequestState();
         initEvent();
         return viewBinding.getRoot();
@@ -48,7 +48,7 @@ public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragm
     /**
      * 初始化默认数据
      */
-    protected abstract void initData();
+    protected abstract void initData(@Nullable Bundle savedInstanceState);
 
     /**
      * 数据请求状态监听
