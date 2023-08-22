@@ -1,6 +1,5 @@
 package com.pengxh.androidx.lib.view;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
@@ -20,15 +19,11 @@ import com.pengxh.androidx.lite.hub.IntHub;
 import com.pengxh.androidx.lite.utils.ImmerseStatusBarManager;
 import com.pengxh.androidx.lite.vm.LoadState;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     private static final String TAG = "MainActivity";
-    private final Context context = MainActivity.this;
-    private final List<String> recyclerViewImages = new ArrayList<>();
     private NetworkViewModel viewModel;
 
     @Override
@@ -55,9 +50,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
                             viewHolder.setImageResource(R.id.newsPicture, img);
                         }
 
-                        viewHolder.setText(R.id.newsTitle, item.getTitle())
-                                .setText(R.id.newsSrc, item.getSrc())
-                                .setText(R.id.newsTime, item.getTime());
+                        viewHolder.setText(R.id.newsTitle, item.getTitle()).setText(R.id.newsSrc, item.getSrc()).setText(R.id.newsTime, item.getTime());
                     }
                 };
                 viewBinding.recyclerView.setAdapter(singleChoiceAdapter);
@@ -74,45 +67,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
     protected void initEvent() {
-//        EditableImageAdapter imageAdapter = new EditableImageAdapter(this, 9, 2f);
-//        viewBinding.imageGridView.setAdapter(imageAdapter);
-//        imageAdapter.setOnItemClickListener(new EditableImageAdapter.OnItemClickListener() {
-//            @Override
-//            public void onAddImageClick() {
-//                PictureSelector.create(MainActivity.this)
-//                        .openGallery(SelectMimeType.ofImage())
-//                        .isGif(false)
-//                        .isMaxSelectEnabledMask(true)
-//                        .setFilterMinFileSize(100)
-//                        .setMaxSelectNum(9)
-//                        .isDisplayCamera(false)
-//                        .setImageEngine(GlideLoadEngine.get())
-//                        .forResult(new OnResultCallbackListener<LocalMedia>() {
-//                            @Override
-//                            public void onResult(ArrayList<LocalMedia> result) {
-//                                for (LocalMedia media : result) {
-//                                    recyclerViewImages.add(media.getRealPath());
-//                                }
-//                                imageAdapter.setupImage(recyclerViewImages);
-//                            }
-//
-//                            @Override
-//                            public void onCancel() {
-//
-//                            }
-//                        });
-//            }
-//
-//            @Override
-//            public void onItemClick(int position) {
-//
-//            }
-//
-//            @Override
-//            public void onItemLongClick(View view, int position) {
-//                imageAdapter.deleteImage(position);
-//            }
-//        });
+
     }
 
     @Override
