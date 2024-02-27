@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 
 public abstract class AndroidxBaseActivity<VB extends ViewBinding> extends AppCompatActivity {
 
-    protected VB viewBinding;
+    protected VB binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,13 +26,13 @@ public abstract class AndroidxBaseActivity<VB extends ViewBinding> extends AppCo
         Class<?> cls = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
         try {
             Method method = cls.getDeclaredMethod("inflate", LayoutInflater.class);
-            viewBinding = (VB) method.invoke(null, getLayoutInflater());
-            if (viewBinding == null) {
+            binding = (VB) method.invoke(null, getLayoutInflater());
+            if (binding == null) {
                 throw new NullPointerException();
             }
-            setContentView(viewBinding.getRoot());
+            setContentView(binding.getRoot());
             setupTopBarLayout();
-            initData(savedInstanceState);
+            initOnCreate(savedInstanceState);
             observeRequestState();
             initEvent();
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
@@ -48,7 +48,7 @@ public abstract class AndroidxBaseActivity<VB extends ViewBinding> extends AppCo
     /**
      * 初始化默认数据
      */
-    protected abstract void initData(@Nullable Bundle savedInstanceState);
+    protected abstract void initOnCreate(@Nullable Bundle savedInstanceState);
 
     /**
      * 数据请求状态监听
@@ -62,7 +62,7 @@ public abstract class AndroidxBaseActivity<VB extends ViewBinding> extends AppCo
 
     @Override
     protected void onDestroy() {
-        viewBinding = null;
+        binding = null;
         super.onDestroy();
     }
 }

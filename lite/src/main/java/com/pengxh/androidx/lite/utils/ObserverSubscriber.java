@@ -1,4 +1,4 @@
-package com.pengxh.androidx.lite.vm;
+package com.pengxh.androidx.lite.utils;
 
 import com.pengxh.androidx.lite.callback.OnObserverCallback;
 
@@ -12,21 +12,21 @@ import rx.schedulers.Schedulers;
  * 同比Kotlin的ViewModel扩展函数
  */
 public class ObserverSubscriber {
-    public static void addSubscribe(Observable<ResponseBody> observable, OnObserverCallback observerCallback) {
+    public static void addSubscribe(Observable<ResponseBody> observable, OnObserverCallback callback) {
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
             @Override
             public void onCompleted() {
-                observerCallback.onCompleted();
+                callback.onCompleted();
             }
 
             @Override
             public void onError(Throwable e) {
-                observerCallback.onError(e);
+                callback.onError(e);
             }
 
             @Override
             public void onNext(ResponseBody responseBody) {
-                observerCallback.onNext(responseBody);
+                callback.onNext(responseBody);
             }
         });
     }

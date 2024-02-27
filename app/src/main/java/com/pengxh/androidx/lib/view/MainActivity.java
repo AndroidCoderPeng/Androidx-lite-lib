@@ -19,7 +19,7 @@ import com.pengxh.androidx.lite.adapter.ViewHolder;
 import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
 import com.pengxh.androidx.lite.hub.IntHub;
 import com.pengxh.androidx.lite.utils.ImmerseStatusBarManager;
-import com.pengxh.androidx.lite.vm.LoadState;
+import com.pengxh.androidx.lite.utils.LoadState;
 
 import java.util.Objects;
 
@@ -35,7 +35,22 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
     }
 
     @Override
-    protected void initData(@Nullable Bundle savedInstanceState) {
+    protected void initOnCreate(@Nullable Bundle savedInstanceState) {
+//        new HttpRequestHub.Builder()
+//                .setRequestTarget("http://192.168.177.213:8080/secret/list")
+//                .setOnHttpRequestListener(new HttpRequestHub.OnHttpRequestListener() {
+//                    @Override
+//                    public void onSuccess(String result) {
+//                        Log.d(TAG, "onSuccess: " + result);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Throwable throwable) {
+//
+//                    }
+//                }).build().start();
+
+
         viewModel = new ViewModelProvider(this).get(NetworkViewModel.class);
         viewModel.getImageList("头条", 0);
         viewModel.newsResultModel.observe(this, new Observer<NewsDataModel>() {
@@ -55,7 +70,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
                         viewHolder.setText(R.id.newsTitle, item.getTitle()).setText(R.id.newsSrc, item.getSrc()).setText(R.id.newsTime, item.getTime());
                     }
                 };
-                viewBinding.recyclerView.setAdapter(singleChoiceAdapter);
+                binding.recyclerView.setAdapter(singleChoiceAdapter);
                 singleChoiceAdapter.setOnItemCheckedListener(new SingleChoiceAdapter.OnItemCheckedListener<NewsDataModel.X.ResultModel.ListModel>() {
                     @Override
                     public void onItemChecked(int position, NewsDataModel.X.ResultModel.ListModel listModel) {

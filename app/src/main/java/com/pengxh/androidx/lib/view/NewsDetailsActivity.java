@@ -19,15 +19,15 @@ public class NewsDetailsActivity extends AndroidxBaseActivity<ActivityNewsDetail
     }
 
     @Override
-    protected void initData(@Nullable Bundle savedInstanceState) {
+    protected void initOnCreate(@Nullable Bundle savedInstanceState) {
         ArrayList<String> params = getIntent().getStringArrayListExtra(Constant.INTENT_PARAM);
 
-        viewBinding.newsTitle.setText(params.get(0));
-        viewBinding.newsSrc.setText(params.get(1));
-        viewBinding.newsTime.setText(params.get(2));
+        binding.newsTitle.setText(params.get(0));
+        binding.newsSrc.setText(params.get(1));
+        binding.newsTime.setText(params.get(2));
 
         HtmlHub.setTextFromHtml(this,
-                viewBinding.newsContent,
+                binding.newsContent,
                 params.get(3),
                 ContextHub.getScreenWidth(this),
                 0,

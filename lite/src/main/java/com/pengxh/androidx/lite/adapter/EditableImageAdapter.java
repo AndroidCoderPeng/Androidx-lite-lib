@@ -39,7 +39,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
      * @param imageCountLimit 最多显示几张图片，每行3张图片
      * @param spacing         上下左右外边距，无需在 {@link androidx.recyclerview.widget.RecyclerView} 设置边距
      */
-    public EditableImageAdapter(Context context, int imageCountLimit, float spacing) {
+    public EditableImageAdapter(Context context, int imageCountLimit, int spacing) {
         this.context = context;
         this.imageCountLimit = imageCountLimit;
         this.spacing = spacing;

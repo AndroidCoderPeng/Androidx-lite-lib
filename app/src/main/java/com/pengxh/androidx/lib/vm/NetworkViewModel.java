@@ -7,10 +7,10 @@ import com.google.gson.reflect.TypeToken;
 import com.pengxh.androidx.lib.model.NewsDataModel;
 import com.pengxh.androidx.lib.util.RetrofitServiceManager;
 import com.pengxh.androidx.lib.util.StringHelper;
+import com.pengxh.androidx.lite.base.BaseViewModel;
 import com.pengxh.androidx.lite.callback.OnObserverCallback;
-import com.pengxh.androidx.lite.vm.BaseViewModel;
-import com.pengxh.androidx.lite.vm.LoadState;
-import com.pengxh.androidx.lite.vm.ObserverSubscriber;
+import com.pengxh.androidx.lite.utils.LoadState;
+import com.pengxh.androidx.lite.utils.ObserverSubscriber;
 
 import java.io.IOException;
 

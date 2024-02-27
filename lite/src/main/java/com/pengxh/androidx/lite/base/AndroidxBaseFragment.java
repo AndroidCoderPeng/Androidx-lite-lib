@@ -17,7 +17,15 @@ import java.lang.reflect.Type;
 
 public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragment {
 
-    protected VB viewBinding;
+    private VB _binding;
+
+    public VB getBinding() {
+        return _binding;
+    }
+
+    public void setBinding(VB _binding) {
+        this._binding = _binding;
+    }
 
     @Nullable
     @Override
@@ -29,18 +37,24 @@ public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragm
         Class<?> cls = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
         try {
             Method method = cls.getDeclaredMethod("inflate", LayoutInflater.class, ViewGroup.class, boolean.class);
-            viewBinding = (VB) method.invoke(null, getLayoutInflater(), container, false);
+            _binding = (VB) method.invoke(null, getLayoutInflater(), container, false);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        if (viewBinding == null) {
+        if (_binding == null) {
             throw new NullPointerException();
         }
+        return _binding.getRoot();
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initOnCreate(savedInstanceState);
         setupTopBarLayout();
-        initData(savedInstanceState);
         observeRequestState();
         initEvent();
-        return viewBinding.getRoot();
     }
 
     protected abstract void setupTopBarLayout();
@@ -48,7 +62,7 @@ public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragm
     /**
      * 初始化默认数据
      */
-    protected abstract void initData(@Nullable Bundle savedInstanceState);
+    protected abstract void initOnCreate(@Nullable Bundle savedInstanceState);
 
     /**
      * 数据请求状态监听
@@ -62,7 +76,7 @@ public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragm
 
     @Override
     public void onDestroyView() {
-        viewBinding = null;
+        setBinding(null);
         super.onDestroyView();
     }
 }
