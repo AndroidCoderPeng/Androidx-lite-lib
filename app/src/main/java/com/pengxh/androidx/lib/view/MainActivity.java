@@ -1,6 +1,7 @@
 package com.pengxh.androidx.lib.view;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
@@ -18,9 +19,11 @@ import com.pengxh.androidx.lite.adapter.SingleChoiceAdapter;
 import com.pengxh.androidx.lite.adapter.ViewHolder;
 import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
 import com.pengxh.androidx.lite.hub.IntHub;
+import com.pengxh.androidx.lite.utils.FileDownloadManager;
 import com.pengxh.androidx.lite.utils.ImmerseStatusBarManager;
 import com.pengxh.androidx.lite.utils.LoadState;
 
+import java.io.File;
 import java.util.Objects;
 
 public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
@@ -36,19 +39,30 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
     protected void initOnCreate(@Nullable Bundle savedInstanceState) {
-//        new HttpRequestHub.Builder()
-//                .setRequestTarget("http://192.168.177.213:8080/secret/list")
-//                .setOnHttpRequestListener(new HttpRequestHub.OnHttpRequestListener() {
-//                    @Override
-//                    public void onSuccess(String result) {
-//                        Log.d(TAG, "onSuccess: " + result);
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Throwable throwable) {
-//
-//                    }
-//                }).build().start();
+        File downloadDir = new File(this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "");
+        if (!downloadDir.exists()) {
+            downloadDir.mkdir();
+        }
+        new FileDownloadManager.Builder()
+                .setDownloadFileSource("http://111.198.10.15:21709/ems/xls/marker1.xls")
+                .setFileSuffix(".xls")
+                .setFileSaveDirectory(downloadDir)
+                .setOnFileDownloadListener(new FileDownloadManager.OnFileDownloadListener() {
+                    @Override
+                    public void onProgressChanged(long progress) {
+                        Log.d(TAG, "onProgressChanged: " + progress);
+                    }
+
+                    @Override
+                    public void onDownloadEnd(File file) {
+                        Log.d(TAG, "onDownloadEnd: " + file.getAbsolutePath());
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+
+                    }
+                }).build().start();
 
 
         viewModel = new ViewModelProvider(this).get(NetworkViewModel.class);

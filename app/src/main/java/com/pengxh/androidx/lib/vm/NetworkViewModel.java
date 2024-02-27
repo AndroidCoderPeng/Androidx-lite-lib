@@ -8,7 +8,6 @@ import com.pengxh.androidx.lib.model.NewsDataModel;
 import com.pengxh.androidx.lib.util.RetrofitServiceManager;
 import com.pengxh.androidx.lib.util.StringHelper;
 import com.pengxh.androidx.lite.base.BaseViewModel;
-import com.pengxh.androidx.lite.callback.OnObserverCallback;
 import com.pengxh.androidx.lite.utils.LoadState;
 import com.pengxh.androidx.lite.utils.ObserverSubscriber;
 
@@ -24,7 +23,7 @@ public class NetworkViewModel extends BaseViewModel {
     public void getImageList(String channel, int start) {
         loadState.setValue(LoadState.Loading);
         Observable<ResponseBody> dataObservable = RetrofitServiceManager.getImageList(channel, start);
-        ObserverSubscriber.addSubscribe(dataObservable, new OnObserverCallback() {
+        ObserverSubscriber.addSubscribe(dataObservable, new ObserverSubscriber.OnObserverCallback() {
             @Override
             public void onCompleted() {
                 loadState.setValue(LoadState.Success);

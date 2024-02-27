@@ -1,7 +1,5 @@
 package com.pengxh.androidx.lite.utils;
 
-import com.pengxh.androidx.lite.callback.OnObserverCallback;
-
 import okhttp3.ResponseBody;
 import rx.Observable;
 import rx.Observer;
@@ -29,5 +27,13 @@ public class ObserverSubscriber {
                 callback.onNext(responseBody);
             }
         });
+    }
+
+    public interface OnObserverCallback {
+        void onCompleted();
+
+        void onError(Throwable e);
+
+        void onNext(ResponseBody responseBody);
     }
 }

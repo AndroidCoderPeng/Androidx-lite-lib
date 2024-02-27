@@ -1,9 +1,7 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.utils;
 
 import android.text.TextUtils;
 import android.util.Log;
-
-import com.pengxh.androidx.lite.utils.Constant;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import rx.Observable;
 import rx.Observer;
@@ -21,7 +20,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class HttpRequestHub {
+public class HttpRequestManager {
     private static final String TAG = "HttpRequestHub";
     private final String url;
     private final OnHttpRequestListener listener;
@@ -46,12 +45,12 @@ public class HttpRequestHub {
             return this;
         }
 
-        public HttpRequestHub build() {
-            return new HttpRequestHub(this);
+        public HttpRequestManager build() {
+            return new HttpRequestManager(this);
         }
     }
 
-    private HttpRequestHub(Builder builder) {
+    private HttpRequestManager(Builder builder) {
         this.url = builder.url;
         this.listener = builder.listener;
     }
@@ -107,8 +106,9 @@ public class HttpRequestHub {
                     listener.onFailure(new NullPointerException());
                 } else {
                     try {
-                        if (response.body() != null) {
-                            listener.onSuccess(response.body().string());
+                        ResponseBody responseBody = response.body();
+                        if (responseBody != null) {
+                            listener.onSuccess(responseBody.string());
                         } else {
                             listener.onFailure(new NullPointerException());
                         }
