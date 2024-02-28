@@ -22,12 +22,25 @@ import rx.schedulers.Schedulers;
 
 public class HttpRequestManager {
     private static final String TAG = "HttpRequestHub";
+    private final String key;
+    private final String value;
     private final String url;
     private final OnHttpRequestListener listener;
 
     public static class Builder {
+        private String key;
+        private String value;
         private String url;
         private OnHttpRequestListener listener;
+
+        /**
+         * 设置网络请求鉴权
+         */
+        public Builder setAuthentication(String key, String value) {
+            this.key = key;
+            this.value = value;
+            return this;
+        }
 
         /**
          * 设置网络请求接口地址
@@ -51,6 +64,8 @@ public class HttpRequestManager {
     }
 
     private HttpRequestManager(Builder builder) {
+        this.key = builder.key;
+        this.value = builder.value;
         this.url = builder.url;
         this.listener = builder.listener;
     }
@@ -65,7 +80,7 @@ public class HttpRequestManager {
         }
 
         //构建Request
-        Request request = new Request.Builder().url(url).get().build();
+        Request request = new Request.Builder().addHeader(key, value).url(url).get().build();
         Observable.create(new Observable.OnSubscribe<Response>() {
             @Override
             public void call(Subscriber<? super Response> subscriber) {
