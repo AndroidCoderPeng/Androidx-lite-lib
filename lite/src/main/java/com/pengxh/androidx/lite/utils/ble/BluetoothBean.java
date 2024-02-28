@@ -2,11 +2,11 @@ package com.pengxh.androidx.lite.utils.ble;
 
 import android.bluetooth.BluetoothDevice;
 
-public class BlueToothBean {
+public class BluetoothBean {
     private BluetoothDevice bluetoothDevice;  //蓝牙设备
     private int rssi;  //蓝牙信号
 
-    public BlueToothBean(BluetoothDevice bluetoothDevice, int rssi) {
+    public BluetoothBean(BluetoothDevice bluetoothDevice, int rssi) {
         this.bluetoothDevice = bluetoothDevice;
         this.rssi = rssi;
     }

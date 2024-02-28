@@ -1,5 +1,10 @@
 package com.pengxh.androidx.lite.utils;
 
+import com.pengxh.androidx.lite.R;
+
+import java.util.Arrays;
+import java.util.List;
+
 public class Constant {
     /**
      * 广播接收者消息Key
@@ -44,4 +49,11 @@ public class Constant {
     public static final int RECEIVE_FAILURE = 28;
     public static final int DISCOVERY_DEVICE = 29;
     public static final int DISCOVERY_OUT_TIME = 30;
+
+    /**
+     * 录音动画图标
+     */
+    public static List<Integer> AUDIO_DRAWABLES = Arrays.asList(
+            R.drawable.ic_audio_icon1, R.drawable.ic_audio_icon2, R.drawable.ic_audio_icon3
+    );
 }

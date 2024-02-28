@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import com.pengxh.androidx.lib.databinding.ActivityNewsDetailsBinding;
 import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
 import com.pengxh.androidx.lite.hub.ContextHub;
-import com.pengxh.androidx.lite.hub.HtmlHub;
 import com.pengxh.androidx.lite.utils.Constant;
 
 import java.util.ArrayList;

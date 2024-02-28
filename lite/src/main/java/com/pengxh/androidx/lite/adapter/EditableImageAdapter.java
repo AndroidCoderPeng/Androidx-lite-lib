@@ -2,7 +2,6 @@ package com.pengxh.androidx.lite.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.pengxh.androidx.lite.R;
 import com.pengxh.androidx.lite.hub.ContextHub;
-import com.pengxh.androidx.lite.hub.FloatHub;
+import com.pengxh.androidx.lite.hub.IntHub;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
     private final Context context;
     private final int imageCountLimit;
     private final int screenWidth;
-    private final float spacing;
+    private final int spacing;
     private final LayoutInflater layoutInflater;
     private List<String> images = new ArrayList<>();
 
@@ -79,7 +78,6 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
                 public void onClick(View v) {
                     //添加图片
                     if (itemClickListener == null) {
-                        Log.e(TAG, "onClick: itemClickListener not init");
                         return;
                     }
                     itemClickListener.onAddImageClick();
@@ -92,7 +90,6 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
                 public void onClick(View v) {
                     // 点击操作，查看大图
                     if (itemClickListener == null) {
-                        Log.e(TAG, "onClick: itemClickListener not init");
                         return;
                     }
                     itemClickListener.onItemClick(holder.getBindingAdapterPosition());
@@ -104,7 +101,6 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
                 public boolean onLongClick(View v) {
                     //长按删除
                     if (itemClickListener == null) {
-                        Log.e(TAG, "onClick: itemClickListener not init");
                         return true;
                     }
                     itemClickListener.onItemLongClick(v, holder.getBindingAdapterPosition());
@@ -115,7 +111,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     private void configImageParams(ImageView imageView, int position) {
-        int temp = FloatHub.dp2px(context, spacing);
+        int temp = IntHub.dp2px(context, spacing);
         int imageSize = (screenWidth - temp * 3) / 3;
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageSize, imageSize);

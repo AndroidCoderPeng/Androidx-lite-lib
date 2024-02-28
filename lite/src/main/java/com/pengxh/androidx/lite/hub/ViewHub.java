@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.view.View;
 
 public class ViewHub {
-
     /**
      * View转Bitmap
      */

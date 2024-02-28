@@ -5,21 +5,38 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Base64;
-import android.view.Gravity;
 
 import androidx.annotation.ColorInt;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
  * Bitmap 工具相关
  */
 public class BitmapHub {
+    /**
+     * 保存图片，不压缩
+     */
+    public static void saveImage(Bitmap bitmap, String imagePath) {
+        try {
+            File imageFile = new File(imagePath);
+            FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 旋转图片
      */
@@ -33,60 +50,59 @@ public class BitmapHub {
     /**
      * 获取图片base64编码
      */
-    public static String imageToBase64(Bitmap bitmap) {
-        if (bitmap == null) {
-            return null;
-        }
+    public static String toBase64(Bitmap bitmap) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);//压缩质量
-
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            byte[] bitmapBytes = outputStream.toByteArray();
             outputStream.flush();
             outputStream.close();
-
-            byte[] bitmapBytes = outputStream.toByteArray();
-            String result = Base64.encodeToString(bitmapBytes, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
-            return result.replace("-", "+")
-                    .replace("_", "/");
+            return Base64.encodeToString(bitmapBytes, Base64.DEFAULT);
         } catch (IOException e) {
-            return null;
+            e.printStackTrace();
         }
+        return "";
     }
 
     /**
      * 圆形或者圆角图片
      */
-    public static Drawable createRoundDrawable(Context context, Bitmap bitmap, int borderWidth, @ColorInt int color) {
-        //原图宽度
-        int bitmapWidth = bitmap.getWidth();
-        //原图高度
-        int bitmapHeight = bitmap.getHeight();
+    public static Bitmap createRoundDrawable(Context context, Bitmap bitmap, int borderStroke, @ColorInt int color) {
+        //转换为正方形后的宽高。以最短边为正方形边长，也是圆形图像的直径
+        int squareBitmapBorderLength = Math.min(bitmap.getWidth(), bitmap.getHeight());
 
-        //转换为正方形后的宽高
-        int bitmapSquareWidth = Math.min(bitmapWidth, bitmapHeight);
-
-        //最终图像的宽高
-        int newBitmapSquareWidth = bitmapSquareWidth + borderWidth;
-
-        Bitmap roundedBitmap = Bitmap.createBitmap(newBitmapSquareWidth, newBitmapSquareWidth, Bitmap.Config.ARGB_8888);
+        Bitmap roundedBitmap = Bitmap.createBitmap(
+                squareBitmapBorderLength, squareBitmapBorderLength, Bitmap.Config.ARGB_8888
+        );
         Canvas canvas = new Canvas(roundedBitmap);
-        int x = borderWidth + bitmapSquareWidth - bitmapWidth;
-        int y = borderWidth + bitmapSquareWidth - bitmapHeight;
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        //清屏
+        canvas.drawARGB(0, 0, 0, 0);
+        //画圆角
+        Rect rect = new Rect(0, 0, squareBitmapBorderLength, squareBitmapBorderLength);
+        RectF rectF = new RectF(rect);
+        canvas.drawRoundRect(
+                rectF, squareBitmapBorderLength / 2f, squareBitmapBorderLength / 2f, paint
+        );
 
-        //裁剪后图像,注意X,Y要除以2 来进行一个中心裁剪
-        canvas.drawBitmap(bitmap, x >> 1, y >> 1, null);
+        // 取两层绘制，显示上层
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
         Paint borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setAntiAlias(true);
-        borderPaint.setStrokeWidth(borderWidth);
+        borderPaint.setStrokeWidth(FloatHub.dp2px(context, borderStroke));
         borderPaint.setColor(color);
 
         //添加边框
-        canvas.drawCircle(canvas.getWidth() >> 1, canvas.getWidth() >> 1, newBitmapSquareWidth >> 1, borderPaint);
-
-        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), roundedBitmap);
-        roundedBitmapDrawable.setGravity(Gravity.CENTER);
-        roundedBitmapDrawable.setCircular(true);
-        return roundedBitmapDrawable;
+        canvas.drawCircle(
+                squareBitmapBorderLength / 2f,
+                squareBitmapBorderLength / 2f,
+                (squareBitmapBorderLength - FloatHub.dp2px(context, borderStroke)) / 2f,
+                borderPaint
+        );
+        return roundedBitmap;
     }
 }

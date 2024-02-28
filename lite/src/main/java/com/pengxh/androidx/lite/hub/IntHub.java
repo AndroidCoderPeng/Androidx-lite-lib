@@ -3,11 +3,14 @@ package com.pengxh.androidx.lite.hub;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Random;
 
 public class IntHub {
@@ -23,6 +26,17 @@ public class IntHub {
     }
 
     /**
+     * 小于10首位补〇
+     */
+    public static String appendZero(int value) {
+        if (value < 10) {
+            return "0" + value;
+        } else {
+            return String.valueOf(value);
+        }
+    }
+
+    /**
      * 获取xml颜色值
      */
     public static int convertColor(Context context, @ColorRes int res) {
@@ -34,5 +48,37 @@ public class IntHub {
      */
     public static Drawable convertDrawable(Context context, @DrawableRes int res) {
         return ContextCompat.getDrawable(context, res);
+    }
+
+    private static final DecimalFormat decimalFormat = new DecimalFormat("#");
+
+    /**
+     * px转dp
+     */
+    public static int px2dp(Context context, int value) {
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+        String result = decimalFormat.format(value / ContextHub.getScreenDensity(context));
+        return Integer.parseInt(result);
+    }
+
+    /**
+     * dp转px
+     */
+    public static int dp2px(Context context, int value) {
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+        String result = decimalFormat.format(value * ContextHub.getScreenDensity(context));
+        return Integer.parseInt(result);
+    }
+
+    /**
+     * sp转px
+     */
+    public static int sp2px(Context context, int value) {
+        float floatValue = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_SP, value, context.getResources().getDisplayMetrics()
+        );
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+        String result = decimalFormat.format(floatValue);
+        return Integer.parseInt(result);
     }
 }

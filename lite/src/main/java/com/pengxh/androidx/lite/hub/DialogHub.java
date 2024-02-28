@@ -17,7 +17,11 @@ public class DialogHub {
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         window.getDecorView().setBackgroundColor(Color.TRANSPARENT);
         WindowManager.LayoutParams params = window.getAttributes();
-        params.width = (int) (ContextHub.getScreenWidth(dialog.getContext()) * ratio);
+        double r = ratio;
+        if (r >= 1) {
+            r = 1f;
+        }
+        params.width = (int) (ContextHub.getScreenWidth(dialog.getContext()) * r);
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(params);
     }
@@ -33,7 +37,11 @@ public class DialogHub {
         //设置Dialog出现的动画
         window.setWindowAnimations(resId);
         WindowManager.LayoutParams params = window.getAttributes();
-        params.width = (int) (ContextHub.getScreenWidth(dialog.getContext()) * ratio);
+        double r = ratio;
+        if (r >= 1) {
+            r = 1f;
+        }
+        params.width = (int) (ContextHub.getScreenWidth(dialog.getContext()) * r);
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(params);
     }

@@ -15,7 +15,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.pengxh.androidx.lite.R;
 import com.pengxh.androidx.lite.hub.ContextHub;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +25,7 @@ public class ReadOnlyImageAdapter extends BaseAdapter {
 
     private final Context context;
     private final int screenWidth;
-    private List<String> images = new ArrayList<>();
+    private List<String> images;
 
     public ReadOnlyImageAdapter(Context context, @Nullable List<String> images) {
         this.context = context;

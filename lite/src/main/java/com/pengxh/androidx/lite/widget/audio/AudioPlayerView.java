@@ -2,165 +2,138 @@ package com.pengxh.androidx.lite.widget.audio;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.media.AsyncPlayer;
+import android.media.AudioAttributes;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
+import android.os.CountDownTimer;
 import android.os.Handler;
-import android.text.TextUtils;
+import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.pengxh.androidx.lite.R;
+import com.pengxh.androidx.lite.hub.IntHub;
+import com.pengxh.androidx.lite.utils.Constant;
+import com.pengxh.androidx.lite.utils.WeakReferenceHandler;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.IOException;
 
-public class AudioPlayerView extends AppCompatTextView {
+public class AudioPlayerView extends AppCompatTextView implements Handler.Callback, View.OnClickListener {
 
+    private static final String TAG = "AudioPlayerView";
+    private final WeakReferenceHandler weakReferenceHandler = new WeakReferenceHandler(this);
+    private final AsyncPlayer asyncPlayer = new AsyncPlayer(TAG);
+    private final AudioAttributes audioAttributes = new AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+            .build();
     private final Context context;
-    private static final int[] drawables = new int[]{R.drawable.ic_audio_icon1, R.drawable.ic_audio_icon2, R.drawable.ic_audio_icon3};
-    private MediaPlayer mediaPlayer;
-    /**
-     * 在非初始化状态下调用setDataSource  会抛出IllegalStateException异常
-     */
-    private boolean hasPrepared = false;
-    private String mUrl;
-    private int index = 0;
-    private Handler audioAnimationHandler;
-    private Runnable animationRunnable;
+    private int index;
+    private boolean isPlaying = false;
+    private long duration = 0L;
+    private File file;
 
-    public AudioPlayerView(Context context, AttributeSet attrs) {
+    @Override
+    public boolean handleMessage(@NonNull Message msg) {
+        return true;
+    }
+
+    public AudioPlayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        initMediaPlayer();
+        setOnClickListener(this);
     }
 
-    private void initMediaPlayer() {
-        try {
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        } catch (Exception e) {
-            Log.e("mediaPlayer", " init error", e);
-        }
-        if (mediaPlayer != null) {
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    hasPrepared = true;
-                    setText(getAudioDuration());
-                }
-            });
-            mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                @Override
-                public boolean onError(MediaPlayer mp, int what, int extra) {
-                    mp.reset();
-                    return false;
-                }
-            });
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    stopAnimation();
-                }
-            });
-        }
-        setViewClick();
-    }
-
-    public String getAudioDuration() {
-        int duration = mediaPlayer.getDuration();
-        if (duration == -1) {
-            return "";
+    public void setAudioSource(File file) throws IOException {
+        this.file = file;
+        //获取音频时长
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        FileInputStream inputStream = new FileInputStream(file);
+        FileDescriptor fileDescriptor = inputStream.getFD();
+        mmr.setDataSource(fileDescriptor);
+        String time = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        if (time == null) {
+            duration = 0L;
         } else {
-            int sec = duration / 1000;
-            int m = sec / 60;
-            int s = sec % 60;
-            return m + ":" + s;
+            duration = Long.parseLong(time);
         }
+
+        //格式化时长
+        long sec = duration / 1000;
+        int m = Integer.parseInt(IntHub.appendZero((int) (sec / 60)));
+        int s = Integer.parseInt(IntHub.appendZero((int) (sec % 60)));
+        setText(m + ":" + s);
+        mmr.release();
     }
 
-    public void setAudioUrl(String url) {
-        this.mUrl = url;
-        try {
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.prepare();
-        } catch (IOException | IllegalStateException e) {
-            Log.e("mediaPlayer", " set dataSource error", e);
-        }
-    }
+    @Override
+    public void onClick(View v) {
+        if (isPlaying) {
+            asyncPlayer.stop();
+            stopAnimation();
+            isPlaying = false;
+        } else {
+            asyncPlayer.play(context, Uri.fromFile(file), false, audioAttributes);
+            startAnimation();
+            isPlaying = true;
+            /**
+             * 倒计时，判断音频是否播放完毕
+             *
+             * AsyncPlayer是MediaPlayer的简单异步封装，简单到只提供播放和停止API，所以需要自己监听播放是否完毕
+             * */
+            new CountDownTimer(duration, 1000) {
 
-    /**
-     * 用于需要设置不同的dataSource
-     * 二次setDataSource的时候需要reset 将MediaPlayer恢复到Initialized状态
-     *
-     * @param url
-     */
-    public void resetUrl(String url) {
-        if (TextUtils.isEmpty(mUrl) || hasPrepared) {
-            mediaPlayer.reset();
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    stop();
+                }
+            }.start();
         }
-        setAudioUrl(url);
     }
 
     private void startAnimation() {
-        if (audioAnimationHandler == null) {
-            audioAnimationHandler = new Handler();
-        }
-        if (animationRunnable == null) {
-            animationRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    audioAnimationHandler.postDelayed(this, 200);
-                    setDrawable(drawables[index % 3]);
-                    index++;
-                }
-            };
-        }
-        audioAnimationHandler.removeCallbacks(animationRunnable);
-        audioAnimationHandler.postDelayed(animationRunnable, 200);
+        //防止被多次点击，每次点击View之后都把之前的动画Runnable清空
+        weakReferenceHandler.removeCallbacks(animationRunnable);
+        weakReferenceHandler.postDelayed(animationRunnable, 200);
     }
 
     private void stopAnimation() {
-        setDrawable(drawables[2]);
-        if (audioAnimationHandler != null) {
-            audioAnimationHandler.removeCallbacks(animationRunnable);
-        }
+        setDrawable(R.drawable.ic_audio_icon3);
+        weakReferenceHandler.removeCallbacks(animationRunnable);
     }
 
-    //暂时只能设置在左边，后期改为可设置方向
+    private final Runnable animationRunnable = new Runnable() {
+        @Override
+        public void run() {
+            weakReferenceHandler.postDelayed(this, 200);
+            setDrawable(Constant.AUDIO_DRAWABLES.get(index % 3));
+            index++;
+        }
+    };
+
     private void setDrawable(@DrawableRes int id) {
         Drawable drawable = ResourcesCompat.getDrawable(context.getResources(), id, null);
-        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         setCompoundDrawables(drawable, null, null, null);
     }
 
-    private void setViewClick() {
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                    stopAnimation();
-                } else {
-                    mediaPlayer.seekTo(0);
-                    startAnimation();
-                    mediaPlayer.start();
-                }
-            }
-        });
-    }
-
-    public void release() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-        if (audioAnimationHandler != null) {
-            audioAnimationHandler.removeCallbacks(animationRunnable);
-        }
+    public void stop() {
+        weakReferenceHandler.removeCallbacks(animationRunnable);
+        isPlaying = false;
     }
 }

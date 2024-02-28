@@ -240,6 +240,14 @@ public class ContextHub {
         return audioFile;
     }
 
+    public static File createVideoFileDir(Context context) {
+        File videoDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), "");
+        if (!videoDir.exists()) {
+            videoDir.mkdir();
+        }
+        return videoDir;
+    }
+
     public static File createDownloadFileDir(Context context) {
         File downloadDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "");
         if (!downloadDir.exists()) {

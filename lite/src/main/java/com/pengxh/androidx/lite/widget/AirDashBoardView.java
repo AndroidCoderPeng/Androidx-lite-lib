@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.FloatHub;
+import com.pengxh.androidx.lite.hub.IntHub;
 import com.pengxh.androidx.lite.utils.WeakReferenceHandler;
 
 
@@ -67,21 +67,21 @@ public class AirDashBoardView extends View {
          * getDimensionPixelSize()返回的是实际数值的四舍五入
          * getDimensionPixelOffset返回的是实际数值去掉后面的小数点
          * */
-        valueTextSize = type.getDimensionPixelOffset(R.styleable.AirDashBoardView_air_valueSize, FloatHub.dp2px(context, 12));
+        valueTextSize = type.getDimensionPixelOffset(R.styleable.AirDashBoardView_air_valueSize, IntHub.dp2px(context, 12));
         valueColor = type.getColor(R.styleable.AirDashBoardView_air_valueColor, Color.parseColor("#F1F1F1"));
 
-        currentValueTextSize = type.getDimensionPixelOffset(R.styleable.AirDashBoardView_air_current_valueSize, FloatHub.dp2px(context, 24));
+        currentValueTextSize = type.getDimensionPixelOffset(R.styleable.AirDashBoardView_air_current_valueSize, IntHub.dp2px(context, 24));
 
         topText = type.getString(R.styleable.AirDashBoardView_air_top_text);
-        topTextSize = type.getDimensionPixelOffset(R.styleable.AirDashBoardView_air_top_textSize, FloatHub.dp2px(context, 16));
+        topTextSize = type.getDimensionPixelOffset(R.styleable.AirDashBoardView_air_top_textSize, IntHub.dp2px(context, 16));
         topTextColor = type.getColor(R.styleable.AirDashBoardView_air_top_textColor, Color.parseColor("#FFFFFF"));
 
         centerText = type.getString(R.styleable.AirDashBoardView_air_center_text);
-        centerTextSize = type.getDimensionPixelOffset(R.styleable.AirDashBoardView_air_center_textSize, FloatHub.dp2px(context, 12));
+        centerTextSize = type.getDimensionPixelOffset(R.styleable.AirDashBoardView_air_center_textSize, IntHub.dp2px(context, 12));
 
         background = type.getColor(R.styleable.AirDashBoardView_air_ring_background, Color.parseColor("#F1F1F1"));
-        ringWidth = type.getDimensionPixelOffset(R.styleable.AirDashBoardView_air_ring_width, FloatHub.dp2px(context, 5));
-        ringRadius = type.getDimensionPixelOffset(R.styleable.AirDashBoardView_air_ring_radius, FloatHub.dp2px(context, 100));
+        ringWidth = type.getDimensionPixelOffset(R.styleable.AirDashBoardView_air_ring_width, IntHub.dp2px(context, 5));
+        ringRadius = type.getDimensionPixelOffset(R.styleable.AirDashBoardView_air_ring_radius, IntHub.dp2px(context, 100));
 
         type.recycle();
 
@@ -125,7 +125,7 @@ public class AirDashBoardView extends View {
         backPaint.setColor(background);
         backPaint.setStrokeCap(Paint.Cap.ROUND);
         backPaint.setStyle(Paint.Style.STROKE);
-        backPaint.setStrokeWidth(FloatHub.dp2px(context, ringWidth));
+        backPaint.setStrokeWidth(IntHub.dp2px(context, ringWidth));
         backPaint.setAntiAlias(true);
         //设置背景光晕
         backPaint.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.SOLID));
@@ -133,7 +133,7 @@ public class AirDashBoardView extends View {
         forePaint = new Paint();
         forePaint.setStrokeCap(Paint.Cap.ROUND);
         forePaint.setStyle(Paint.Style.STROKE);
-        forePaint.setStrokeWidth(FloatHub.dp2px(context, ringWidth));
+        forePaint.setStrokeWidth(IntHub.dp2px(context, ringWidth));
         forePaint.setAntiAlias(true);
     }
 
@@ -159,7 +159,7 @@ public class AirDashBoardView extends View {
             mWidth = widthSpecSize;
         } else {
             // wrap_content，外边界宽
-            mWidth = FloatHub.dp2px(context, (float) (ringRadius * 1.2));
+            mWidth = IntHub.dp2px(context, (int) (ringRadius * 1.2));
         }
         // 获取高
         if (heightSpecMode == MeasureSpec.EXACTLY) {
@@ -167,7 +167,7 @@ public class AirDashBoardView extends View {
             mHeight = heightSpecSize;
         } else {
             // wrap_content，外边界高
-            mHeight = FloatHub.dp2px(context, (float) (ringRadius * 1.2));
+            mHeight = IntHub.dp2px(context, (int) (ringRadius * 1.2));
         }
         // 设置该view的宽高
         setMeasuredDimension(mWidth, mHeight);
@@ -248,7 +248,7 @@ public class AirDashBoardView extends View {
     private void drawTopText(Canvas canvas) {
         Rect textRect = new Rect(
                 -ringRadius,
-                -(2 * ringRadius + FloatHub.dp2px(context, (float) ringRadius / 5)),
+                -(2 * ringRadius + IntHub.dp2px(context, (int) ringRadius / 5)),
                 ringRadius,
                 0);
         Paint.FontMetrics fontMetrics = topPaint.getFontMetrics();
@@ -263,7 +263,7 @@ public class AirDashBoardView extends View {
                 -(int) (ringRadius * 1.25),
                 0,
                 0,
-                ringRadius + FloatHub.dp2px(context, (float) ringRadius / 4));
+                ringRadius + IntHub.dp2px(context, (int) ringRadius / 4));
         Paint.FontMetrics fontMetrics = valuePaint.getFontMetrics();
         float top = fontMetrics.top;//为基线到字体上边框的距离,即上图中的top
         float bottom = fontMetrics.bottom;//为基线到字体下边框的距离,即上图中的bottom
@@ -276,7 +276,7 @@ public class AirDashBoardView extends View {
                 0,
                 0,
                 (int) (ringRadius * 1.25),
-                ringRadius + FloatHub.dp2px(context, (float) ringRadius / 4));
+                ringRadius + IntHub.dp2px(context, (int) ringRadius / 4));
         Paint.FontMetrics fontMetrics = valuePaint.getFontMetrics();
         float top = fontMetrics.top;//为基线到字体上边框的距离,即上图中的top
         float bottom = fontMetrics.bottom;//为基线到字体下边框的距离,即上图中的bottom
@@ -294,7 +294,7 @@ public class AirDashBoardView extends View {
     }
 
     private void drawCenterText(Canvas canvas) {
-        Rect textRect = new Rect(0, 0, 0, -FloatHub.dp2px(context, (float) ringRadius / 7));
+        Rect textRect = new Rect(0, 0, 0, -IntHub.dp2px(context, (int) ringRadius / 7));
         Paint.FontMetrics fontMetrics = centerPaint.getFontMetrics();
         float top = fontMetrics.top;//为基线到字体上边框的距离,即上图中的top
         float bottom = fontMetrics.bottom;//为基线到字体下边框的距离,即上图中的bottom

@@ -4,25 +4,22 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import androidx.annotation.NonNull;
+
 import java.lang.ref.WeakReference;
 
 public class WeakReferenceHandler extends Handler {
-
-    private final WeakReference<Callback> mWeakReference;
+    private final WeakReference<Callback> weakReference;
 
     public WeakReferenceHandler(Callback callback) {
-        mWeakReference = new WeakReference<>(callback);
-    }
-
-    public WeakReferenceHandler(Callback callback, Looper looper) {
-        super(looper);
-        mWeakReference = new WeakReference<>(callback);
+        super(Looper.getMainLooper());
+        weakReference = new WeakReference<>(callback);
     }
 
     @Override
-    public void handleMessage(Message msg) {
-        if (mWeakReference != null && mWeakReference.get() != null) {
-            mWeakReference.get().handleMessage(msg);
+    public void handleMessage(@NonNull Message msg) {
+        if (weakReference != null && weakReference.get() != null) {
+            weakReference.get().handleMessage(msg);
         }
     }
 }

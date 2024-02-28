@@ -18,7 +18,7 @@ import androidx.annotation.ColorInt;
 
 import com.pengxh.androidx.lite.R;
 import com.pengxh.androidx.lite.hub.DialogHub;
-import com.pengxh.androidx.lite.hub.FloatHub;
+import com.pengxh.androidx.lite.hub.IntHub;
 
 import java.util.List;
 
@@ -150,7 +150,7 @@ public class BottomActionSheet extends Dialog {
             holder.sheetItemView.setTextSize(16);
             holder.sheetItemView.setTextColor(itemTextColor);
             //需要动态设置item的高度
-            AbsListView.LayoutParams param = new AbsListView.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, FloatHub.dp2px(ctx, 44));
+            AbsListView.LayoutParams param = new AbsListView.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, IntHub.dp2px(ctx, 44));
             convertView.setLayoutParams(param);
             return convertView;
         }

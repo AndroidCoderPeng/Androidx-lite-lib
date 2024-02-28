@@ -34,7 +34,7 @@ public class FileHub {
     /**
      * 获取图片base64编码
      */
-    public static String imageFileToBase64(File file) {
+    public static String toBase64(File file) {
         if (file == null) {
             return null;
         }
@@ -50,9 +50,7 @@ public class FileHub {
             bos.close();
 
             byte[] imgBytes = bos.toByteArray();
-            String result = Base64.encodeToString(imgBytes, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
-            return result.replace("-", "+")
-                    .replace("_", "/");
+            return Base64.encodeToString(imgBytes, Base64.DEFAULT);
         } catch (Exception e) {
             return null;
         }

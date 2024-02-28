@@ -120,7 +120,7 @@ public class CircleProgressBar extends View {
             viewWidth = widthSpecSize;
         } else {
             // wrap_content
-            viewWidth = FloatHub.dp2px(context, 150);
+            viewWidth = IntHub.dp2px(context, 150);
         }
         // 获取高
         int viewHeight;
@@ -129,10 +129,10 @@ public class CircleProgressBar extends View {
             viewHeight = heightSpecSize;
         } else {
             // wrap_content
-            viewHeight = FloatHub.dp2px(context, 150);
+            viewHeight = IntHub.dp2px(context, 150);
         }
         //园半径等于View宽或者高的一半
-        this.radius = (viewWidth - FloatHub.dp2px(context, 20)) >> 1;
+        this.radius = (viewWidth - IntHub.dp2px(context, 20)) >> 1;
         setMeasuredDimension(viewWidth, viewHeight);
     }
 

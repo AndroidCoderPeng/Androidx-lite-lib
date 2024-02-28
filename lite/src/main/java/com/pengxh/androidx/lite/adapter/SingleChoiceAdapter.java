@@ -1,7 +1,6 @@
 package com.pengxh.androidx.lite.adapter;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +51,6 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
             @Override
             public void onClick(View v) {
                 if (itemCheckedListener == null) {
-                    Log.e(TAG, "onClick: itemClickListener not init");
                     return;
                 }
 

@@ -4,14 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SaveKeyValues {
-    private static SharedPreferences sharedPreferences;
+    private static SharedPreferences sp;
 
     public static void initSharedPreferences(Context context) {
         String packageName = context.getPackageName();
         //获取到的包名带有“.”方便命名，取最后一个作为sp文件名
         String[] split = packageName.split("\\.");
         String fileName = split[split.length - 1];
-        sharedPreferences = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        sp = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
     }
 
     /**
@@ -19,7 +19,7 @@ public class SaveKeyValues {
      */
     public static void putValue(String key, Object object) {
         try {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+            SharedPreferences.Editor editor = sp.edit();
             if (object instanceof String) {
                 editor.putString(key, (String) object);
             } else if (object instanceof Integer) {
@@ -45,17 +45,17 @@ public class SaveKeyValues {
     public static Object getValue(String key, Object defaultObject) {
         try {
             if (defaultObject instanceof String) {
-                return sharedPreferences.getString(key, (String) defaultObject);
+                return sp.getString(key, (String) defaultObject);
             } else if (defaultObject instanceof Integer) {
-                return sharedPreferences.getInt(key, (Integer) defaultObject);
+                return sp.getInt(key, (Integer) defaultObject);
             } else if (defaultObject instanceof Boolean) {
-                return sharedPreferences.getBoolean(key, (Boolean) defaultObject);
+                return sp.getBoolean(key, (Boolean) defaultObject);
             } else if (defaultObject instanceof Float) {
-                return sharedPreferences.getFloat(key, (Float) defaultObject);
+                return sp.getFloat(key, (Float) defaultObject);
             } else if (defaultObject instanceof Long) {
-                return sharedPreferences.getLong(key, (Long) defaultObject);
+                return sp.getLong(key, (Long) defaultObject);
             } else {
-                return sharedPreferences.getString(key, null);
+                return sp.getString(key, null);
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -68,7 +68,7 @@ public class SaveKeyValues {
      */
     public static void removeKey(String key) {
         try {
-            sharedPreferences.edit().remove(key).apply();
+            sp.edit().remove(key).apply();
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -79,7 +79,7 @@ public class SaveKeyValues {
      */
     public static void clearAll() {
         try {
-            sharedPreferences.edit().clear().apply();
+            sp.edit().clear().apply();
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -90,7 +90,7 @@ public class SaveKeyValues {
      */
     public static boolean containsKey(String key) {
         try {
-            return sharedPreferences.contains(key);
+            return sp.contains(key);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

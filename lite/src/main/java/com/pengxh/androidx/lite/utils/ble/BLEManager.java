@@ -15,12 +15,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.pengxh.androidx.lite.utils.Constant;
+import androidx.annotation.NonNull;
 
+import com.pengxh.androidx.lite.utils.Constant;
+import com.pengxh.androidx.lite.utils.WeakReferenceHandler;
+
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -36,61 +40,53 @@ import java.util.UUID;
  * 9、断开连接
  */
 @SuppressLint("MissingPermission")
-public class BLEManager {
+public class BLEManager implements Handler.Callback {
 
     private static final String TAG = "BLEManager";
-    private static BLEManager instance = null;
-    private Context context;
+    /**
+     * 解决双重锁单例Context导致内存泄漏的问题
+     */
+    private static WeakReference<Context> weakReferenceContext;
+    private final WeakReferenceHandler weakReferenceHandler = new WeakReferenceHandler(this);
     private BluetoothAdapter bluetoothAdapter;
     private OnDeviceDiscoveredListener discoveredListener;
-    private final Handler bleHandler = new Handler(Looper.myLooper());
-    private boolean isConnecting = false;
     private UUID serviceUuid;
     private UUID readUuid;
     private UUID writeUuid;
     private OnBleConnectListener bleConnectListener;
     private BluetoothGatt bluetoothGatt;
+    private BluetoothGattCharacteristic readCharacteristic;
     private BluetoothGattCharacteristic writeCharacteristic;
+    private boolean isConnecting = false;
+
+    @Override
+    public boolean handleMessage(@NonNull Message msg) {
+        return true;
+    }
 
     /**
      * 采用单例模式进行调用
      */
     private BLEManager() {
+
     }
 
-    public static BLEManager getInstance() {
-        if (null == instance) {
-            synchronized (BLEManager.class) {
-                if (null == instance) {
-                    instance = new BLEManager();
-                }
-            }
-        }
-        return instance;
+    private static class BLEManagerHolder {
+        private static final BLEManager INSTANCE = new BLEManager();
+    }
+
+    public static BLEManager get(Context context) {
+        weakReferenceContext = new WeakReference<>(context);
+        return BLEManagerHolder.INSTANCE;
     }
 
     /**
      * 初始化BLE
      */
-    public boolean initBLE(Context context) {
-        this.context = context;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
-            bluetoothAdapter = bluetoothManager.getAdapter();
-            return bluetoothAdapter != null;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 蓝牙是否可用
-     */
-    public boolean isBluetoothEnable() {
-        if (bluetoothAdapter == null) {
-            return false;
-        }
-        return bluetoothAdapter.isEnabled();
+    public boolean init() {
+        BluetoothManager bluetoothManager = (BluetoothManager) weakReferenceContext.get().getSystemService(Context.BLUETOOTH_SERVICE);
+        bluetoothAdapter = bluetoothManager.getAdapter();
+        return bluetoothAdapter != null;
     }
 
     /**
@@ -99,15 +95,20 @@ public class BLEManager {
      * @param isDirectly true 直接打开蓝牙  false 提示用户打开
      */
     public void openBluetooth(boolean isDirectly) {
-        if (!isBluetoothEnable()) {
+        if (!bluetoothAdapter.isEnabled()) {
             if (isDirectly) {
                 bluetoothAdapter.enable();
             } else {
-                context.startActivity(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE));
+                weakReferenceContext.get().startActivity(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE));
             }
-        } else {
-            Log.d(TAG, "openBluetooth: 手机蓝牙已打开");
         }
+    }
+
+    /**
+     * 蓝牙是否已打开
+     */
+    public boolean isBluetoothEnabled() {
+        return bluetoothAdapter.isEnabled();
     }
 
     /**
@@ -115,7 +116,7 @@ public class BLEManager {
      *
      * @return true false
      */
-    public boolean isDiscovery() {
+    public boolean isDiscovering() {
         if (bluetoothAdapter == null) {
             return false;
         }
@@ -130,18 +131,16 @@ public class BLEManager {
             return;
         }
         this.discoveredListener = listener;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            bluetoothAdapter.getBluetoothLeScanner().startScan(scanCallback);
-        }
+        bluetoothAdapter.getBluetoothLeScanner().startScan(scanCallback);
         //设定最长扫描时间
-        bleHandler.postDelayed(stopDiscoverRunnable, scanTime);
+        weakReferenceHandler.postDelayed(stopDiscoverRunnable, scanTime);
     }
 
     /**
      * 停止扫描设备
      */
     public void stopDiscoverDevice() {
-        bleHandler.removeCallbacks(stopDiscoverRunnable);
+        weakReferenceHandler.removeCallbacks(stopDiscoverRunnable);
     }
 
     public final Runnable stopDiscoverRunnable = new Runnable() {
@@ -170,7 +169,7 @@ public class BLEManager {
             BluetoothDevice device = result.getDevice();
             if (device.getName() != null || !TextUtils.isEmpty(device.getName())) {
                 if (discoveredListener != null) {
-                    discoveredListener.onDeviceFound(new BlueToothBean(device, result.getRssi()));
+                    discoveredListener.onDeviceFound(new BluetoothBean(device, result.getRssi()));
                 }
             }
         }
@@ -200,13 +199,13 @@ public class BLEManager {
         this.bleConnectListener = listener;
         Log.d(TAG, "开始准备连接：" + device.getName() + " ===> " + device.getAddress());
         try {
-            bluetoothGatt = device.connectGatt(context, false, bluetoothGattCallback);
+            bluetoothGatt = device.connectGatt(weakReferenceContext.get(), false, bluetoothGattCallback);
             bluetoothGatt.connect();
         } catch (Exception e) {
             e.printStackTrace();
         }
         //设置连接超时时间10s
-        bleHandler.postDelayed(connectTimeoutRunnable, connectTime);
+        weakReferenceHandler.postDelayed(connectTimeoutRunnable, connectTime);
     }
 
     public final BluetoothGattCallback bluetoothGattCallback = new BluetoothGattCallback() {
@@ -217,7 +216,7 @@ public class BLEManager {
             Log.d(TAG, "连接的设备：" + bluetoothDevice.getName() + " ===> " + bluetoothDevice.getAddress());
             isConnecting = true;
             //移除连接超时
-            bleHandler.removeCallbacks(connectTimeoutRunnable);
+            weakReferenceHandler.removeCallbacks(connectTimeoutRunnable);
             switch (newState) {
                 case BluetoothGatt.STATE_CONNECTING:
                     Log.d(TAG, "正在连接...");
@@ -231,7 +230,7 @@ public class BLEManager {
                     //连接成功去发现服务
                     gatt.discoverServices();
                     //设置发现服务超时时间
-                    bleHandler.postDelayed(serviceDiscoverTimeoutRunnable, Constant.MAX_CONNECT_TIME);
+                    weakReferenceHandler.postDelayed(serviceDiscoverTimeoutRunnable, Constant.MAX_CONNECT_TIME);
                     if (bleConnectListener != null) {
                         bleConnectListener.onConnectSuccess(gatt, status);
                     }
@@ -262,14 +261,7 @@ public class BLEManager {
                                 bleConnectListener.onConnectFailure(gatt, "连接成功服务未发现断开！", status);
                             }
                             break;
-                        case 0:
-                        case 8:
-                        case 34:
                         default:
-                            //0:正常断开
-                            //8:因为距离远或者电池无法供电断开连接
-                            //34:断开
-                            //其他断开
                             if (bleConnectListener != null) {
                                 bleConnectListener.onDisConnectSuccess(gatt, status);
                             }
@@ -284,7 +276,7 @@ public class BLEManager {
             super.onServicesDiscovered(gatt, status);
             isConnecting = false;
             //移除发现服务超时
-            bleHandler.removeCallbacks(serviceDiscoverTimeoutRunnable);
+            weakReferenceHandler.removeCallbacks(serviceDiscoverTimeoutRunnable);
             //配置服务信息
             if (bleConnectListener != null) {
                 if (setupService(gatt, serviceUuid, readUuid, writeUuid)) {
@@ -415,6 +407,10 @@ public class BLEManager {
                         //读特征
                         Log.d(TAG, "readCharacteristic: " + Arrays.toString(characteristic.getValue()));
                     }
+                    if (characteristic.getUuid() == readUuid) {  //读特征
+                        //读特征
+                        readCharacteristic = characteristic;
+                    }
                     if (characteristic.getUuid() == writeUuid) {
                         //写特征
                         writeCharacteristic = characteristic;
@@ -436,7 +432,7 @@ public class BLEManager {
             bluetoothGatt.writeDescriptor(descriptor);
         }
         //延迟2s，保证所有通知都能及时打开
-        bleHandler.postDelayed(() -> {
+        weakReferenceHandler.postDelayed(() -> {
 
         }, 2000);
         return false;
@@ -447,13 +443,20 @@ public class BLEManager {
             Log.d(TAG, "sendCommand() ===> writeGattCharacteristic == null");
             return;
         }
+
         if (bluetoothGatt == null) {
             Log.d(TAG, "sendCommand() ===> bluetoothGatt == null");
             return;
         }
-        boolean value = writeCharacteristic.setValue(cmd);
+
+        Object value;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            value = bluetoothGatt.writeCharacteristic(writeCharacteristic, cmd, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+        } else {
+            value = writeCharacteristic.setValue(cmd);
+            bluetoothGatt.writeCharacteristic(writeCharacteristic);
+        }
         Log.d(TAG, "写特征设置值结果：" + value);
-        bluetoothGatt.writeCharacteristic(writeCharacteristic);
     }
 
     public void disConnectDevice() {

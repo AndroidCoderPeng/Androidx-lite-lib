@@ -18,7 +18,7 @@ public class ImageHub {
      * CameraX 原始预览Image数据（imageProxy.format == ImageFormat.YUV_420_888）转Bitmap
      * CameraX 预览Image数据（imageProxy.format == ImageFormat.JPEG）转Bitmap
      */
-    public static Bitmap imageToBitmap(Image image, int format) {
+    public static Bitmap toBitmap(Image image, int format) {
         if (format == ImageFormat.YUV_420_888) {
             Image.Plane[] planes = image.getPlanes();
 

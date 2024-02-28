@@ -42,8 +42,23 @@
         <item name="android:windowExitAnimation">@anim/popup_hide</item>
     </style>
 
+    <style name="EasyPopupAnimation">
+        <item name="android:windowEnterAnimation">@anim/easy_popup_show</item>
+        <item name="android:windowExitAnimation">@anim/easy_popup_hide</item>
+    </style>
+
     <style name="UserDefinedAnimation" parent="@android:style/Animation.Dialog">
         <item name="android:windowEnterAnimation">@anim/action_dialog_show</item>
         <item name="android:windowExitAnimation">@anim/action_dialog_hide</item>
+    </style>
+
+    <style name="AudioPlayerViewBaseStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/lib_dp_35</item>
+        <item name="android:paddingStart">@dimen/lib_dp_10</item>
+        <item name="android:paddingEnd">@dimen/lib_dp_10</item>
+        <item name="android:drawablePadding">@dimen/lib_dp_10</item>
+        <item name="android:drawableStart">@drawable/ic_audio_icon3</item>
+        <item name="android:gravity">left|center_vertical</item>
     </style>
 </resources>

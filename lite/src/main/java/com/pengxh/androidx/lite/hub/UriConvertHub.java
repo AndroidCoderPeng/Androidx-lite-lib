@@ -11,15 +11,19 @@ import android.provider.OpenableColumns;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Objects;
 
 public class UriConvertHub {
     public static String realFilePath(Context context, Uri uri) {
         String path = "";
-        if (uri.getScheme().equals(ContentResolver.SCHEME_FILE)) {
+        if (Objects.equals(uri.getScheme(), ContentResolver.SCHEME_FILE)) {
             path = new File(uri.getPath()).getAbsolutePath();
-        } else if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+        } else if (Objects.equals(uri.getScheme(), ContentResolver.SCHEME_CONTENT)) {
             ContentResolver contentResolver = context.getContentResolver();
             Cursor cursor = contentResolver.query(uri, null, null, null, null);
+            if (cursor == null) {
+                return path;
+            }
             if (cursor.moveToFirst()) {
                 try {
                     int columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);

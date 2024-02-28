@@ -4,11 +4,16 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pengxh.androidx.lite.R;
+
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,8 +23,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2018/11/16.
@@ -28,6 +31,31 @@ import java.util.regex.Pattern;
 public class StringHub {
     private static final String TAG = "StringHub";
     private static SimpleDateFormat dateFormat;
+
+    /**
+     * 获取汉语拼音首字母
+     * 如：汉语 ===> HY
+     */
+    public static String getHanYuPinyin(String str) {
+        StringBuilder pinyinStr = new StringBuilder();
+        char[] chars = str.toCharArray();
+        HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
+        defaultFormat.setCaseType(HanyuPinyinCaseType.UPPERCASE);
+        defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+        for (char c : chars) {
+            if (c > 128) {
+                try {
+                    String[] stringArray = PinyinHelper.toHanyuPinyinStringArray(c, defaultFormat);
+                    pinyinStr.append(stringArray[0]);
+                } catch (BadHanyuPinyinOutputFormatCombination e) {
+                    e.printStackTrace();
+                }
+            } else {
+                pinyinStr.append(c);
+            }
+        }
+        return pinyinStr.toString();
+    }
 
     /**
      * 手动换行
@@ -146,11 +174,8 @@ public class StringHub {
      * 判断输入的是否是数字
      */
     public static boolean isNumber(String str) {
-        boolean isDigit = false;
-        for (int i = 0; i < str.length(); i++) {
-            isDigit = Character.isDigit(str.charAt(i));
-        }
-        return isDigit;
+        String regex = "[-+]?\\d+(\\.\\d+)?";
+        return str.matches(regex);
     }
 
     /**
@@ -174,26 +199,19 @@ public class StringHub {
      */
     public static boolean isChinese(String str) {
         if (!str.isEmpty()) {
-            Pattern pattern = Pattern.compile("[\\u4e00-\\u9fa5]+");
-            return pattern.matcher(str).matches();
+            String regex = "[\\u4e00-\\u9fa5]+";
+            return str.matches(regex);
         }
         return false;
     }
 
 
     public static boolean isPhoneNumber(String number) {
-        String regExp = "^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$";
         if (number.length() != 11) {
-            Log.d(TAG, "手机号应为11位数");
             return false;
         } else {
-            Pattern p = Pattern.compile(regExp);
-            Matcher m = p.matcher(number);
-            boolean isMatch = m.matches();
-            if (!isMatch) {
-                Log.d(TAG, "请填入正确的手机号");
-            }
-            return isMatch;
+            String regExp = "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}\\$";
+            return number.matches(regExp);
         }
     }
 
@@ -202,28 +220,11 @@ public class StringHub {
      */
     public static boolean isEmail(String email) {
         if (TextUtils.isEmpty(email)) {
-            Log.e(TAG, "邮箱地址不能为空：" + email);
             return false;
         } else {
-            String regExp = "^[a-z0-9]+([._\\\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$";
-            Pattern pattern = Pattern.compile(regExp);
-            return pattern.matcher(email).matches();
+            String regExp = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*\\$";
+            return email.matches(regExp);
         }
-    }
-
-    /**
-     * 过滤空格，回车
-     */
-    public static String filterSpaceOrEnter(String s) {
-        if (TextUtils.isEmpty(s)) {
-            return s;
-        }
-        //先过滤回车换行
-        Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-        Matcher m = p.matcher(s);
-        s = m.replaceAll("");
-        //再过滤空格
-        return s.trim().replace(" ", "");
     }
 
     /**
@@ -250,8 +251,8 @@ public class StringHub {
         textView.setTextSize(16);
         textView.setText(message);
         textView.setPadding(
-                FloatHub.dp2px(context, 20), FloatHub.dp2px(context, 10),
-                FloatHub.dp2px(context, 20), FloatHub.dp2px(context, 10)
+                IntHub.dp2px(context, 20), IntHub.dp2px(context, 10),
+                IntHub.dp2px(context, 20), IntHub.dp2px(context, 10)
         );
         toast.setView(textView);
         toast.setDuration(Toast.LENGTH_SHORT);

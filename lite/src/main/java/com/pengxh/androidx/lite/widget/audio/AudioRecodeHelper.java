@@ -1,121 +1,117 @@
 package com.pengxh.androidx.lite.widget.audio;
 
+import android.content.Context;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.pengxh.androidx.lite.utils.Constant;
+import com.pengxh.androidx.lite.utils.WeakReferenceHandler;
 
 import java.io.File;
 import java.io.IOException;
 
-public class AudioRecodeHelper {
+public class AudioRecodeHelper implements Handler.Callback {
 
-    private static final String TAG = "AudioRecodeHelper";
-    private MediaRecorder mMediaRecorder;
-    private String filePath;
-    private OnAudioStatusUpdateListener audioStatusUpdateListener;
-    private long startTime;
+    private final WeakReferenceHandler stateUpdateHandler = new WeakReferenceHandler(this);
+    private final Runnable updateStatusRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateMicStatus();
+        }
+    };
+    private MediaRecorder mediaRecorder;
+    private File audioFile;
+    private Long startTime;
+    private OnAudioStateUpdateListener stateUpdateListener;
+
+    @Override
+    public boolean handleMessage(@NonNull Message msg) {
+        return true;
+    }
 
     /**
-     * 开始录音 使用m4a格式
+     * 设置保存文件路径，mediaRecorder初始化
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void initRecorder(Context context, File audioFile) {
+        this.audioFile = audioFile;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            mediaRecorder = new MediaRecorder(context);
+        } else {
+            mediaRecorder = new MediaRecorder();
+        }
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC); // 设置麦克风
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_WB);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
+        mediaRecorder.setOutputFile(audioFile.getAbsoluteFile());
+        mediaRecorder.setMaxDuration(Constant.MAX_LENGTH);
+        try {
+            mediaRecorder.prepare();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 开始录音 使用amr格式
      *
      * @return
      */
-    public void startRecordAudio(String filePath) {
-        this.filePath = filePath;
-        if (mMediaRecorder == null)
-            mMediaRecorder = new MediaRecorder();
-        try {
-            /* ②setAudioSource/setVideoSource */
-            mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);// 设置麦克风
-            /* ②设置音频文件的编码：AAC/AMR_NB/AMR_MB/Default 声音的（波形）的采样 */
-            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-            /*
-             * ②设置输出文件的格式：THREE_GPP/MPEG-4/RAW_AMR/Default THREE_GPP(3gp格式
-             * ，H263视频/ARM音频编码)、MPEG-4、RAW_AMR(只支持音频且音频编码要求为AMR_NB)
-             */
-            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-            /* ③准备 */
-            mMediaRecorder.setOutputFile(filePath);
-            mMediaRecorder.setMaxDuration(Constant.MAX_LENGTH);
-            mMediaRecorder.prepare();
-            /* ④开始 */
-            mMediaRecorder.start();
-            // AudioRecord audioRecord.
-            /* 获取开始时间* */
-            startTime = System.currentTimeMillis();
-            updateMicStatus();
-        } catch (IllegalStateException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 停止录音
-     */
-    public void stopRecordAudio() {
-        if (mMediaRecorder == null) {
-            return;
-        }
-        try {
-            mMediaRecorder.stop();
-            mMediaRecorder.reset();
-            mMediaRecorder.release();
-            mMediaRecorder = null;
-
-            audioStatusUpdateListener.onStop(filePath);
-            filePath = "";
-        } catch (RuntimeException e) {
-            mMediaRecorder.reset();
-            mMediaRecorder.release();
-            mMediaRecorder = null;
-
-            File file = new File(filePath);
-            if (file.exists()) {
-                file.delete();
-            }
-            filePath = "";
-        }
-    }
-
-    public void setOnAudioStatusUpdateListener(OnAudioStatusUpdateListener statusUpdateListener) {
-        this.audioStatusUpdateListener = statusUpdateListener;
+    public void startRecord(OnAudioStateUpdateListener stateUpdateListener) {
+        this.stateUpdateListener = stateUpdateListener;
+        mediaRecorder.start();
+        startTime = System.currentTimeMillis();
+        updateMicStatus();
     }
 
     /**
      * 更新麦克状态
      */
     private void updateMicStatus() {
-        if (mMediaRecorder != null) {
-            double ratio = mMediaRecorder.getMaxAmplitude();
-            double db;// 分贝
-            if (ratio > 1) {
-                db = 20 * Math.log10(ratio);
-                if (null != audioStatusUpdateListener) {
-                    audioStatusUpdateListener.onUpdate(db, System.currentTimeMillis() - startTime);
-                }
-            }
-            mHandler.postDelayed(mUpdateMicStatusTimer, 100);
+        //调用时音频采样的最大绝对振幅
+        int amplitude = mediaRecorder.getMaxAmplitude();
+        double db;
+        if (amplitude > 1) {
+            db = 20 * Math.log10(amplitude / 0.1);
+        } else {
+            db = 0.0;
         }
+        stateUpdateListener.onUpdate(db, System.currentTimeMillis() - startTime);
+        stateUpdateHandler.postDelayed(updateStatusRunnable, 100);
     }
 
-    private final Handler mHandler = new Handler();
-    private final Runnable mUpdateMicStatusTimer = this::updateMicStatus;
+    /**
+     * 停止录音
+     */
+    public void stopRecord() {
+        stateUpdateListener.onStop(audioFile);
+        mediaRecorder.stop();
+        mediaRecorder.reset();
+        mediaRecorder.release();
+        mediaRecorder = null;
+        audioFile = null;
+        stateUpdateHandler.removeCallbacks(updateStatusRunnable);
+    }
 
-    public interface OnAudioStatusUpdateListener {
+    public interface OnAudioStateUpdateListener {
         /**
          * 录音中...
          *
          * @param db   当前声音分贝
          * @param time 录音时长
          */
-        void onUpdate(double db, long time);
+        void onUpdate(Double db, Long time);
 
         /**
          * 停止录音
          *
-         * @param filePath 保存路径
+         * @param file 保存文件
          */
-        void onStop(String filePath);
+        void onStop(File file);
     }
 }

@@ -7,23 +7,23 @@ public class FloatHub {
     /**
      * px转dp
      */
-    public static int px2dp(Context context, float pxValue) {
-        float scale = ContextHub.getScreenDensity(context);
-        return (int) (pxValue / scale + 0.5f);
+    public static float px2dp(Context context, float pxValue) {
+        return pxValue / ContextHub.getScreenDensity(context);
     }
 
     /**
      * dp转px
      */
-    public static int dp2px(Context context, float dpValue) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, context.getResources().getDisplayMetrics());
+    public static float dp2px(Context context, float dpValue) {
+        return dpValue * ContextHub.getScreenDensity(context);
     }
 
     /**
      * sp转换成px
      */
-    public static int sp2px(Context context, float spValue) {
-        float fontScale = ContextHub.getScreenDensity(context);
-        return (int) (spValue * fontScale + 0.5f);
+    public static float sp2px(Context context, float spValue) {
+        return TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_SP, spValue, context.getResources().getDisplayMetrics()
+        );
     }
 }

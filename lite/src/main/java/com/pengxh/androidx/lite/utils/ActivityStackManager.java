@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import java.util.Stack;
 
-public class PageNavigationManager {
+public class ActivityStackManager {
     private static final Stack<Activity> activityStack = new Stack<>();
 
     /**
