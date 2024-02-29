@@ -6,8 +6,8 @@ import androidx.annotation.Nullable;
 
 import com.pengxh.androidx.lib.databinding.ActivityNewsDetailsBinding;
 import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
-import com.pengxh.androidx.lite.hub.ContextHub;
 import com.pengxh.androidx.lite.utils.Constant;
+import com.pengxh.androidx.lite.utils.HtmlRenderEngine;
 
 import java.util.ArrayList;
 
@@ -25,13 +25,16 @@ public class NewsDetailsActivity extends AndroidxBaseActivity<ActivityNewsDetail
         binding.newsSrc.setText(params.get(1));
         binding.newsTime.setText(params.get(2));
 
-        HtmlHub.setTextFromHtml(this,
-                binding.newsContent,
-                params.get(3),
-                ContextHub.getScreenWidth(this),
-                0,
-                null
-        );
+        new HtmlRenderEngine.Builder()
+                .setContext(this)
+                .setTargetView(binding.newsContent)
+                .setHtmlContent(params.get(3))
+                .setOnGetImageSourceListener(new HtmlRenderEngine.OnGetImageSourceListener() {
+                    @Override
+                    public void imageSource(String url) {
+
+                    }
+                }).build().load();
     }
 
     @Override
