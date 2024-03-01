@@ -3,7 +3,7 @@ package com.pengxh.androidx.lite.utils.ble;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 
-public interface OnBleConnectListener {
+public interface OnDeviceConnectListener {
     void onConnecting(BluetoothGatt bluetoothGatt); //正在连接
 
     void onConnectSuccess(BluetoothGatt bluetoothGatt, int status); //连接成功
@@ -14,7 +14,7 @@ public interface OnBleConnectListener {
 
     void onDisConnectSuccess(BluetoothGatt bluetoothGatt, int status); // 断开连接
 
-    void onServiceDiscoverySucceed(BluetoothGatt bluetoothGatt, int status); //发现服务成功
+    void onServiceDiscoverySuccess(BluetoothGatt bluetoothGatt, int status); //发现服务成功
 
     void onServiceDiscoveryFailed(BluetoothGatt bluetoothGatt, String msg); //发现服务失败
 
@@ -24,7 +24,7 @@ public interface OnBleConnectListener {
 
     void onWriteSuccess(BluetoothGatt bluetoothGatt, byte[] msg); //写入成功
 
-    void onWriteFailure(BluetoothGatt bluetoothGatt, byte[] msg, String errorMsg); //写入失败
+    void onWriteFailed(BluetoothGatt bluetoothGatt, String errorMsg); //写入失败
 
     void onReadRssi(BluetoothGatt bluetoothGatt, int rssi, int status); //成功读取到连接信号强度
 }

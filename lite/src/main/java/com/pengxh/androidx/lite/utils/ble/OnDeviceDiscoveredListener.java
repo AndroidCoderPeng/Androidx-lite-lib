@@ -1,8 +1,10 @@
 package com.pengxh.androidx.lite.utils.ble;
 
 
-public interface OnDeviceDiscoveredListener {
-    void onDeviceFound(BluetoothBean bluetoothBean); //搜索到设备
+import android.bluetooth.BluetoothDevice;
 
-    void onDiscoveryTimeout(); //扫描超时
+public interface OnDeviceDiscoveredListener {
+    void onDeviceFound(BluetoothDevice bluetoothDevice); //搜索到设备
+
+    void onDeviceDiscoveryEnd(); //扫描超时
 }
