@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.13221884498480244" />
+        <entry key="app/src/main/res/drawable/ic_3d.xml" value="0.240625" />
+        <entry key="app/src/main/res/drawable/ic_menu_map.xml" value="0.240625" />
+        <entry key="app/src/main/res/drawable/ic_satellite.xml" value="0.240625" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_test.xml" value="0.2203125" />
+        <entry key="app/src/main/res/layout/item_select_sample_lv.xml" value="0.24583333333333332" />
+        <entry key="lite/src/main/res/drawable/bg_layout_hint.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/dialog_bg_hint_layout.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/dialog_btn_gray.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/dialog_btn_white_smoke.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/dialog_button_selector.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/ic_add_pic.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/ic_audio_icon1.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/ic_audio_icon2.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/ic_audio_icon3.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/ic_cancel.xml" value="0.24010416666666667" />
+        <entry key="lite/src/main/res/drawable/ic_check_selected.xml" value="0.1485" />
+        <entry key="lite/src/main/res/drawable/ic_edit_text_delete.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/ic_keyboard_delete.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/ic_left_white.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/ic_recode.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/ic_recoding.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/ic_voice.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/keyboard_btn_gray_shape.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/keyboard_btn_white_shape.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/keyboard_gray_selector.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/layer_microphone.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/popup_list_divider.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/sheet_bg_white_layout.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/sheet_item_bottom_selector.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/sheet_item_cancel_selector.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/sheet_item_middle_selector.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/sheet_item_top_selector.xml" value="0.240625" />
+        <entry key="lite/src/main/res/drawable/tag_iv_selector.xml" value="0.1485" />
+        <entry key="lite/src/main/res/drawable/toast_bg_layout.xml" value="0.240625" />
+        <entry key="lite/src/main/res/layout/activity_big_image.xml" value="0.2203125" />
+        <entry key="lite/src/main/res/layout/bottom_action_sheet.xml" value="0.25" />
+        <entry key="lite/src/main/res/layout/dialog_alert.xml" value="0.25" />
+        <entry key="lite/src/main/res/layout/dialog_change_pwd.xml" value="0.1925925925925926" />
+        <entry key="lite/src/main/res/layout/dialog_globe_alert.xml" value="0.24583333333333332" />
+        <entry key="lite/src/main/res/layout/dialog_input.xml" value="0.2160367722165475" />
+        <entry key="lite/src/main/res/layout/dialog_message.xml" value="0.4462962962962963" />
+        <entry key="lite/src/main/res/layout/dialog_no_network.xml" value="0.21979166666666666" />
+        <entry key="lite/src/main/res/layout/item_action_sheet.xml" value="0.2203125" />
+        <entry key="lite/src/main/res/layout/item_big_picture.xml" value="0.2203125" />
+        <entry key="lite/src/main/res/layout/item_editable_rv_g.xml" value="0.37604166666666666" />
+        <entry key="lite/src/main/res/layout/item_gridview_editable.xml" value="0.21979166666666666" />
+        <entry key="lite/src/main/res/layout/item_gridview_readonly.xml" value="0.2203125" />
+        <entry key="lite/src/main/res/layout/item_popup_menu.xml" value="0.2203125" />
+        <entry key="lite/src/main/res/layout/popu_microphone.xml" value="0.2203125" />
+        <entry key="lite/src/main/res/layout/popup_.xml" value="0.2203125" />
+        <entry key="lite/src/main/res/layout/popup_menu_option.xml" value="0.2160367722165475" />
+        <entry key="lite/src/main/res/layout/widget_view_keyboard.xml" value="0.2203125" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="corretto-11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
