@@ -2,8 +2,13 @@ package com.pengxh.androidx.lite.hub;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
 import android.text.TextUtils;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.pengxh.androidx.lite.R;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
@@ -240,6 +245,23 @@ public class StringHub {
     }
 
     public static void show(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast toast = new Toast(context);
+            TextView textView = new TextView(context);
+            textView.setBackgroundResource(R.drawable.toast_bg_layout);
+            textView.setTextColor(Color.WHITE);
+            textView.setTextSize(16);
+            textView.setText(message);
+            textView.setPadding(
+                    IntHub.dp2px(context, 20), IntHub.dp2px(context, 10),
+                    IntHub.dp2px(context, 20), IntHub.dp2px(context, 10)
+            );
+            toast.setView(textView);
+            toast.setDuration(Toast.LENGTH_SHORT);
+            toast.show();
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        }
     }
 }
