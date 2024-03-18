@@ -63,9 +63,7 @@ public class TcpClient implements Handler.Callback {
              * */
             connect();
         } else {
-            eventLoopGroup.shutdownGracefully();
-            isConnected = false;
-            retryTimes = 0;
+            release();
         }
     }
 
@@ -154,5 +152,11 @@ public class TcpClient implements Handler.Callback {
                 }
             }
         });
+    }
+
+    public void release(){
+        eventLoopGroup.shutdownGracefully();
+        isConnected = false;
+        retryTimes = 0;
     }
 }
