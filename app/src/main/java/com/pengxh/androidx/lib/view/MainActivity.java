@@ -7,16 +7,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.pengxh.androidx.lib.databinding.ActivityMainBinding;
-import com.pengxh.androidx.lib.vm.NetworkViewModel;
 import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
 import com.pengxh.androidx.lite.hub.ObjectHub;
 import com.pengxh.androidx.lite.hub.StringHub;
-import com.pengxh.androidx.lite.utils.LoadState;
-import com.pengxh.androidx.lite.utils.LoadingDialogHub;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +22,6 @@ import java.util.Locale;
 public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     private static final String TAG = "MainActivity";
-    private NetworkViewModel viewModel;
 
     @Override
     protected void setupTopBarLayout() {
@@ -36,7 +30,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
     protected void initOnCreate(@Nullable Bundle savedInstanceState) {
-        viewModel = new ViewModelProvider(this).get(NetworkViewModel.class);
+        binding.circleProgressBar.setCurrentValue(95);
     }
 
     @Override
@@ -107,15 +101,6 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
     protected void observeRequestState() {
-        viewModel.loadState.observe(this, new Observer<LoadState>() {
-            @Override
-            public void onChanged(LoadState loadState) {
-                if (loadState == LoadState.Loading) {
-                    LoadingDialogHub.show(MainActivity.this, "数据加载中，请稍后");
-                } else {
-                    LoadingDialogHub.dismiss();
-                }
-            }
-        });
+
     }
 }

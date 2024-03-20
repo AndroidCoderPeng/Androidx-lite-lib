@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CircleProgressBar">
+        <attr name="cpb_ring_radius" format="dimension" />
+        <attr name="cpb_ring_stroke" format="dimension" />
         <!--进度条底色-->
         <attr name="cpb_backgroundColor" format="color" />
         <!--进度条前景色-->

@@ -26,21 +26,33 @@ import com.pengxh.androidx.lite.utils.WeakReferenceHandler;
 /**
  * 圆形进度条
  */
-public class CircleProgressBar extends View {
+public class CircleProgressBar extends View implements Handler.Callback {
 
     private final Context context;
-    private final int backgroundColor;
-    private final int foregroundColor;
-    private final String text;
-    private float centerX;
-    private float centerY;
+    private int ringRadius;
+    private RectF rectF;
+
+    //控件边长
+    private int viewSideLength;
+    private int ringStroke;
+    private Rect viewRect;
+    private Paint guidePaint;
+
+    private int backgroundColor;
+    private int foregroundColor;
+    private String text = "";
+    private float centerX = 0f;
+    private float centerY = 0f;
     private Paint backgroundPaint;
     private Paint foregroundPaint;
     private TextPaint textPaint;
-    private int radius;
-    private String currentValue;//当前污染物测量值
-    private float sweepAngle;//当前测量值转为弧度扫过的角度
-    private final WeakReferenceHandler weakReferenceHandler;
+
+    //当前值
+    private String currentValue = "";
+
+    //当前测量值转为弧度扫过的角度
+    private float sweepAngle = 0f;
+    private WeakReferenceHandler weakReferenceHandler;
 
     public CircleProgressBar(Context context) {
         this(context, null);
@@ -53,48 +65,60 @@ public class CircleProgressBar extends View {
     public CircleProgressBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleProgressBar, defStyleAttr, 0);
-        backgroundColor = a.getColor(R.styleable.CircleProgressBar_cpb_backgroundColor, Color.parseColor("#D3D3D3"));
-        foregroundColor = a.getColor(R.styleable.CircleProgressBar_cpb_foregroundColor, IntHub.convertColor(context,R.color.blue));
-        text = a.getString(R.styleable.CircleProgressBar_cpb_text);
-        a.recycle();
+        weakReferenceHandler = new WeakReferenceHandler(this);
+
+        TypedArray type = context.obtainStyledAttributes(attrs, R.styleable.CircleProgressBar);
+        ringRadius = type.getDimensionPixelOffset(R.styleable.CircleProgressBar_cpb_ring_radius, IntHub.dp2px(context, 100));
+        rectF = new RectF(-ringRadius, -ringRadius, ringRadius, ringRadius);
+        ringStroke = type.getDimensionPixelOffset(R.styleable.CircleProgressBar_cpb_ring_stroke, IntHub.dp2px(context, 10));
+        //需要给外围刻度留位置
+        viewSideLength = ringRadius + IntHub.dp2px(context, 30);
+        //辅助框
+        viewRect = new Rect(-viewSideLength, -viewSideLength, viewSideLength, viewSideLength);
+
+        backgroundColor = type.getColor(R.styleable.CircleProgressBar_cpb_backgroundColor, Color.LTGRAY);
+        foregroundColor = type.getColor(R.styleable.CircleProgressBar_cpb_foregroundColor, Color.BLUE);
+        text = type.getString(R.styleable.CircleProgressBar_cpb_text);
+
+        type.recycle();
         //初始化画笔
         initPaint();
+    }
 
-        weakReferenceHandler = new WeakReferenceHandler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(@NonNull Message msg) {
-                if (msg.what == 2022010101) {
-                    sweepAngle = (float) msg.arg1 * 360 / 100;
-                }
-                return true;
-            }
-        });
+    @Override
+    public boolean handleMessage(@NonNull Message msg) {
+        return true;
     }
 
     private void initPaint() {
+        guidePaint = new Paint();
+        guidePaint.setColor(Color.LTGRAY);
+        guidePaint.setStyle(Paint.Style.STROKE);
+        guidePaint.setStrokeWidth(FloatHub.dp2px(context, 1f));
+        guidePaint.setAntiAlias(true);
+
         //背景色画笔
         backgroundPaint = new Paint();
         backgroundPaint.setColor(backgroundColor);
         backgroundPaint.setStyle(Paint.Style.STROKE);
-        backgroundPaint.setStrokeWidth(FloatHub.dp2px(context, 12));
-        backgroundPaint.setStrokeCap(Paint.Cap.ROUND);//圆头
+        backgroundPaint.setStrokeWidth(FloatHub.dp2px(context, ringStroke));
+        backgroundPaint.setStrokeCap(Paint.Cap.ROUND);  //圆头
         backgroundPaint.setAntiAlias(true);
 
         //前景色画笔
         foregroundPaint = new Paint();
         foregroundPaint.setColor(foregroundColor);
         foregroundPaint.setStyle(Paint.Style.STROKE);
-        foregroundPaint.setStrokeWidth(FloatHub.dp2px(context, 12));
-        foregroundPaint.setStrokeCap(Paint.Cap.ROUND);//圆头
+        foregroundPaint.setStrokeWidth(FloatHub.dp2px(context, ringStroke));
+        foregroundPaint.setStrokeCap(Paint.Cap.ROUND);  //圆头
         foregroundPaint.setAntiAlias(true);
 
         //文字画笔
         textPaint = new TextPaint();
-        textPaint.setAntiAlias(true);
         textPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setColor(Color.parseColor("#333333"));
-        textPaint.setTextSize(FloatHub.sp2px(context, 14));
+        textPaint.setColor(Color.LTGRAY);
+        textPaint.setTextSize(FloatHub.dp2px(context, 14f));
+        textPaint.setAntiAlias(true);
     }
 
     //计算出中心位置，便于定位
@@ -114,26 +138,25 @@ public class CircleProgressBar extends View {
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
         // 获取宽
-        int viewWidth;
+        int mWidth;
         if (widthSpecMode == MeasureSpec.EXACTLY) {
             // match_parent/精确值
-            viewWidth = widthSpecSize;
+            mWidth = widthSpecSize;
         } else {
-            // wrap_content
-            viewWidth = IntHub.dp2px(context, 150);
+            // wrap_content，外边界宽
+            mWidth = (viewSideLength * 2);
         }
         // 获取高
-        int viewHeight;
+        int mHeight;
         if (heightSpecMode == MeasureSpec.EXACTLY) {
             // match_parent/精确值
-            viewHeight = heightSpecSize;
+            mHeight = heightSpecSize;
         } else {
-            // wrap_content
-            viewHeight = IntHub.dp2px(context, 150);
+            // wrap_content，外边界高
+            mHeight = (viewSideLength * 2);
         }
-        //园半径等于View宽或者高的一半
-        this.radius = (viewWidth - IntHub.dp2px(context, 20)) >> 1;
-        setMeasuredDimension(viewWidth, viewHeight);
+        // 设置该view的宽高
+        setMeasuredDimension(mWidth, mHeight);
     }
 
     @SuppressLint("DrawAllocation")
@@ -144,36 +167,44 @@ public class CircleProgressBar extends View {
          * 画布移到中心位置
          * */
         canvas.translate(centerX, centerY);
+        drawGuides(canvas);
+
         //绘制进度条背景
-        canvas.drawCircle(0, 0, radius, backgroundPaint);
+        canvas.drawCircle(0f, 0f, ringRadius, backgroundPaint);
 
         //绘制上面百分比
-        Rect valueRect = new Rect(0, 0, 0, 0);
-        int valueY = (int) (valueRect.centerY() + (textPaint.getFontMetrics().top) * 0.3);//基线中间点的y轴计算公式
+        Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
+        float top = fontMetrics.top;
+        float bottom = fontMetrics.bottom;
         if (TextUtils.isEmpty(currentValue)) {
-            canvas.drawText("未定义!", valueRect.centerX(), valueY, textPaint);
+            canvas.drawText("###", 0f, (top + bottom) / 2, textPaint);
         } else {
-            canvas.drawText(currentValue, valueRect.centerX(), valueY, textPaint);
+            canvas.drawText(currentValue, 0f, (top + bottom) / 2, textPaint);
         }
 
         //绘制下面Tip文字
-        Rect tipsRect = new Rect(0, 0, 0, 0);
-        //计算文字左下角坐标
-        int tipsY = (int) (tipsRect.centerY() - (textPaint.getFontMetrics().top) * 1.2);//基线中间点的y轴计算公式
         if (TextUtils.isEmpty(text)) {
-            canvas.drawText("未定义！", tipsRect.centerX(), tipsY, textPaint);
+            canvas.drawText("###", 0f, -(top + bottom) * 1.5f, textPaint);
         } else {
-            canvas.drawText(text, tipsRect.centerX(), tipsY, textPaint);
+            canvas.drawText(text, 0f, -(top + bottom) * 1.5f, textPaint);
         }
 
         //绘制前景进度
-        drawForegroundArc(canvas);
+        canvas.drawArc(rectF, -90f, sweepAngle, false, foregroundPaint);
     }
 
-    private void drawForegroundArc(Canvas canvas) {
-        RectF rectF = new RectF(-radius, -radius, radius, radius);
-        canvas.drawArc(rectF, -90, sweepAngle, false, foregroundPaint);
-        invalidate();
+    /**
+     * 辅助线
+     */
+    private void drawGuides(Canvas canvas) {
+        //最外层方框，即自定义View的边界
+        canvas.drawRect(viewRect, guidePaint);
+
+        //中心横线
+        canvas.drawLine(-viewSideLength, 0f, viewSideLength, 0f, guidePaint);
+
+        //中心竖线
+        canvas.drawLine(0f, -viewSideLength, 0f, viewSideLength, guidePaint);
     }
 
     public void setCurrentValue(int value) {
@@ -187,16 +218,29 @@ public class CircleProgressBar extends View {
 
         new Thread(() -> {
             for (int i = 0; i < value; i++) {
-                Message message = weakReferenceHandler.obtainMessage();
-                message.arg1 = i;
-                message.what = 2022010101;
-                weakReferenceHandler.handleMessage(message);
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                weakReferenceHandler.post(updateProgressRunnable.setProgress(i));
             }
         }).start();
     }
+
+    private interface UpdateProgressRunnable extends Runnable {
+        UpdateProgressRunnable setProgress(int progress);
+    }
+
+    private final UpdateProgressRunnable updateProgressRunnable = new UpdateProgressRunnable() {
+
+        private int progress = 0;
+
+        @Override
+        public UpdateProgressRunnable setProgress(int progress) {
+            this.progress = progress;
+            return this;
+        }
+
+        @Override
+        public void run() {
+            sweepAngle = progress * 360 / 100f;
+            invalidate();
+        }
+    };
 }
