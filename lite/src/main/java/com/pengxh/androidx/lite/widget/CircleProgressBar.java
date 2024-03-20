@@ -216,11 +216,16 @@ public class CircleProgressBar extends View implements Handler.Callback {
             this.currentValue = value + "%";
         }
 
-        new Thread(() -> {
-            for (int i = 0; i < value; i++) {
-                weakReferenceHandler.post(updateProgressRunnable.setProgress(i));
-            }
-        }).start();
+        int i = 0;
+        while (i <= value) {
+            weakReferenceHandler.post(updateProgressRunnable.setProgress(i));
+            i++;
+        }
+//        new Thread(() -> {
+//            for (int i = 0; i < value; i++) {
+//                weakReferenceHandler.post(updateProgressRunnable.setProgress(i));
+//            }
+//        }).start();
     }
 
     private interface UpdateProgressRunnable extends Runnable {
@@ -239,7 +244,7 @@ public class CircleProgressBar extends View implements Handler.Callback {
 
         @Override
         public void run() {
-            sweepAngle = progress * 360 / 100f;
+            sweepAngle = (float) progress * 360 / 100;
             invalidate();
         }
     };
