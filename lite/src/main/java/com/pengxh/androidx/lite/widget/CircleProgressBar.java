@@ -101,7 +101,7 @@ public class CircleProgressBar extends View implements Handler.Callback {
         backgroundPaint = new Paint();
         backgroundPaint.setColor(backgroundColor);
         backgroundPaint.setStyle(Paint.Style.STROKE);
-        backgroundPaint.setStrokeWidth(FloatHub.dp2px(context, ringStroke));
+        backgroundPaint.setStrokeWidth(ringStroke);
         backgroundPaint.setStrokeCap(Paint.Cap.ROUND);  //圆头
         backgroundPaint.setAntiAlias(true);
 
@@ -109,7 +109,7 @@ public class CircleProgressBar extends View implements Handler.Callback {
         foregroundPaint = new Paint();
         foregroundPaint.setColor(foregroundColor);
         foregroundPaint.setStyle(Paint.Style.STROKE);
-        foregroundPaint.setStrokeWidth(FloatHub.dp2px(context, ringStroke));
+        foregroundPaint.setStrokeWidth(ringStroke);
         foregroundPaint.setStrokeCap(Paint.Cap.ROUND);  //圆头
         foregroundPaint.setAntiAlias(true);
 
