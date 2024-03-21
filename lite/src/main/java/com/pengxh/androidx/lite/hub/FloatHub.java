@@ -1,7 +1,9 @@
 package com.pengxh.androidx.lite.hub;
 
 import android.content.Context;
-import android.util.TypedValue;
+
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 public class FloatHub {
     /**
@@ -22,8 +24,9 @@ public class FloatHub {
      * sp转换成px
      */
     public static float sp2px(Context context, float spValue) {
-        return TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_SP, spValue, context.getResources().getDisplayMetrics()
-        );
+        DecimalFormat decimalFormat = new DecimalFormat("#");
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+        String result = decimalFormat.format(spValue / ContextHub.getScreenDensity(context));
+        return Float.parseFloat(result);
     }
 }

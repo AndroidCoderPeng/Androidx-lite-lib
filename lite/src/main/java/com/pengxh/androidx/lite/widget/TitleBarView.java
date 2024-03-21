@@ -13,18 +13,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.ContextHub;
+import com.pengxh.androidx.lite.hub.FloatHub;
 import com.pengxh.androidx.lite.hub.IntHub;
-
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 /**
  * 界面顶部标题栏
  */
 public class TitleBarView extends RelativeLayout {
 
-    private final DecimalFormat decimalFormat = new DecimalFormat();
     private final int titleHeight = IntHub.dp2px(getContext(), 45);
     private final TextView textView;
 
@@ -49,7 +45,7 @@ public class TitleBarView extends RelativeLayout {
             textView.setText(title);
             textView.setSingleLine(true);
             textView.setEllipsize(TextUtils.TruncateAt.END);
-            textView.setTextSize(sp2px(titleSize));
+            textView.setTextSize(FloatHub.sp2px(context, titleSize));
             textView.setGravity(Gravity.CENTER);
             textView.setTextColor(titleColor);
             titleParams.addRule(CENTER_IN_PARENT, TRUE);
@@ -87,7 +83,7 @@ public class TitleBarView extends RelativeLayout {
             textView.setText(title);
             textView.setSingleLine(true);
             textView.setEllipsize(TextUtils.TruncateAt.END);
-            textView.setTextSize(sp2px(titleSize));
+            textView.setTextSize(FloatHub.sp2px(context, titleSize));
             textView.setGravity(Gravity.CENTER);
             textView.setTextColor(titleColor);
             titleParams.addRule(CENTER_IN_PARENT, TRUE);
@@ -116,12 +112,6 @@ public class TitleBarView extends RelativeLayout {
                 });
             }
         }
-    }
-
-    private float sp2px(float textSize) {
-        decimalFormat.setRoundingMode(RoundingMode.CEILING);
-        String result = decimalFormat.format(textSize / ContextHub.getScreenDensity(getContext()));
-        return Float.parseFloat(result);
     }
 
     @Override
