@@ -13,7 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.FloatHub;
+import com.pengxh.androidx.lite.hub.ContextHub;
 import com.pengxh.androidx.lite.hub.IntHub;
 
 /**
@@ -45,7 +45,8 @@ public class TitleBarView extends RelativeLayout {
             textView.setText(title);
             textView.setSingleLine(true);
             textView.setEllipsize(TextUtils.TruncateAt.END);
-            textView.setTextSize(FloatHub.sp2px(context, titleSize));
+            //textSize会将值默认为sp，不除以像素密度则会将sp再此转为px，相当于原本字体大小进行了两次转换px
+            textView.setTextSize(titleSize / ContextHub.getScreenDensity(context));
             textView.setGravity(Gravity.CENTER);
             textView.setTextColor(titleColor);
             titleParams.addRule(CENTER_IN_PARENT, TRUE);
@@ -83,7 +84,8 @@ public class TitleBarView extends RelativeLayout {
             textView.setText(title);
             textView.setSingleLine(true);
             textView.setEllipsize(TextUtils.TruncateAt.END);
-            textView.setTextSize(FloatHub.sp2px(context, titleSize));
+            //textSize会将值默认为sp，不除以像素密度则会将sp再此转为px，相当于原本字体大小进行了两次转换px
+            textView.setTextSize(titleSize / ContextHub.getScreenDensity(context));
             textView.setGravity(Gravity.CENTER);
             textView.setTextColor(titleColor);
             titleParams.addRule(CENTER_IN_PARENT, TRUE);
