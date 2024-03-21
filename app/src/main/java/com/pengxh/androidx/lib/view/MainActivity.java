@@ -30,7 +30,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
     protected void initOnCreate(@Nullable Bundle savedInstanceState) {
-        binding.circleProgressBar.setCurrentValue(95);
+        binding.airDashBoardView.setCenterText("优").setCurrentValue(255);
     }
 
     @Override

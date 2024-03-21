@@ -6,16 +6,14 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.pengxh.androidx.lite.widget.CircleProgressBar
-        android:id="@+id/circleProgressBar"
+    <com.pengxh.androidx.lite.widget.AirDashBoardView
+        android:id="@+id/airDashBoardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cpb_background="@color/mainBackground"
-        app:cpb_foreground="@color/purple_500"
-        app:cpb_hide_text="false"
-        app:cpb_ring_radius="@dimen/dp_80"
-        app:cpb_ring_stroke="@dimen/dp_10"
-        app:cpb_text="百分比"
-        app:cpb_text_color="@color/purple_200"
-        app:cpb_text_size="@dimen/sp_18" />
+        app:air_center_text_color="@color/red"
+        app:air_center_text_size="@dimen/sp_18"
+        app:air_ring_background="@color/mainBackground"
+        app:air_ring_foreground="@color/purple_500"
+        app:air_ring_radius="@dimen/dp_100"
+        app:air_ring_stroke="@dimen/dp_15" />
 </LinearLayout>
