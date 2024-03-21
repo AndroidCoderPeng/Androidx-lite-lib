@@ -4,11 +4,14 @@
         <attr name="cpb_ring_radius" format="dimension" />
         <attr name="cpb_ring_stroke" format="dimension" />
         <!--进度条底色-->
-        <attr name="cpb_backgroundColor" format="color" />
+        <attr name="cpb_background" format="color" />
         <!--进度条前景色-->
-        <attr name="cpb_foregroundColor" format="color" />
+        <attr name="cpb_foreground" format="color" />
         <!--文字-->
         <attr name="cpb_text" format="string" />
+        <attr name="cpb_text_size" format="dimension" />
+        <attr name="cpb_text_color" format="color" />
+        <attr name="cpb_hide_text" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="AirDashBoardView">

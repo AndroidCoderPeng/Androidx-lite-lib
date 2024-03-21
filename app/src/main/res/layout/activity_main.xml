@@ -10,9 +10,12 @@
         android:id="@+id/circleProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cpb_backgroundColor="#FFF5F5F5"
-        app:cpb_foregroundColor="@color/purple_500"
-        app:cpb_ring_radius="@dimen/dp_50"
+        app:cpb_background="@color/mainBackground"
+        app:cpb_foreground="@color/purple_500"
+        app:cpb_hide_text="false"
+        app:cpb_ring_radius="@dimen/dp_80"
         app:cpb_ring_stroke="@dimen/dp_10"
-        app:cpb_text="百分比" />
+        app:cpb_text="百分比"
+        app:cpb_text_color="@color/purple_200"
+        app:cpb_text_size="@dimen/sp_18" />
 </LinearLayout>
