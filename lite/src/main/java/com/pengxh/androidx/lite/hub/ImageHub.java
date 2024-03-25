@@ -41,8 +41,7 @@ public class ImageHub {
             yuvImage.compressToJpeg(new Rect(0, 0, yuvImage.getWidth(), yuvImage.getHeight()), 75, out);
 
             byte[] imageBytes = out.toByteArray();
-            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-            return BitmapHub.rotateImage(-90, bitmap);
+            return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
         } else if (format == ImageFormat.JPEG) {
             ByteBuffer buffer = image.getPlanes()[0].getBuffer();
             byte[] bytes = new byte[buffer.capacity()];
