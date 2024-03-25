@@ -32,7 +32,13 @@ public class FileHub {
     }
 
     /**
-     * 获取图片base64编码
+     * 获取图片文件base64编码
+     *
+     * 如果是上传到服务器，编码格式为：Base64.NO_WRAP
+     *
+     * 如果是本地使用，编码格式为：Base64.DEFAULT
+     *
+     * 默认：Base64.NO_WRAP
      */
     public static String toBase64(File file) {
         if (file == null) {
@@ -50,7 +56,7 @@ public class FileHub {
             bos.close();
 
             byte[] imgBytes = bos.toByteArray();
-            return Base64.encodeToString(imgBytes, Base64.DEFAULT);
+            return Base64.encodeToString(imgBytes, Base64.NO_WRAP);
         } catch (Exception e) {
             return null;
         }

@@ -49,6 +49,12 @@ public class BitmapHub {
 
     /**
      * 获取图片base64编码
+     *
+     * 如果是上传到服务器，编码格式为：Base64.NO_WRAP
+     *
+     * 如果是本地使用，编码格式为：Base64.DEFAULT
+     *
+     * 默认：Base64.NO_WRAP
      */
     public static String toBase64(Bitmap bitmap) {
         try {
@@ -57,7 +63,7 @@ public class BitmapHub {
             byte[] bitmapBytes = outputStream.toByteArray();
             outputStream.flush();
             outputStream.close();
-            return Base64.encodeToString(bitmapBytes, Base64.DEFAULT);
+            return Base64.encodeToString(bitmapBytes, Base64.NO_WRAP);
         } catch (IOException e) {
             e.printStackTrace();
         }
