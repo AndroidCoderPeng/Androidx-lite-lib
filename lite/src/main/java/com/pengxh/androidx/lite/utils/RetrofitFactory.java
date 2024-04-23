@@ -15,24 +15,30 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitFactory {
     private static final String TAG = "RetrofitFactory";
 
-    public static <T> T createRetrofit(String httpConfig, Class<T> tClass) {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-            @Override
-            public void log(@NonNull String s) {
-                Log.d(TAG, ">>>>> " + s);
-            }
-        });
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+    public static <T> T createRetrofit(String httpConfig, Class<T> clazz, boolean debug) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(Constant.HTTP_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(Constant.HTTP_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(Constant.HTTP_TIMEOUT, TimeUnit.SECONDS);
-        OkHttpClient httpClient = builder.addInterceptor(interceptor).build();
+        OkHttpClient httpClient;
+        if (debug) {
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+                @Override
+                public void log(@NonNull String s) {
+                    Log.d(TAG, ">>>>> " + s);
+                }
+            });
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            httpClient = builder.addInterceptor(interceptor).build();
+        } else {
+            httpClient = builder.build();
+        }
         return new Retrofit.Builder()
                 .baseUrl(httpConfig)
                 .addConverterFactory(GsonConverterFactory.create())//Gson转换器
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(httpClient) //log拦截器
-                .build().create(tClass);
+                .build()
+                .create(clazz);
     }
 }
