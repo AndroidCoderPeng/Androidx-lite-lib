@@ -138,6 +138,13 @@ public class TitleBarView extends RelativeLayout {
         invalidate();
     }
 
+    /**
+     * 获取当前显示标题文字
+     */
+    public String getTitle() {
+        return textView.getText().toString();
+    }
+
     private OnClickListener listener;
 
     public void setOnClickListener(OnClickListener listener) {

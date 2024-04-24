@@ -10,7 +10,7 @@ public class RetrofitServiceManager {
     private static final String TAG = "RetrofitServiceManager";
 
     private static final RetrofitService api = RetrofitFactory.createRetrofit(
-            "https://way.jd.com", RetrofitService.class
+            "https://way.jd.com", RetrofitService.class, true
     );
 
     public static Observable<ResponseBody> getImageList(String channel, int start) {
