@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.pengxh.androidx.lite.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,11 +23,11 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private static final String TAG = "EditableImageAdapter";
     private final Context context;
+    private final List<String> images;
     private final int viewWidth;
     private final int imageCountLimit;
     private final int spanCount;
     private final LayoutInflater layoutInflater;
-    private final List<String> adapterItems = new ArrayList<>();
 
     /**
      * 数量可编辑图片适配器
@@ -38,26 +37,13 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
      * @param imageCountLimit 最多显示的图片数目
      * @param spanCount       每行显示的图片数目
      */
-    public EditableImageAdapter(Context context, int viewWidth, int imageCountLimit, int spanCount) {
+    public EditableImageAdapter(Context context, List<String> images, int viewWidth, int imageCountLimit, int spanCount) {
         this.context = context;
+        this.images = images;
         this.viewWidth = viewWidth;
         this.imageCountLimit = imageCountLimit;
         this.spanCount = spanCount;
         this.layoutInflater = LayoutInflater.from(context);
-    }
-
-    public void notifyImageItemRangeInserted(List<String> images) {
-        int previousSize = adapterItems.size();
-        adapterItems.clear();
-        notifyItemRangeRemoved(0, previousSize);
-        adapterItems.addAll(images);
-        notifyItemRangeInserted(0, adapterItems.size());
-    }
-
-    public void notifyImageItemRemoved(List<String> images) {
-        if (!adapterItems.isEmpty()) {
-            notifyImageItemRangeInserted(images);
-        }
     }
 
     @NonNull
@@ -73,7 +59,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageSize, imageSize);
         imageView.setLayoutParams(params);
 
-        if (position == getItemCount() - 1 && adapterItems.size() < imageCountLimit) {
+        if (position == getItemCount() - 1 && images.size() < imageCountLimit) {
             imageView.setImageResource(R.drawable.ic_add_pic);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,7 +72,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
                 }
             });
         } else {
-            Glide.with(context).load(adapterItems.get(position)).into(imageView);
+            Glide.with(context).load(images.get(position)).into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -114,10 +100,10 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        if (adapterItems.size() >= imageCountLimit) {
+        if (images.size() >= imageCountLimit) {
             return imageCountLimit;
         } else {
-            return adapterItems.size() + 1;
+            return images.size() + 1;
         }
     }
 
