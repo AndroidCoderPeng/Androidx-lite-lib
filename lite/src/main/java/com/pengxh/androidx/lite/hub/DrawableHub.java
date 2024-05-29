@@ -18,7 +18,7 @@ public class DrawableHub {
      * <p>
      * 取值区间[0,25]
      */
-    public static Bitmap toBlurBitmap(Context context, Drawable drawable, float radius) {
+    public static Bitmap getBlurBitmap(Context context, Drawable drawable, float radius) {
         Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
 
         // 计算图片缩小后的长宽

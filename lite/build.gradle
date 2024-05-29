@@ -53,4 +53,8 @@ dependencies {
     implementation 'io.netty:netty-all:4.1.23.Final'
     //汉字转拼音（多音字无法完美转换）
     implementation 'com.belerweb:pinyin4j:2.5.0'
+    //CameraX
+    def camerax_version = '1.2.3'
+    //CameraX Camera2 extensions
+    implementation "androidx.camera:camera-camera2:$camerax_version"
 }

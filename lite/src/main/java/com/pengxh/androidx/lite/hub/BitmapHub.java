@@ -56,7 +56,7 @@ public class BitmapHub {
      *
      * 默认：Base64.NO_WRAP
      */
-    public static String toBase64(Bitmap bitmap) {
+    public static String getBase64(Bitmap bitmap) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);

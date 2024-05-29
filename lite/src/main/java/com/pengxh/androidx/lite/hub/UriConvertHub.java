@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 public class UriConvertHub {
-    public static String realFilePath(Context context, Uri uri) {
+    public static String getRealFilePath(Context context, Uri uri) {
         String path = "";
         if (Objects.equals(uri.getScheme(), ContentResolver.SCHEME_FILE)) {
             path = new File(uri.getPath()).getAbsolutePath();

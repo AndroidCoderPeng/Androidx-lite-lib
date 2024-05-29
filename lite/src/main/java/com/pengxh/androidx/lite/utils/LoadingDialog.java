@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.view.WindowManager;
 
-public class LoadingDialogHub {
+public class LoadingDialog {
 
     private static ProgressDialog loadingDialog;
 

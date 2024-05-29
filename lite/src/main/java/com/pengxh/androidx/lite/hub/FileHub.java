@@ -40,7 +40,7 @@ public class FileHub {
      *
      * 默认：Base64.NO_WRAP
      */
-    public static String toBase64(File file) {
+    public static String getBase64(File file) {
         if (file == null) {
             return null;
         }

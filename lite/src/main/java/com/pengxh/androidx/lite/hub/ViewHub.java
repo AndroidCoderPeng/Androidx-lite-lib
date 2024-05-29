@@ -7,7 +7,7 @@ public class ViewHub {
     /**
      * View转Bitmap
      */
-    public static Bitmap toBitmap(View view) {
+    public static Bitmap getBitmap(View view) {
         Bitmap bitmap = null;
         try {
             view.measure(

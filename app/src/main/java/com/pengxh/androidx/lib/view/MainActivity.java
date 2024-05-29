@@ -75,7 +75,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
                 return o1.py.compareTo(o2.py);
             }
         });
-        Log.d(TAG, ObjectHub.toJson(apps));
+        Log.d(TAG, ObjectHub.getJson(apps));
     }
 
     static class App {
