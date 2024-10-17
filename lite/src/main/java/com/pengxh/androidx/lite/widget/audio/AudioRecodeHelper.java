@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.pengxh.androidx.lite.utils.Constant;
 import com.pengxh.androidx.lite.utils.WeakReferenceHandler;
@@ -37,7 +36,6 @@ public class AudioRecodeHelper implements Handler.Callback {
     /**
      * 设置保存文件路径，mediaRecorder初始化
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void initRecorder(Context context, File audioFile) {
         this.audioFile = audioFile;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -48,7 +46,11 @@ public class AudioRecodeHelper implements Handler.Callback {
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC); // 设置麦克风
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_WB);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
-        mediaRecorder.setOutputFile(audioFile.getAbsoluteFile());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mediaRecorder.setOutputFile(audioFile);
+        } else {
+            mediaRecorder.setOutputFile(audioFile.getAbsolutePath());
+        }
         mediaRecorder.setMaxDuration(Constant.MAX_LENGTH);
         try {
             mediaRecorder.prepare();

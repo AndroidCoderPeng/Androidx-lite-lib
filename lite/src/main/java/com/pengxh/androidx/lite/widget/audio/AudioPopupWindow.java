@@ -19,7 +19,7 @@ public class AudioPopupWindow {
         this.callback = builder.callback;
     }
 
-    static class Builder {
+    public static class Builder {
         private Context context;
         private OnAudioPopupCallback callback;
 
