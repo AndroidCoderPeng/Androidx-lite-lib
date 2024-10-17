@@ -49,11 +49,11 @@ public class BitmapHub {
 
     /**
      * 获取图片base64编码
-     *
+     * <p>
      * 如果是上传到服务器，编码格式为：Base64.NO_WRAP
-     *
+     * <p>
      * 如果是本地使用，编码格式为：Base64.DEFAULT
-     *
+     * <p>
      * 默认：Base64.NO_WRAP
      */
     public static String getBase64(Bitmap bitmap) {

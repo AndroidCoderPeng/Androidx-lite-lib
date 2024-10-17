@@ -1,6 +1,5 @@
 package com.pengxh.androidx.lite.hub;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -23,9 +22,7 @@ import java.util.Locale;
 /**
  * Created by Administrator on 2018/11/16.
  */
-@SuppressLint("MissingPermission")
 public class StringHub {
-    private static final String TAG = "StringHub";
     private static SimpleDateFormat dateFormat;
 
     /**
@@ -170,7 +167,7 @@ public class StringHub {
      * 判断输入的是否是数字
      */
     public static boolean isNumber(String str) {
-        String regex = "[-+]?\\d+(\\.\\d+)?";
+        String regex = "([-+])?\\d+(\\.\\d+)?";
         return str.matches(regex);
     }
 
@@ -206,7 +203,7 @@ public class StringHub {
         if (number.length() != 11) {
             return false;
         } else {
-            String regExp = "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}\\$";
+            String regExp = "^1[3-9]\\d{9}$";
             return number.matches(regExp);
         }
     }
@@ -218,7 +215,7 @@ public class StringHub {
         if (TextUtils.isEmpty(email)) {
             return false;
         } else {
-            String regExp = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*\\$";
+            String regExp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
             return email.matches(regExp);
         }
     }

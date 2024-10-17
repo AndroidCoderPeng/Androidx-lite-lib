@@ -1,9 +1,6 @@
 package com.pengxh.androidx.lite.hub;
 
 public class ByteArrayHub {
-    /**
-     * Camera data
-     */
     public static String toASCII(byte[] bytes) {
         //判断是否能被2整除
         if (bytes.length % 2 == 0) {

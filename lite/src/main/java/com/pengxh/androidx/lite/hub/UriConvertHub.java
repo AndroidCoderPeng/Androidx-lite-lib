@@ -17,7 +17,7 @@ public class UriConvertHub {
     public static String getRealFilePath(Context context, Uri uri) {
         String path = "";
         if (Objects.equals(uri.getScheme(), ContentResolver.SCHEME_FILE)) {
-            path = new File(uri.getPath()).getAbsolutePath();
+            path = new File(Objects.requireNonNull(uri.getPath())).getAbsolutePath();
         } else if (Objects.equals(uri.getScheme(), ContentResolver.SCHEME_CONTENT)) {
             ContentResolver contentResolver = context.getContentResolver();
             Cursor cursor = contentResolver.query(uri, null, null, null, null);
