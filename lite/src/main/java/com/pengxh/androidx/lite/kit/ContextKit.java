@@ -1,4 +1,4 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -36,7 +36,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 @SuppressLint("MissingPermission")
-public class ContextHub {
+public class ContextKit {
 
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

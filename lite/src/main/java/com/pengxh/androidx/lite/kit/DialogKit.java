@@ -1,4 +1,4 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -8,7 +8,7 @@ import android.view.WindowManager;
 
 import androidx.annotation.StyleRes;
 
-public class DialogHub {
+public class DialogKit {
     public static void resetParams(Dialog dialog, double ratio) {
         Window window = dialog.getWindow();
         if (window == null) {
@@ -21,7 +21,7 @@ public class DialogHub {
         if (r >= 1) {
             r = 1f;
         }
-        params.width = (int) (ContextHub.getScreenWidth(dialog.getContext()) * r);
+        params.width = (int) (ContextKit.getScreenWidth(dialog.getContext()) * r);
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(params);
     }
@@ -41,7 +41,7 @@ public class DialogHub {
         if (r >= 1) {
             r = 1f;
         }
-        params.width = (int) (ContextHub.getScreenWidth(dialog.getContext()) * r);
+        params.width = (int) (ContextKit.getScreenWidth(dialog.getContext()) * r);
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(params);
     }

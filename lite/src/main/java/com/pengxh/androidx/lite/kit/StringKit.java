@@ -1,4 +1,4 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -22,7 +22,7 @@ import java.util.Locale;
 /**
  * Created by Administrator on 2018/11/16.
  */
-public class StringHub {
+public class StringKit {
     private static SimpleDateFormat dateFormat;
 
     /**

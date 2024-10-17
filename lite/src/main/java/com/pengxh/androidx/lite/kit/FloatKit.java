@@ -1,4 +1,4 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
 import android.content.Context;
 import android.util.TypedValue;
@@ -6,21 +6,21 @@ import android.util.TypedValue;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
-public class FloatHub {
+public class FloatKit {
     private static final DecimalFormat decimalFormat = new DecimalFormat("#");
 
     /**
      * px转dp
      */
     public static float px2dp(Context context, float pxValue) {
-        return pxValue / ContextHub.getScreenDensity(context);
+        return pxValue / ContextKit.getScreenDensity(context);
     }
 
     /**
      * dp转px
      */
     public static float dp2px(Context context, float dpValue) {
-        return dpValue * ContextHub.getScreenDensity(context);
+        return dpValue * ContextKit.getScreenDensity(context);
     }
 
     /**

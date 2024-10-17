@@ -1,4 +1,4 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,7 +13,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Random;
 
-public class IntHub {
+public class IntKit {
     /**
      * 随机颜色
      */
@@ -57,7 +57,7 @@ public class IntHub {
      */
     public static int px2dp(Context context, int value) {
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
-        String result = decimalFormat.format(value / ContextHub.getScreenDensity(context));
+        String result = decimalFormat.format(value / ContextKit.getScreenDensity(context));
         return Integer.parseInt(result);
     }
 
@@ -66,7 +66,7 @@ public class IntHub {
      */
     public static int dp2px(Context context, int value) {
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
-        String result = decimalFormat.format(value * ContextHub.getScreenDensity(context));
+        String result = decimalFormat.format(value * ContextKit.getScreenDensity(context));
         return Integer.parseInt(result);
     }
 

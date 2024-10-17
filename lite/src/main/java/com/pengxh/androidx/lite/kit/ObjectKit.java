@@ -1,8 +1,8 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
 import com.google.gson.Gson;
 
-public class ObjectHub {
+public class ObjectKit {
     public static String getJson(Object o) {
         if (o == null) {
             return "";

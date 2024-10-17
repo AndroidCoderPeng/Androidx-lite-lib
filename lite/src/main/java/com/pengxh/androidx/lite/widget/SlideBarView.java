@@ -22,7 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.StringHub;
+import com.pengxh.androidx.lite.kit.StringKit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -131,7 +131,7 @@ public class SlideBarView extends View implements View.OnTouchListener {
     public int getLetterPosition(String letter) {
         int index = -1;
         for (int i = 0; i < dataSet.size(); i++) {
-            String firstLetter = StringHub.getHanYuPinyin(dataSet.get(i)).substring(0, 1);
+            String firstLetter = StringKit.getHanYuPinyin(dataSet.get(i)).substring(0, 1);
             if (letter.equals(firstLetter)) {
                 index = i;
                 //当有相同的首字母之后就跳出循环

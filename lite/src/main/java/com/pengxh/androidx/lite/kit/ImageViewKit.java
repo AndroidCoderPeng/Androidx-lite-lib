@@ -1,4 +1,4 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.widget.ImageView;
 
-public class ImageViewHub {
+public class ImageViewKit {
     public static void switchBackground(ImageView imageView, Bitmap blurBitmap) {
         TransitionDrawable transitionDrawable = null;
         Drawable lastDrawable;

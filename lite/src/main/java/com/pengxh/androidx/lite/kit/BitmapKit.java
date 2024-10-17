@@ -1,4 +1,4 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -21,7 +21,7 @@ import java.io.IOException;
 /**
  * Bitmap 工具相关
  */
-public class BitmapHub {
+public class BitmapKit {
     /**
      * 保存图片，不压缩
      */
@@ -99,14 +99,14 @@ public class BitmapHub {
         Paint borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setAntiAlias(true);
-        borderPaint.setStrokeWidth(FloatHub.dp2px(context, borderStroke));
+        borderPaint.setStrokeWidth(FloatKit.dp2px(context, borderStroke));
         borderPaint.setColor(color);
 
         //添加边框
         canvas.drawCircle(
                 squareBitmapBorderLength / 2f,
                 squareBitmapBorderLength / 2f,
-                (squareBitmapBorderLength - FloatHub.dp2px(context, borderStroke)) / 2f,
+                (squareBitmapBorderLength - FloatKit.dp2px(context, borderStroke)) / 2f,
                 borderPaint
         );
         return roundedBitmap;

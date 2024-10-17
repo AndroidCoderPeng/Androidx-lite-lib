@@ -1,11 +1,11 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.TextSwitcher;
 
-public class TextSwitcherHub {
+public class TextSwitcherKit {
     /**
      * 上下滚动消息动画扩展
      */

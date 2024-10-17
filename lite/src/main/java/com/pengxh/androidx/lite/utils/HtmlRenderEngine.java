@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.IntHub;
+import com.pengxh.androidx.lite.kit.IntKit;
 
 import org.xml.sax.XMLReader;
 
@@ -114,7 +114,7 @@ public class HtmlRenderEngine implements Handler.Callback {
                         drawable = Glide.with(context).load(source).submit().get();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        drawable = IntHub.convertDrawable(context, R.mipmap.load_image_error);
+                        drawable = IntKit.convertDrawable(context, R.mipmap.load_image_error);
                     }
 
                     int width = drawable.getIntrinsicWidth();

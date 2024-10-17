@@ -1,4 +1,4 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
 import android.text.TextUtils;
 
@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class LongHub {
+public class LongKit {
     private static SimpleDateFormat dateFormat;
 
     /**

@@ -18,9 +18,9 @@ import androidx.core.content.ContextCompat;
 
 import com.pengxh.androidx.lib.databinding.ActivityMainBinding;
 import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
-import com.pengxh.androidx.lite.hub.ContextHub;
-import com.pengxh.androidx.lite.hub.LongHub;
-import com.pengxh.androidx.lite.hub.StringHub;
+import com.pengxh.androidx.lite.kit.ContextKit;
+import com.pengxh.androidx.lite.kit.LongKit;
+import com.pengxh.androidx.lite.kit.StringKit;
 import com.pengxh.androidx.lite.widget.TitleBarView;
 import com.pengxh.androidx.lite.widget.audio.AudioPopupWindow;
 import com.pengxh.androidx.lite.widget.audio.AudioRecodeHelper;
@@ -57,12 +57,12 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
         binding.titleView.setOnClickListener(new TitleBarView.OnClickListener() {
             @Override
             public void onLeftClick() {
-                StringHub.show(context, "onLeftClick");
+                StringKit.show(context, "onLeftClick");
             }
 
             @Override
             public void onRightClick() {
-                StringHub.show(context, "onRightClick");
+                StringKit.show(context, "onRightClick");
             }
         });
 
@@ -80,12 +80,12 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
                                 window.showAtLocation(binding.rootView, Gravity.CENTER, 0, 0);
 
                                 //开始录音
-                                audioRecorder.initRecorder(context, ContextHub.createAudioFile(context));
+                                audioRecorder.initRecorder(context, ContextKit.createAudioFile(context));
                                 audioRecorder.startRecord(new AudioRecodeHelper.OnAudioStateUpdateListener() {
                                     @Override
                                     public void onUpdate(Double db, Long time) {
                                         imageView.getDrawable().setLevel((int) (3000 + 6000 * db / 100));
-                                        textView.setText(LongHub.millsToTime(time));
+                                        textView.setText(LongKit.millsToTime(time));
                                     }
 
                                     @Override

@@ -19,7 +19,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.IntHub;
+import com.pengxh.androidx.lite.kit.IntKit;
 import com.pengxh.androidx.lite.utils.Constant;
 import com.pengxh.androidx.lite.utils.WeakReferenceHandler;
 
@@ -70,8 +70,8 @@ public class AudioPlayerView extends AppCompatTextView implements Handler.Callba
 
         //格式化时长
         long sec = duration / 1000;
-        int m = Integer.parseInt(IntHub.appendZero((int) (sec / 60)));
-        int s = Integer.parseInt(IntHub.appendZero((int) (sec % 60)));
+        int m = Integer.parseInt(IntKit.appendZero((int) (sec / 60)));
+        int s = Integer.parseInt(IntKit.appendZero((int) (sec % 60)));
         setText(m + ":" + s);
         mmr.release();
     }

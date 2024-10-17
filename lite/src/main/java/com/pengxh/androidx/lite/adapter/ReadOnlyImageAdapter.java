@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.ContextHub;
+import com.pengxh.androidx.lite.kit.ContextKit;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class ReadOnlyImageAdapter extends BaseAdapter {
     public ReadOnlyImageAdapter(Context context, @Nullable List<String> images) {
         this.context = context;
         this.images = images;
-        this.screenWidth = ContextHub.getScreenWidth(context);
+        this.screenWidth = ContextKit.getScreenWidth(context);
     }
 
     @Override

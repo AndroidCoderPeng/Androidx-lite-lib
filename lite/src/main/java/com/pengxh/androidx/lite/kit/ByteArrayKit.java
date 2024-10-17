@@ -1,6 +1,6 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
-public class ByteArrayHub {
+public class ByteArrayKit {
     public static String toASCII(byte[] bytes) {
         //判断是否能被2整除
         if (bytes.length % 2 == 0) {

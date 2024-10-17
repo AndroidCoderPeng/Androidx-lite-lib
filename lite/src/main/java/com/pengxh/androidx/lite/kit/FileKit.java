@@ -1,4 +1,4 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
 import android.util.Base64;
 
@@ -9,7 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class FileHub {
+public class FileKit {
     private static final String TAG = "FileHub";
 
     public static String read(File file) {

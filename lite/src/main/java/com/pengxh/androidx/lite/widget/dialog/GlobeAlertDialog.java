@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.ContextHub;
+import com.pengxh.androidx.lite.kit.ContextKit;
 
 public class GlobeAlertDialog extends DialogFragment {
 
@@ -43,7 +43,7 @@ public class GlobeAlertDialog extends DialogFragment {
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         window.getDecorView().setBackgroundColor(Color.TRANSPARENT);
         WindowManager.LayoutParams params = window.getAttributes();
-        params.width = (int) (ContextHub.getScreenWidth(getDialog().getContext()) * 0.8f);
+        params.width = (int) (ContextKit.getScreenWidth(getDialog().getContext()) * 0.8f);
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(params);
 

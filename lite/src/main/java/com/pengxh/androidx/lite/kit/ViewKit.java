@@ -1,9 +1,9 @@
-package com.pengxh.androidx.lite.hub;
+package com.pengxh.androidx.lite.kit;
 
 import android.graphics.Bitmap;
 import android.view.View;
 
-public class ViewHub {
+public class ViewKit {
     /**
      * View转Bitmap
      */

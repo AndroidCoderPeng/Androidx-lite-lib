@@ -12,14 +12,14 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.ContextHub;
+import com.pengxh.androidx.lite.kit.ContextKit;
 
 import java.util.List;
 
 public class EasyPopupWindow extends PopupWindow {
 
     public EasyPopupWindow(Context context) {
-        setWidth((int) (ContextHub.getScreenWidth(context) * 0.4));
+        setWidth((int) (ContextKit.getScreenWidth(context) * 0.4));
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setOutsideTouchable(true);
         setFocusable(true);

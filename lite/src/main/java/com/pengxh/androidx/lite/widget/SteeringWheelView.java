@@ -13,7 +13,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.Nullable;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.ContextHub;
+import com.pengxh.androidx.lite.kit.ContextKit;
 
 @SuppressLint("ClickableViewAccessibility")
 public class SteeringWheelView extends RelativeLayout {
@@ -27,8 +27,8 @@ public class SteeringWheelView extends RelativeLayout {
             diameter = 150f;
         }
 
-        if (diameter >= ContextHub.getScreenWidth(context)) {
-            diameter = ContextHub.getScreenWidth(context);
+        if (diameter >= ContextKit.getScreenWidth(context)) {
+            diameter = ContextKit.getScreenWidth(context);
         }
 
         LayoutParams layoutParams = new LayoutParams((int) diameter, (int) diameter);

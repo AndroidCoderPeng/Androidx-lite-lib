@@ -15,8 +15,8 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.FloatHub;
-import com.pengxh.androidx.lite.hub.IntHub;
+import com.pengxh.androidx.lite.kit.FloatKit;
+import com.pengxh.androidx.lite.kit.IntKit;
 
 /**
  * 圆形进度条
@@ -61,10 +61,10 @@ public class CircleProgressBar extends View {
     public CircleProgressBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray type = context.obtainStyledAttributes(attrs, R.styleable.CircleProgressBar);
-        ringRadius = type.getDimensionPixelSize(R.styleable.CircleProgressBar_cpb_ring_radius, IntHub.dp2px(context, 100));
+        ringRadius = type.getDimensionPixelSize(R.styleable.CircleProgressBar_cpb_ring_radius, IntKit.dp2px(context, 100));
         rectF = new RectF(-ringRadius, -ringRadius, ringRadius, ringRadius);
-        ringStroke = type.getDimensionPixelSize(R.styleable.CircleProgressBar_cpb_ring_stroke, IntHub.dp2px(context, 10));
-        viewSideLength = ringRadius + IntHub.dp2px(context, 10);
+        ringStroke = type.getDimensionPixelSize(R.styleable.CircleProgressBar_cpb_ring_stroke, IntKit.dp2px(context, 10));
+        viewSideLength = ringRadius + IntKit.dp2px(context, 10);
         //辅助框
         viewRect = new Rect(-viewSideLength, -viewSideLength, viewSideLength, viewSideLength);
 
@@ -83,7 +83,7 @@ public class CircleProgressBar extends View {
         guidePaint = new Paint();
         guidePaint.setColor(Color.LTGRAY);
         guidePaint.setStyle(Paint.Style.STROKE);
-        guidePaint.setStrokeWidth(FloatHub.dp2px(getContext(), 1f));
+        guidePaint.setStrokeWidth(FloatKit.dp2px(getContext(), 1f));
         guidePaint.setAntiAlias(true);
 
         //背景色画笔

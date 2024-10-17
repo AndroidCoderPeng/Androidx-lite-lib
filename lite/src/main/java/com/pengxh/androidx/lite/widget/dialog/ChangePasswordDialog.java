@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.DialogHub;
-import com.pengxh.androidx.lite.hub.StringHub;
+import com.pengxh.androidx.lite.kit.DialogKit;
+import com.pengxh.androidx.lite.kit.StringKit;
 
 public class ChangePasswordDialog extends Dialog {
 
@@ -45,7 +45,7 @@ public class ChangePasswordDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DialogHub.resetParams(this, 0.85);
+        DialogKit.resetParams(this, 0.85);
         setContentView(R.layout.dialog_change_pwd);
         setCancelable(true);
         setCanceledOnTouchOutside(true);
@@ -61,23 +61,23 @@ public class ChangePasswordDialog extends Dialog {
                 String newPwd = newPwdView.getText().toString();
                 String confirmPwd = confirmPwdView.getText().toString();
                 if (TextUtils.isEmpty(oldPwd)) {
-                    StringHub.show(context, "请输入原密码");
+                    StringKit.show(context, "请输入原密码");
                     return;
                 }
                 if (TextUtils.isEmpty(newPwd)) {
-                    StringHub.show(context, "请输入新密码");
+                    StringKit.show(context, "请输入新密码");
                     return;
                 }
                 if (TextUtils.isEmpty(confirmPwd)) {
-                    StringHub.show(context, "请再次确认密码");
+                    StringKit.show(context, "请再次确认密码");
                     return;
                 }
-                if (!StringHub.isLetterAndDigit(newPwd)) {
-                    StringHub.show(context, "新密码需包含数字和字母");
+                if (!StringKit.isLetterAndDigit(newPwd)) {
+                    StringKit.show(context, "新密码需包含数字和字母");
                     return;
                 }
                 if (!newPwd.equals(confirmPwd)) {
-                    StringHub.show(context, "新密码和确认密码不一致，请检查");
+                    StringKit.show(context, "新密码和确认密码不一致，请检查");
                     return;
                 }
                 listener.onConfirmClick(oldPwd, newPwd);

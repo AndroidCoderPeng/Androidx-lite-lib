@@ -16,8 +16,8 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.FloatHub;
-import com.pengxh.androidx.lite.hub.IntHub;
+import com.pengxh.androidx.lite.kit.FloatKit;
+import com.pengxh.androidx.lite.kit.IntKit;
 
 
 /**
@@ -78,15 +78,15 @@ public class AirDashBoardView extends View {
          * getDimensionPixelSize()返回的是实际数值的四舍五入
          * getDimensionPixelOffset返回的是实际数值去掉后面的小数点
          */
-        int ringRadius = type.getDimensionPixelSize(R.styleable.AirDashBoardView_air_ring_radius, IntHub.dp2px(context, 100));
-        viewSideLength = ringRadius + IntHub.dp2px(context, 15);
+        int ringRadius = type.getDimensionPixelSize(R.styleable.AirDashBoardView_air_ring_radius, IntKit.dp2px(context, 100));
+        viewSideLength = ringRadius + IntKit.dp2px(context, 15);
         //辅助框
         viewRect = new Rect(-viewSideLength, -viewSideLength, viewSideLength, viewSideLength);
         ringRectF = new RectF(-ringRadius, -ringRadius, ringRadius, ringRadius);
         background = type.getColor(R.styleable.AirDashBoardView_air_ring_background, Color.LTGRAY);
         foreground = type.getColor(R.styleable.AirDashBoardView_air_ring_foreground, Color.BLUE);
-        ringStroke = type.getDimensionPixelSize(R.styleable.AirDashBoardView_air_ring_stroke, IntHub.dp2px(context, 5));
-        centerTextSize = type.getDimensionPixelSize(R.styleable.AirDashBoardView_air_center_text_size, IntHub.sp2px(context, 20));
+        ringStroke = type.getDimensionPixelSize(R.styleable.AirDashBoardView_air_ring_stroke, IntKit.dp2px(context, 5));
+        centerTextSize = type.getDimensionPixelSize(R.styleable.AirDashBoardView_air_center_text_size, IntKit.sp2px(context, 20));
         centerTextColor = type.getColor(R.styleable.AirDashBoardView_air_center_text_color, Color.BLUE);
         type.recycle();
 
@@ -98,7 +98,7 @@ public class AirDashBoardView extends View {
         guidePaint = new Paint();
         guidePaint.setColor(Color.LTGRAY);
         guidePaint.setStyle(Paint.Style.STROKE);
-        guidePaint.setStrokeWidth(FloatHub.sp2px(getContext(), 1f));
+        guidePaint.setStrokeWidth(FloatKit.sp2px(getContext(), 1f));
         guidePaint.setAntiAlias(true);
 
         ringPaint = new Paint();
@@ -112,7 +112,7 @@ public class AirDashBoardView extends View {
         thresholdPaint.setColor(Color.DKGRAY);
         thresholdPaint.setAntiAlias(true);
         thresholdPaint.setTextAlign(Paint.Align.CENTER);
-        thresholdPaint.setTextSize(FloatHub.dp2px(getContext(), 16f));
+        thresholdPaint.setTextSize(FloatKit.dp2px(getContext(), 16f));
 
         centerPaint = new TextPaint();
         centerPaint.setColor(centerTextColor);
