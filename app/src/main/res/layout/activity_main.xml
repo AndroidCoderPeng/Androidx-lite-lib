@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical">
+
+    <com.pengxh.androidx.lite.widget.TitleBarView
+        android:id="@+id/titleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_500"
+        app:tbv_left_image="@drawable/ic_title_left"
+        app:tbv_right_image="@drawable/ic_title_right"
+        app:tbv_show_left_image="true"
+        app:tbv_show_right_image="true"
+        app:tbv_smaller_title="false"
+        app:tbv_text="@string/app_name"
+        app:tbv_text_color="@color/white" />
 
     <com.pengxh.androidx.lite.widget.AirDashBoardView
         android:id="@+id/airDashBoardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         app:air_center_text_color="@color/red"
         app:air_center_text_size="@dimen/sp_18"
         app:air_ring_background="@color/mainBackground"
         app:air_ring_foreground="@color/purple_500"
         app:air_ring_radius="@dimen/dp_100"
         app:air_ring_stroke="@dimen/dp_15" />
-</LinearLayout>
+</RelativeLayout>

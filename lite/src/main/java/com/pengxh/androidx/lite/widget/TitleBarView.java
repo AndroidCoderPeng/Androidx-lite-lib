@@ -4,28 +4,24 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.view.LayoutInflater;
+import android.widget.LinearLayout;
 
 import com.pengxh.androidx.lite.R;
-import com.pengxh.androidx.lite.hub.ContextHub;
-import com.pengxh.androidx.lite.hub.IntHub;
+import com.pengxh.androidx.lite.databinding.WidgetViewTitleBarBinding;
 
 /**
  * 界面顶部标题栏
  */
-public class TitleBarView extends RelativeLayout {
+public class TitleBarView extends LinearLayout {
 
-    private final int titleHeight = IntHub.dp2px(getContext(), 45);
-    private final TextView textView;
+    private final WidgetViewTitleBarBinding binding;
 
     public TitleBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        binding = WidgetViewTitleBarBinding.inflate(LayoutInflater.from(context), this, true);
+
         TypedArray type = context.obtainStyledAttributes(attrs, R.styleable.TitleBarView);
         int leftImageRes = type.getResourceId(R.styleable.TitleBarView_tbv_left_image, R.drawable.ic_title_left);
         boolean isShowLeft = type.getBoolean(R.styleable.TitleBarView_tbv_show_left_image, true);
@@ -33,94 +29,41 @@ public class TitleBarView extends RelativeLayout {
         boolean isShowRight = type.getBoolean(R.styleable.TitleBarView_tbv_show_right_image, false);
         CharSequence title = type.getText(R.styleable.TitleBarView_tbv_text);
         int titleColor = type.getColor(R.styleable.TitleBarView_tbv_text_color, Color.WHITE);
-        float titleSize = type.getDimension(R.styleable.TitleBarView_tbv_text_size, 18f);
-        boolean onlyShowTitle = type.getBoolean(R.styleable.TitleBarView_tbv_only_show_title, false);
+        boolean isSmallerTitle = type.getBoolean(R.styleable.TitleBarView_tbv_smaller_title, false);
         type.recycle();
 
-        if (onlyShowTitle) {
-            //文字
-            RelativeLayout.LayoutParams titleParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            titleParams.height = titleHeight;
-            textView = new TextView(context);
-            textView.setText(title);
-            textView.setSingleLine(true);
-            textView.setEllipsize(TextUtils.TruncateAt.END);
-            //textSize会将值默认为sp，不除以像素密度则会将sp再此转为px，相当于原本字体大小进行了两次转换px
-            textView.setTextSize(titleSize / ContextHub.getScreenDensity(context));
-            textView.setGravity(Gravity.CENTER);
-            textView.setTextColor(titleColor);
-            titleParams.addRule(CENTER_IN_PARENT, TRUE);
-            textView.setLayoutParams(titleParams);
-            addView(textView);
-        } else {
-            int iconSize = IntHub.dp2px(getContext(), 25);
-            int textMargin = IntHub.dp2px(getContext(), 10);
-
-            //左边图标
-            if (isShowLeft) {
-                RelativeLayout.LayoutParams leftImageParams = new RelativeLayout.LayoutParams(iconSize, iconSize);
-                ImageView leftImageView = new ImageView(context);
-                leftImageView.setImageResource(leftImageRes);
-                leftImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                leftImageParams.setMarginStart(textMargin);
-                leftImageParams.addRule(CENTER_VERTICAL, TRUE);
-                addView(leftImageView, leftImageParams);
-                leftImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        try {
-                            listener.onLeftClick();
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
-
-            //文字
-            RelativeLayout.LayoutParams titleParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            titleParams.height = titleHeight;
-            textView = new TextView(context);
-            textView.setText(title);
-            textView.setSingleLine(true);
-            textView.setEllipsize(TextUtils.TruncateAt.END);
-            //textSize会将值默认为sp，不除以像素密度则会将sp再此转为px，相当于原本字体大小进行了两次转换px
-            textView.setTextSize(titleSize / ContextHub.getScreenDensity(context));
-            textView.setGravity(Gravity.CENTER);
-            textView.setTextColor(titleColor);
-            titleParams.addRule(CENTER_IN_PARENT, TRUE);
-            textView.setLayoutParams(titleParams);
-            addView(textView);
-
-            //右边图标
-            if (isShowRight) {
-                RelativeLayout.LayoutParams rightImageParams = new RelativeLayout.LayoutParams(iconSize, iconSize);
-                ImageView rightImageView = new ImageView(context);
-                rightImageView.setImageResource(rightImageRes);
-                rightImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                rightImageParams.setMarginEnd(textMargin);
-                rightImageParams.addRule(CENTER_VERTICAL, TRUE);
-                rightImageParams.addRule(ALIGN_PARENT_END, TRUE);
-                addView(rightImageView, rightImageParams);
-                rightImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        try {
-                            listener.onRightClick();
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
+        //左边图标
+        if (isShowLeft) {
+            binding.leftButton.setImageResource(leftImageRes);
+            binding.leftButton.setOnClickListener(v -> {
+                if (listener == null) {
+                    throw new NullPointerException("listener is null");
+                }
+                listener.onLeftClick();
+            });
         }
-    }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
-        setMeasuredDimension(widthSpecSize, titleHeight);
+        //文字
+        binding.titleView.setText(title);
+        float textSize;
+        if (isSmallerTitle) {
+            textSize = 16f;
+        } else {
+            textSize = 18f;
+        }
+        binding.titleView.setTextSize(textSize);
+        binding.titleView.setTextColor(titleColor);
+
+        //右边图标
+        if (isShowRight) {
+            binding.rightButton.setImageResource(rightImageRes);
+            binding.rightButton.setOnClickListener(v -> {
+                if (listener == null) {
+                    throw new NullPointerException("listener is null");
+                }
+                listener.onRightClick();
+            });
+        }
     }
 
     @Override
@@ -134,7 +77,7 @@ public class TitleBarView extends RelativeLayout {
      * 动态设置标题
      */
     public void setTitle(String title) {
-        textView.setText(title);
+        binding.titleView.setText(title);
         invalidate();
     }
 
@@ -142,7 +85,7 @@ public class TitleBarView extends RelativeLayout {
      * 获取当前显示标题文字
      */
     public String getTitle() {
-        return textView.getText().toString();
+        return binding.titleView.getText().toString();
     }
 
     private OnClickListener listener;
