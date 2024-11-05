@@ -24,7 +24,7 @@ public class UdpClient {
     private InetSocketAddress socketAddress;
     private Channel channel;
 
-    public UdpClient(OnUdpMessageCallback messageCallback) {
+    public UdpClient(OnUdpMessageListener messageCallback) {
         bootStrap.group(eventLoopGroup);
         bootStrap.channel(NioDatagramChannel.class)
                 .option(ChannelOption.SO_RCVBUF, 1024)
