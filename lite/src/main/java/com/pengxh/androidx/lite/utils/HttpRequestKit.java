@@ -20,8 +20,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class HttpRequestManager {
-    private static final String TAG = "HttpRequestHub";
+public class HttpRequestKit {
+    private static final String TAG = "HttpRequestKit";
     private final String key;
     private final String value;
     private final String url;
@@ -58,12 +58,12 @@ public class HttpRequestManager {
             return this;
         }
 
-        public HttpRequestManager build() {
-            return new HttpRequestManager(this);
+        public HttpRequestKit build() {
+            return new HttpRequestKit(this);
         }
     }
 
-    private HttpRequestManager(Builder builder) {
+    private HttpRequestKit(Builder builder) {
         this.key = builder.key;
         this.value = builder.value;
         this.url = builder.url;
