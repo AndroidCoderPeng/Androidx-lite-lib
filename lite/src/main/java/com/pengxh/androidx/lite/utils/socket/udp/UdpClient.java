@@ -7,9 +7,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.DatagramPacket;
@@ -21,42 +23,47 @@ public class UdpClient {
 
     private final Bootstrap bootStrap = new Bootstrap();
     private final NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
+    private final OnUdpMessageListener listener;
     private InetSocketAddress socketAddress;
     private Channel channel;
 
-    public UdpClient(OnUdpMessageListener messageCallback) {
+    public UdpClient(OnUdpMessageListener listener) {
+        this.listener = listener;
         bootStrap.group(eventLoopGroup);
         bootStrap.channel(NioDatagramChannel.class)
                 .option(ChannelOption.SO_RCVBUF, 1024)
                 .option(ChannelOption.SO_SNDBUF, 1024)
-                .handler(new ChannelInitializer<DatagramChannel>() {
-                    @Override
-                    protected void initChannel(DatagramChannel datagramChannel) {
-                        ChannelPipeline channelPipeline = datagramChannel.pipeline();
-                        channelPipeline
-                                .addLast(
-                                        new IdleStateHandler(15, 15, 0)
-                                ).addLast(
-                                        new UdpChannelInboundHandler(messageCallback)
-                                );
-                    }
-                });
+                .handler(new SimpleChannelInitializer());
     }
 
+    private class SimpleChannelInitializer extends ChannelInitializer<DatagramChannel> {
+
+        @Override
+        protected void initChannel(DatagramChannel dc) throws Exception {
+            ChannelPipeline pipeline = dc.pipeline();
+            pipeline.addLast(new IdleStateHandler(60, 10, 0))
+                    .addLast(new SimpleChannelInboundHandler<DatagramPacket>() {
+                        @Override
+                        protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
+                            ByteBuf byteBuf = msg.content();
+                            byte[] bytes = new byte[byteBuf.readableBytes()];
+                            byteBuf.readBytes(bytes);
+                            listener.onReceivedUdpMessage(bytes);
+                        }
+                    });
+        }
+    }
 
     public void bind(String remote, int port) {
         this.socketAddress = new InetSocketAddress(remote, port);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ChannelFuture channelFuture = bootStrap.bind(port).sync();
-                    channel = channelFuture.channel();
-                    channel.closeFuture().sync();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    release();
-                }
+        new Thread(() -> {
+            try {
+                ChannelFuture channelFuture = bootStrap.bind(port).sync();
+                channel = channelFuture.channel();
+                channel.closeFuture().sync();
+            } catch (Exception e) {
+                e.printStackTrace();
+                release();
             }
         }).start();
     }
