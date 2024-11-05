@@ -21,6 +21,8 @@ import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
 import com.pengxh.androidx.lite.kit.ContextKit;
 import com.pengxh.androidx.lite.kit.LongKit;
 import com.pengxh.androidx.lite.kit.StringKit;
+import com.pengxh.androidx.lite.utils.socket.tcp.OnTcpConnectStateListener;
+import com.pengxh.androidx.lite.utils.socket.tcp.TcpClient;
 import com.pengxh.androidx.lite.widget.TitleBarView;
 import com.pengxh.androidx.lite.widget.audio.AudioPopupWindow;
 import com.pengxh.androidx.lite.widget.audio.AudioRecodeHelper;
@@ -40,7 +42,28 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
     protected void initOnCreate(@Nullable Bundle savedInstanceState) {
+        TcpClient tcpClient = new TcpClient("192.168.3.2", 3000, new OnTcpConnectStateListener() {
+            @Override
+            public void onConnected() {
 
+            }
+
+            @Override
+            public void onDisconnected() {
+
+            }
+
+            @Override
+            public void onConnectFailed() {
+
+            }
+
+            @Override
+            public void onMessageReceived(byte[] bytes) {
+
+            }
+        });
+        tcpClient.start();
     }
 
     @Override
