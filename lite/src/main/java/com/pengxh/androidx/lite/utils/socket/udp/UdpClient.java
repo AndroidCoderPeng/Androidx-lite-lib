@@ -1,6 +1,7 @@
 package com.pengxh.androidx.lite.utils.socket.udp;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -41,7 +42,7 @@ public class UdpClient {
         @Override
         protected void initChannel(DatagramChannel dc) throws Exception {
             ChannelPipeline pipeline = dc.pipeline();
-            pipeline.addLast(new IdleStateHandler(60, 10, 0))
+            pipeline.addLast(new IdleStateHandler(0, 0, 60, TimeUnit.SECONDS))//如果连接没有接收或发送数据超过60秒钟就发送一次心跳
                     .addLast(new SimpleChannelInboundHandler<DatagramPacket>() {
                         @Override
                         protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
