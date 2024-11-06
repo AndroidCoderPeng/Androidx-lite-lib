@@ -1,29 +1,32 @@
 package com.pengxh.androidx.lite.widget;
 
 import android.content.Context;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.OvershootInterpolator;
-import android.view.animation.TranslateAnimation;
 
 import androidx.appcompat.widget.AppCompatEditText;
-import androidx.core.content.res.ResourcesCompat;
 
 import com.pengxh.androidx.lite.R;
+import com.pengxh.androidx.lite.kit.IntKit;
 
 import java.util.Objects;
 
 public class DeleteEditText extends AppCompatEditText implements View.OnFocusChangeListener, TextWatcher {
 
+    private static final String TAG = "DeleteEditText";
+    private final Paint paint = new Paint();
+    private final Rect bounds = new Rect();
     /**
      * 删除按钮的引用
      */
-    private Drawable rightClearDrawable;
+    private Drawable clearDrawable = getCompoundDrawables()[2];
     private boolean hasFocus;
 
     public DeleteEditText(Context context) {
@@ -36,26 +39,34 @@ public class DeleteEditText extends AppCompatEditText implements View.OnFocusCha
 
     public DeleteEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        // 获取EditText的DrawableRight,假如没有设置我们就使用默认的图片,2是获得右边的图片  顺序是左上右下（0,1,2,3,）
-        rightClearDrawable = getCompoundDrawables()[2];
-        if (rightClearDrawable == null) {
-            rightClearDrawable = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_edit_text_delete, null);
+        if (clearDrawable == null) {
+            clearDrawable = IntKit.convertDrawable(context, R.drawable.ic_edit_text_delete);
         }
-        //设置图标大小
-        rightClearDrawable.setBounds(0, 0, 64, 64);
+
+        paint.setTextSize(getTextSize());
+        paint.setTypeface(getTypeface());
+
         setClearIconVisible(false);
         setOnFocusChangeListener(this);
         addTextChangedListener(this);
+        //获取输入框文字的高度
+        post(() -> {
+            //定义一个默认文字适配用户自定义的EditText的文字大小
+            String tempText = "DeleteEditText";
+            paint.getTextBounds(tempText, 0, tempText.length(), bounds);
+
+            //设置图标大小
+            int iconSize = (int) (bounds.height() * 1.5);
+            Log.d(TAG, "EditeText View Text Height: " + bounds.height() + ", Clear IconSize: " + iconSize);
+            clearDrawable.setBounds(0, 0, iconSize, iconSize);
+        });
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            if (getCompoundDrawables()[2] != null) {
-                boolean touchable = event.getX() > (getWidth() - getTotalPaddingRight()) && event.getX() < (getWidth() - getPaddingRight());
-                if (touchable) {
-                    this.setText("");
-                }
+            if (event.getX() > (getWidth() - getTotalPaddingRight()) && event.getX() < (getWidth() - getPaddingRight())) {
+                setText("");
             }
         }
         return super.onTouchEvent(event);
@@ -82,18 +93,6 @@ public class DeleteEditText extends AppCompatEditText implements View.OnFocusCha
     }
 
     /**
-     * 设置晃动动画
-     */
-    public void setShakeAnimation() {
-        TranslateAnimation animation = new TranslateAnimation(0, 10, 0, 0);
-        animation.setInterpolator(new OvershootInterpolator());
-        animation.setDuration(30);
-        animation.setRepeatCount(5);
-        animation.setRepeatMode(Animation.REVERSE);
-        this.startAnimation(animation);
-    }
-
-    /**
      * 当EditText焦点发生变化的时候，判断里面字符串长度设置清除图标的显示与隐藏
      */
     @Override
@@ -107,7 +106,7 @@ public class DeleteEditText extends AppCompatEditText implements View.OnFocusCha
     }
 
     protected void setClearIconVisible(boolean visible) {
-        Drawable right = visible ? rightClearDrawable : null;
-        setCompoundDrawables(getCompoundDrawables()[0], getCompoundDrawables()[1], right, getCompoundDrawables()[3]);
+        Drawable rightIcon = visible ? clearDrawable : null;
+        setCompoundDrawables(getCompoundDrawables()[0], getCompoundDrawables()[1], rightIcon, getCompoundDrawables()[3]);
     }
 }
