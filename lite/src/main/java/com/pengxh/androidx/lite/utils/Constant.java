@@ -18,12 +18,12 @@ public class Constant {
     /**
      * 查看大图Intent Data Key
      */
-    public static final String BIG_IMAGE_INTENT_DATA_KEY = "ImageData";
+    public static final String BIG_IMAGE_INTENT_DATA_KEY = "ImageDataKey";
 
     /**
      * 页面跳转Intent Data Key
      */
-    public static final String INTENT_PARAM = "intentParam";
+    public static final String INTENT_PARAM_KEY = "IntentParamKey";
 
     /**
      * 最大录音时长5分钟

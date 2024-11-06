@@ -57,13 +57,13 @@ public class ContextKit {
 
     public static <T> void navigatePageTo(Context context, Class<T> t, String value) {
         Intent intent = new Intent(context, t);
-        intent.putExtra(Constant.INTENT_PARAM, value);
+        intent.putExtra(Constant.INTENT_PARAM_KEY, value);
         context.startActivity(intent);
     }
 
     public static <T> void navigatePageTo(Context context, Class<T> t, ArrayList<String> values) {
         Intent intent = new Intent(context, t);
-        intent.putStringArrayListExtra(Constant.INTENT_PARAM, values);
+        intent.putStringArrayListExtra(Constant.INTENT_PARAM_KEY, values);
         context.startActivity(intent);
     }
 

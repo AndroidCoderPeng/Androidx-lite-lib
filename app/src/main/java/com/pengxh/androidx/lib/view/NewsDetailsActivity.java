@@ -19,7 +19,7 @@ public class NewsDetailsActivity extends AndroidxBaseActivity<ActivityNewsDetail
 
     @Override
     protected void initOnCreate(@Nullable Bundle savedInstanceState) {
-        ArrayList<String> params = getIntent().getStringArrayListExtra(Constant.INTENT_PARAM);
+        ArrayList<String> params = getIntent().getStringArrayListExtra(Constant.INTENT_PARAM_KEY);
 
         binding.newsTitle.setText(params.get(0));
         binding.newsSrc.setText(params.get(1));
