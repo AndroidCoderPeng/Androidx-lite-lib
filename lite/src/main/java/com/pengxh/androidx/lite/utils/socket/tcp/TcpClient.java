@@ -38,6 +38,13 @@ public class TcpClient {
         this.host = host;
         this.port = port;
         this.listener = listener;
+        bootStrap.group(loopGroup)
+                .channel(NioSocketChannel.class)
+                .option(ChannelOption.TCP_NODELAY, true) //无阻塞
+                .option(ChannelOption.SO_KEEPALIVE, true) //长连接
+                .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(5000, 5000, 8000))
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                .handler(new SimpleChannelInitializer());
     }
 
     /**
@@ -51,13 +58,6 @@ public class TcpClient {
         if (isRunning) {
             return;
         }
-        bootStrap.group(loopGroup)
-                .channel(NioSocketChannel.class)
-                .option(ChannelOption.TCP_NODELAY, true) //无阻塞
-                .option(ChannelOption.SO_KEEPALIVE, true) //长连接
-                .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(5000, 5000, 8000))
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-                .handler(new SimpleChannelInitializer());
         connect();
     }
 
@@ -99,7 +99,7 @@ public class TcpClient {
         }
     }
 
-    private void connect() {
+    private synchronized void connect() {
         if (channel != null && channel.isActive()) {
             return;
         }
@@ -132,7 +132,6 @@ public class TcpClient {
     public void stop() {
         isRunning = false;
         channel.close();
-        loopGroup.shutdownGracefully();
     }
 
     public void sendMessage(byte[] bytes) {

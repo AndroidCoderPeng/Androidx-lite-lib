@@ -21,8 +21,8 @@ import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
 import com.pengxh.androidx.lite.kit.ContextKit;
 import com.pengxh.androidx.lite.kit.LongKit;
 import com.pengxh.androidx.lite.kit.StringKit;
-import com.pengxh.androidx.lite.utils.socket.web.OnWebSocketListener;
-import com.pengxh.androidx.lite.utils.socket.web.WebSocketClient;
+import com.pengxh.androidx.lite.utils.socket.tcp.OnTcpConnectStateListener;
+import com.pengxh.androidx.lite.utils.socket.tcp.TcpClient;
 import com.pengxh.androidx.lite.widget.TitleBarView;
 import com.pengxh.androidx.lite.widget.audio.AudioPopupWindow;
 import com.pengxh.androidx.lite.widget.audio.AudioRecodeHelper;
@@ -30,15 +30,11 @@ import com.pengxh.androidx.lite.widget.audio.AudioRecodeHelper;
 import java.io.File;
 import java.io.IOException;
 
-import okhttp3.Response;
-import okhttp3.WebSocket;
-import okio.ByteString;
-
-public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> implements OnWebSocketListener {
+public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> implements OnTcpConnectStateListener {
 
     private static final String TAG = "MainActivity";
     private final Context context = this;
-    private final WebSocketClient webSocketClient = new WebSocketClient(this);
+    private final TcpClient tcpClient = new TcpClient("192.168.161.200", 3000, this);
 
     @Override
     protected void setupTopBarLayout() {
@@ -47,46 +43,36 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> impl
 
     @Override
     protected void initOnCreate(@Nullable Bundle savedInstanceState) {
-        binding.websocketButton.setOnClickListener(new View.OnClickListener() {
+        binding.socketButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (webSocketClient.isRunning()) {
-                    webSocketClient.stop();
+                if (tcpClient.isRunning()) {
+                    tcpClient.stop();
                 } else {
-                    webSocketClient.start("ws://192.168.161.200:8080/websocket/" + System.currentTimeMillis());
+                    tcpClient.start();
                 }
             }
         });
     }
 
     @Override
-    public void onOpen(WebSocket webSocket, Response response) {
-        runOnUiThread(() -> binding.websocketButton.setText("断开"));
+    public void onConnected() {
+        runOnUiThread(() -> binding.socketButton.setText("断开"));
     }
 
     @Override
-    public void onMessageResponse(WebSocket webSocket, String message) {
-
-    }
-
-    @Override
-    public void onMessageResponse(WebSocket webSocket, ByteString bytes) {
+    public void onMessageReceived(byte[] bytes) {
 
     }
 
     @Override
-    public void onServerDisconnected(WebSocket webSocket, int code, String reason) {
-        runOnUiThread(() -> binding.websocketButton.setText("连接"));
+    public void onDisconnected() {
+        runOnUiThread(() -> binding.socketButton.setText("连接"));
     }
 
     @Override
-    public void onClientDisconnected(WebSocket webSocket, int code, String reason) {
-        runOnUiThread(() -> binding.websocketButton.setText("连接"));
-    }
-
-    @Override
-    public void onFailure(WebSocket webSocket) {
-
+    public void onConnectFailed() {
+        runOnUiThread(() -> binding.socketButton.setText("连接"));
     }
 
     @Override
