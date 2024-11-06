@@ -40,6 +40,13 @@ public class TcpClient {
         this.listener = listener;
     }
 
+    /**
+     * TcpClient 是否正在运行
+     */
+    public boolean isRunning() {
+        return isRunning;
+    }
+
     public void start() {
         if (isRunning) {
             return;
