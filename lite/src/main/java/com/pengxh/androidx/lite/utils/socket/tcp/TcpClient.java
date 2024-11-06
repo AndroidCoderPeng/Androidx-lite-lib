@@ -27,16 +27,14 @@ public class TcpClient {
     private static final long RECONNECT_DELAY = 5L;
     private final Bootstrap bootStrap = new Bootstrap();
     private final NioEventLoopGroup loopGroup = new NioEventLoopGroup();
-    private final String host;
-    private final int port;
     private final OnTcpConnectStateListener listener;
+    private String host;
+    private int port;
     private Channel channel;
     private boolean isRunning = false;
     private int retryTimes = 0;
 
-    public TcpClient(String host, int port, OnTcpConnectStateListener listener) {
-        this.host = host;
-        this.port = port;
+    public TcpClient(OnTcpConnectStateListener listener) {
         this.listener = listener;
         bootStrap.group(loopGroup)
                 .channel(NioSocketChannel.class)
@@ -54,7 +52,9 @@ public class TcpClient {
         return isRunning;
     }
 
-    public void start() {
+    public void start(String host, int port) {
+        this.host = host;
+        this.port = port;
         if (isRunning) {
             return;
         }

@@ -34,7 +34,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> impl
 
     private static final String TAG = "MainActivity";
     private final Context context = this;
-    private final TcpClient tcpClient = new TcpClient("192.168.161.200", 3000, this);
+    private final TcpClient tcpClient = new TcpClient(this);
 
     @Override
     protected void setupTopBarLayout() {
@@ -49,7 +49,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> impl
                 if (tcpClient.isRunning()) {
                     tcpClient.stop();
                 } else {
-                    tcpClient.start();
+                    tcpClient.start("192.168.161.200", 3000);
                 }
             }
         });
