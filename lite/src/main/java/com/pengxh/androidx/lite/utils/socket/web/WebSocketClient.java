@@ -29,6 +29,13 @@ public class WebSocketClient {
         this.httpClient = new OkHttpClient.Builder().readTimeout(0, TimeUnit.MILLISECONDS).build();
     }
 
+    /**
+     * WebSocketClient 是否正在运行
+     */
+    public boolean isRunning() {
+        return isRunning;
+    }
+
     public void start(String url) {
         this.url = url;
         if (isRunning) {
@@ -37,7 +44,7 @@ public class WebSocketClient {
         connect();
     }
 
-    public void connect() {
+    public synchronized void connect() {
         Log.d(TAG, "connect: " + url);
         Request request = new Request.Builder().url(url).build();
         webSocket = httpClient.newWebSocket(request, new WebSocketListener() {
@@ -91,7 +98,7 @@ public class WebSocketClient {
             public void onFailure(@NonNull WebSocket webSocket, @NonNull Throwable t, @Nullable Response response) {
                 super.onFailure(webSocket, t, response);
                 Log.d(TAG, "onFailure: " + t.getMessage());
-                listener.onFailure(webSocket, t, response);
+                listener.onFailure(webSocket);
                 reconnect();
             }
         });
@@ -100,15 +107,14 @@ public class WebSocketClient {
     private void reconnect() {
         isRunning = false;
         new Thread(() -> {
+            retryTimes++;
+            Log.d(TAG, "开始第 " + retryTimes + " 次重连");
+            connect();
             try {
                 TimeUnit.MILLISECONDS.sleep(RECONNECT_DELAY_MS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                return;
             }
-            retryTimes++;
-            Log.d(TAG, "开始第 " + retryTimes + " 次重连");
-            connect();
         }).start();
     }
 

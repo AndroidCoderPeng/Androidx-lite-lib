@@ -34,10 +34,11 @@ import okhttp3.Response;
 import okhttp3.WebSocket;
 import okio.ByteString;
 
-public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
+public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> implements OnWebSocketListener {
 
     private static final String TAG = "MainActivity";
     private final Context context = this;
+    private final WebSocketClient webSocketClient = new WebSocketClient(this);
 
     @Override
     protected void setupTopBarLayout() {
@@ -46,50 +47,46 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
     protected void initOnCreate(@Nullable Bundle savedInstanceState) {
-        WebSocketClient webSocketClient = new WebSocketClient(new OnWebSocketListener() {
-            @Override
-            public void onOpen(WebSocket webSocket, Response response) {
-
-            }
-
-            @Override
-            public void onMessageResponse(WebSocket webSocket, String message) {
-
-            }
-
-            @Override
-            public void onMessageResponse(WebSocket webSocket, ByteString bytes) {
-
-            }
-
-            @Override
-            public void onServerDisconnected(WebSocket webSocket, int code, String reason) {
-
-            }
-
-            @Override
-            public void onClientDisconnected(WebSocket webSocket, int code, String reason) {
-
-            }
-
-            @Override
-            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-
-            }
-        });
-        binding.startButton.setOnClickListener(new View.OnClickListener() {
+        binding.websocketButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                webSocketClient.start("ws://192.168.161.200:8080/websocket/" + System.currentTimeMillis());
+                if (webSocketClient.isRunning()) {
+                    webSocketClient.stop();
+                } else {
+                    webSocketClient.start("ws://192.168.161.200:8080/websocket/" + System.currentTimeMillis());
+                }
             }
         });
+    }
 
-        binding.stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                webSocketClient.stop();
-            }
-        });
+    @Override
+    public void onOpen(WebSocket webSocket, Response response) {
+        runOnUiThread(() -> binding.websocketButton.setText("断开"));
+    }
+
+    @Override
+    public void onMessageResponse(WebSocket webSocket, String message) {
+
+    }
+
+    @Override
+    public void onMessageResponse(WebSocket webSocket, ByteString bytes) {
+
+    }
+
+    @Override
+    public void onServerDisconnected(WebSocket webSocket, int code, String reason) {
+        runOnUiThread(() -> binding.websocketButton.setText("连接"));
+    }
+
+    @Override
+    public void onClientDisconnected(WebSocket webSocket, int code, String reason) {
+        runOnUiThread(() -> binding.websocketButton.setText("连接"));
+    }
+
+    @Override
+    public void onFailure(WebSocket webSocket) {
+
     }
 
     @Override
