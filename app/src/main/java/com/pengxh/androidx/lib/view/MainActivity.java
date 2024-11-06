@@ -21,14 +21,18 @@ import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
 import com.pengxh.androidx.lite.kit.ContextKit;
 import com.pengxh.androidx.lite.kit.LongKit;
 import com.pengxh.androidx.lite.kit.StringKit;
-import com.pengxh.androidx.lite.utils.socket.tcp.OnTcpConnectStateListener;
-import com.pengxh.androidx.lite.utils.socket.tcp.TcpClient;
+import com.pengxh.androidx.lite.utils.socket.web.OnWebSocketListener;
+import com.pengxh.androidx.lite.utils.socket.web.WebSocketClient;
 import com.pengxh.androidx.lite.widget.TitleBarView;
 import com.pengxh.androidx.lite.widget.audio.AudioPopupWindow;
 import com.pengxh.androidx.lite.widget.audio.AudioRecodeHelper;
 
 import java.io.File;
 import java.io.IOException;
+
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okio.ByteString;
 
 public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
@@ -42,28 +46,50 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> {
 
     @Override
     protected void initOnCreate(@Nullable Bundle savedInstanceState) {
-        TcpClient tcpClient = new TcpClient("192.168.3.2", 3000, new OnTcpConnectStateListener() {
+        WebSocketClient webSocketClient = new WebSocketClient(new OnWebSocketListener() {
             @Override
-            public void onConnected() {
+            public void onOpen(WebSocket webSocket, Response response) {
 
             }
 
             @Override
-            public void onDisconnected() {
+            public void onMessageResponse(WebSocket webSocket, String message) {
 
             }
 
             @Override
-            public void onConnectFailed() {
+            public void onMessageResponse(WebSocket webSocket, ByteString bytes) {
 
             }
 
             @Override
-            public void onMessageReceived(byte[] bytes) {
+            public void onServerDisconnected(WebSocket webSocket, int code, String reason) {
+
+            }
+
+            @Override
+            public void onClientDisconnected(WebSocket webSocket, int code, String reason) {
+
+            }
+
+            @Override
+            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
 
             }
         });
-        tcpClient.start();
+        binding.startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webSocketClient.start("ws://192.168.161.200:8080/websocket/" + System.currentTimeMillis());
+            }
+        });
+
+        binding.stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webSocketClient.stop();
+            }
+        });
     }
 
     @Override
