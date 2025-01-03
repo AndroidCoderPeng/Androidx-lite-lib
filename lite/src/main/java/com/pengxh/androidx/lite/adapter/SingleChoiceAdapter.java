@@ -1,6 +1,7 @@
 package com.pengxh.androidx.lite.adapter;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +23,13 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
     //选择的位置
     private int selectedPosition = -1;
 
-    //临时记录上次选择的位置
-    private int temp = -1;
+    public void setSelectedPosition(int position) {
+        if (position >= 0 && position < dataRows.size()) {
+            selectedPosition = position;
+        } else {
+            Log.d(TAG, "Invalid position: $position");
+        }
+    }
 
     public SingleChoiceAdapter(@LayoutRes int xmlResource, List<T> dataRows) {
         this.xmlResource = xmlResource;
@@ -43,38 +49,37 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        convertView(holder, position, dataRows.get(position));
+        if (position >= 0 && position < dataRows.size()) {
+            convertView(holder, position, dataRows.get(position));
 
-        holder.itemView.setSelected(holder.getLayoutPosition() == selectedPosition);
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemCheckedListener == null) {
-                    return;
+            holder.itemView.setSelected(holder.getLayoutPosition() == selectedPosition);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (holder.getLayoutPosition() != selectedPosition) {
+                        int oldPosition = selectedPosition;
+                        selectedPosition = holder.getLayoutPosition();
+                        holder.itemView.setSelected(true);
+                        notifyItemChanged(oldPosition);
+                        if (itemCheckedListener == null) {
+                            return;
+                        }
+                        itemCheckedListener.onItemChecked(position, dataRows.get(position));
+                    }
                 }
-
-                holder.itemView.setSelected(true);
-                temp = selectedPosition;
-                //设置新的位置
-                selectedPosition = holder.getLayoutPosition();
-                //更新旧位置
-                notifyItemChanged(temp);
-                itemCheckedListener.onItemChecked(position, dataRows.get(position));
-            }
-        });
+            });
+        } else {
+            Log.d(TAG, "Invalid position: $position");
+        }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setRefreshData(List<T> dataRows) {
-        this.dataRows.clear();
-        this.dataRows.addAll(dataRows);
-        notifyDataSetChanged();
-    }
-
-    public void setLoadMoreData(List<T> dataRows) {
-        this.dataRows.addAll(dataRows);
-        notifyItemRangeInserted(this.dataRows.size(), dataRows.size());
+    /**
+     * 加载更多，局部加载
+     */
+    public void loadMore(List<T> newRows) {
+        int startPosition = dataRows.size();
+        dataRows.addAll(newRows);
+        notifyItemRangeInserted(startPosition, newRows.size());
     }
 
     public abstract void convertView(ViewHolder viewHolder, int position, T item);
