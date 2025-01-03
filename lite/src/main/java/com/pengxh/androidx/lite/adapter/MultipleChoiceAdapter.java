@@ -84,6 +84,9 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
         });
     }
 
+    /**
+     * 加载更多
+     */
     public void loadMore(List<T> newRows) {
         int startPosition = dataRows.size();
         this.dataRows.addAll(newRows);

@@ -74,7 +74,7 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
     }
 
     /**
-     * 加载更多，局部加载
+     * 加载更多
      */
     public void loadMore(List<T> newRows) {
         int startPosition = dataRows.size();

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -51,16 +52,70 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
         });
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setRefreshData(List<T> dataRows) {
-        this.dataRows.clear();
-        this.dataRows.addAll(dataRows);
-        notifyDataSetChanged();
+    public void refresh(List<T> newRows) {
+        DiffUtil.Callback diffCallback = new DiffUtil.Callback() {
+
+            @Override
+            public int getOldListSize() {
+                return dataRows.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return newRows.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                if (dataRows == null || newRows == null) {
+                    return false;
+                }
+
+                // 检查索引是否在有效范围内
+                if (oldItemPosition < 0 || oldItemPosition >= dataRows.size() ||
+                        newItemPosition < 0 || newItemPosition >= newRows.size()) {
+                    return false;
+                }
+
+                // 获取元素并进行比较
+                Object oldItem = dataRows.get(oldItemPosition);
+                Object newItem = newRows.get(newItemPosition);
+
+                // 处理空指针情况
+                if (oldItem == null && newItem == null) {
+                    return true;
+                }
+                if (oldItem == null || newItem == null) {
+                    return false;
+                }
+
+                return oldItem.equals(newItem);
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return dataRows.get(oldItemPosition) == newRows.get(newItemPosition);
+            }
+        };
+
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        dataRows.clear();
+        dataRows.addAll(newRows);
+
+        diffResult.dispatchUpdatesTo(this);
     }
 
-    public void setLoadMoreData(List<T> dataRows) {
-        this.dataRows.addAll(dataRows);
-        notifyItemRangeInserted(this.dataRows.size(), dataRows.size());
+    /**
+     * 加载更多
+     */
+    public void loadMore(List<T> newRows) {
+        if (newRows.isEmpty()) {
+            return;
+        }
+        int startPosition = this.dataRows.size();
+        this.dataRows.addAll(newRows);
+        notifyItemRangeInserted(startPosition, newRows.size());
     }
 
     public abstract void convertView(ViewHolder viewHolder, int position, T item);
