@@ -93,9 +93,9 @@ public class HttpRequestKit {
                 interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
                 OkHttpClient client = new OkHttpClient.Builder()
                         .addInterceptor(interceptor)
-                        .readTimeout(Constant.HTTP_TIMEOUT, TimeUnit.SECONDS)
-                        .connectTimeout(Constant.HTTP_TIMEOUT, TimeUnit.SECONDS)
-                        .writeTimeout(Constant.HTTP_TIMEOUT, TimeUnit.SECONDS)
+                        .readTimeout(LiteConstant.HTTP_TIMEOUT, TimeUnit.SECONDS)
+                        .connectTimeout(LiteConstant.HTTP_TIMEOUT, TimeUnit.SECONDS)
+                        .writeTimeout(LiteConstant.HTTP_TIMEOUT, TimeUnit.SECONDS)
                         .build();
                 try {
                     Response response = client.newCall(request).execute();

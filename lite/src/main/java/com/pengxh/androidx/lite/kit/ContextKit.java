@@ -21,7 +21,7 @@ import android.view.WindowMetrics;
 
 import androidx.core.app.ActivityCompat;
 
-import com.pengxh.androidx.lite.utils.Constant;
+import com.pengxh.androidx.lite.utils.LiteConstant;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -57,20 +57,20 @@ public class ContextKit {
 
     public static <T> void navigatePageTo(Context context, Class<T> t, String value) {
         Intent intent = new Intent(context, t);
-        intent.putExtra(Constant.INTENT_PARAM_KEY, value);
+        intent.putExtra(LiteConstant.INTENT_PARAM_KEY, value);
         context.startActivity(intent);
     }
 
     public static <T> void navigatePageTo(Context context, Class<T> t, ArrayList<String> values) {
         Intent intent = new Intent(context, t);
-        intent.putStringArrayListExtra(Constant.INTENT_PARAM_KEY, values);
+        intent.putStringArrayListExtra(LiteConstant.INTENT_PARAM_KEY, values);
         context.startActivity(intent);
     }
 
     public static <T> void navigatePageTo(Context context, Class<T> t, int index, ArrayList<String> imageList) {
         Intent intent = new Intent(context, t);
-        intent.putExtra(Constant.BIG_IMAGE_INTENT_INDEX_KEY, index);
-        intent.putStringArrayListExtra(Constant.BIG_IMAGE_INTENT_DATA_KEY, imageList);
+        intent.putExtra(LiteConstant.BIG_IMAGE_INTENT_INDEX_KEY, index);
+        intent.putStringArrayListExtra(LiteConstant.BIG_IMAGE_INTENT_DATA_KEY, imageList);
         context.startActivity(intent);
     }
 

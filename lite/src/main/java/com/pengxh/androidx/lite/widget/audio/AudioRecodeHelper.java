@@ -8,7 +8,7 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import com.pengxh.androidx.lite.utils.Constant;
+import com.pengxh.androidx.lite.utils.LiteConstant;
 import com.pengxh.androidx.lite.utils.WeakReferenceHandler;
 
 import java.io.File;
@@ -51,7 +51,7 @@ public class AudioRecodeHelper implements Handler.Callback {
         } else {
             mediaRecorder.setOutputFile(audioFile.getAbsolutePath());
         }
-        mediaRecorder.setMaxDuration(Constant.MAX_LENGTH);
+        mediaRecorder.setMaxDuration(LiteConstant.MAX_LENGTH);
         try {
             mediaRecorder.prepare();
         } catch (IOException e) {

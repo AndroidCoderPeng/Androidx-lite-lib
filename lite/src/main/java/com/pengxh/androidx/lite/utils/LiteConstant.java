@@ -5,7 +5,7 @@ import com.pengxh.androidx.lite.R;
 import java.util.Arrays;
 import java.util.List;
 
-public class Constant {
+public class LiteConstant {
     /**
      * 广播接收者消息Key
      */

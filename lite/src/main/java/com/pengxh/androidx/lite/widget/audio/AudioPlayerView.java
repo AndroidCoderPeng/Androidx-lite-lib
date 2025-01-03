@@ -20,7 +20,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.pengxh.androidx.lite.R;
 import com.pengxh.androidx.lite.kit.IntKit;
-import com.pengxh.androidx.lite.utils.Constant;
+import com.pengxh.androidx.lite.utils.LiteConstant;
 import com.pengxh.androidx.lite.utils.WeakReferenceHandler;
 
 import java.io.File;
@@ -121,7 +121,7 @@ public class AudioPlayerView extends AppCompatTextView implements Handler.Callba
         @Override
         public void run() {
             weakReferenceHandler.postDelayed(this, 200);
-            setDrawable(Constant.AUDIO_DRAWABLES.get(index % 3));
+            setDrawable(LiteConstant.AUDIO_DRAWABLES.get(index % 3));
             index++;
         }
     };

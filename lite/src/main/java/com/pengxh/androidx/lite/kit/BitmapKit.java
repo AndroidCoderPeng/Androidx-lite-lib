@@ -72,7 +72,10 @@ public class BitmapKit {
 
     /**
      * 圆形或者圆角图片
+     *
+     * 用 {@link com.google.android.material.imageview.ShapeableImageView} 代替
      */
+    @Deprecated
     public static Bitmap createRoundDrawable(Context context, Bitmap bitmap, int borderStroke, @ColorInt int color) {
         //转换为正方形后的宽高。以最短边为正方形边长，也是圆形图像的直径
         int squareBitmapBorderLength = Math.min(bitmap.getWidth(), bitmap.getHeight());

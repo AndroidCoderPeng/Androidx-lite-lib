@@ -17,9 +17,9 @@ public class RetrofitFactory {
 
     public static <T> T createRetrofit(String httpConfig, Class<T> clazz, boolean debug) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(Constant.HTTP_TIMEOUT, TimeUnit.SECONDS)
-                .readTimeout(Constant.HTTP_TIMEOUT, TimeUnit.SECONDS)
-                .writeTimeout(Constant.HTTP_TIMEOUT, TimeUnit.SECONDS);
+                .connectTimeout(LiteConstant.HTTP_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(LiteConstant.HTTP_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(LiteConstant.HTTP_TIMEOUT, TimeUnit.SECONDS);
         OkHttpClient httpClient;
         if (debug) {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {

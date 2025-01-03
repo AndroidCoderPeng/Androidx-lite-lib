@@ -64,7 +64,7 @@ public class BroadcastManager {
     public void sendBroadcast(String action, String msg) {
         Intent intent = new Intent();
         intent.setAction(action);
-        intent.putExtra(Constant.BROADCAST_INTENT_DATA_KEY, msg);
+        intent.putExtra(LiteConstant.BROADCAST_INTENT_DATA_KEY, msg);
         weakReferenceContext.get().sendBroadcast(intent);
     }
 
