@@ -1,6 +1,8 @@
 package com.pengxh.androidx.lite.adapter;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +11,10 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * RecyclerView多选适配器
@@ -22,8 +24,8 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
     private static final String TAG = "MultipleChoiceAdapter";
     private final int xmlResource;
     private final List<T> dataRows;
-    private final Set<Integer> multipleSelected = new HashSet<>();
-    private final List<T> selectedItems = new ArrayList<>();
+    private final ConcurrentHashMap<Integer, Boolean> multipleSelected = new ConcurrentHashMap<>();
+    private final CopyOnWriteArrayList<T> selectedItems = new CopyOnWriteArrayList<>();
 
     public MultipleChoiceAdapter(@LayoutRes int xmlResource, List<T> dataRows) {
         this.xmlResource = xmlResource;
@@ -43,41 +45,49 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        if (position < 0 || position >= dataRows.size()) {
+            Log.d(TAG, "Invalid position: " + position);
+            return;
+        }
+
         convertView(holder, position, dataRows.get(position));
 
-        holder.itemView.setSelected(multipleSelected.contains(position));
-
+        holder.itemView.setSelected(multipleSelected.containsKey(position));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (itemCheckedListener == null) {
-                    return;
-                }
-
-                if (multipleSelected.contains(position)) {
+                if (multipleSelected.containsKey(position)) {
                     multipleSelected.remove(position);
-                    selectedItems.remove(dataRows.get(position));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        selectedItems.removeIf(item -> item.equals(dataRows.get(position)));
+                    } else {
+                        Iterator<T> iterator = selectedItems.iterator();
+                        while (iterator.hasNext()) {
+                            if (iterator.next() == dataRows.get(position)) {
+                                iterator.remove();
+                            }
+                        }
+                    }
                     holder.itemView.setSelected(false);
                 } else {
-                    multipleSelected.add(position);
+                    multipleSelected.put(position, true);
                     selectedItems.add(dataRows.get(position));
                     holder.itemView.setSelected(true);
+                }
+
+                if (itemCheckedListener == null) {
+                    Log.d(TAG, "No listener set for item checked events");
+                    return;
                 }
                 itemCheckedListener.onItemChecked(selectedItems);
             }
         });
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setRefreshData(List<T> dataRows) {
-        this.dataRows.clear();
-        this.dataRows.addAll(dataRows);
-        notifyDataSetChanged();
-    }
-
-    public void setLoadMoreData(List<T> dataRows) {
-        this.dataRows.addAll(dataRows);
-        notifyItemRangeInserted(this.dataRows.size(), dataRows.size());
+    public void loadMore(List<T> newRows) {
+        int startPosition = dataRows.size();
+        this.dataRows.addAll(newRows);
+        notifyItemRangeInserted(startPosition, newRows.size());
     }
 
     public abstract void convertView(ViewHolder viewHolder, int position, T item);

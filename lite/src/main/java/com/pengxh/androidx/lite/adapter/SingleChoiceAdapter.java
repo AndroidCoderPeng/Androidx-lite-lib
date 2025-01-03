@@ -87,7 +87,7 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
     private OnItemCheckedListener<T> itemCheckedListener;
 
     public interface OnItemCheckedListener<T> {
-        void onItemChecked(int position, T t);
+        void onItemChecked(int position, T item);
     }
 
     public void setOnItemCheckedListener(OnItemCheckedListener<T> listener) {

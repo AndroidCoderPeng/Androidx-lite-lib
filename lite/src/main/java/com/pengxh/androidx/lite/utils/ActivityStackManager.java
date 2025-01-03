@@ -78,7 +78,7 @@ public class ActivityStackManager {
         try {
             List<Activity> activitiesToRemove = new ArrayList<>();
             for (Activity activity : activityStack) {
-                if (activity.getClass() == clazz) {
+                if (activity.getClass().equals(clazz)) {
                     activitiesToRemove.add(activity);
                 }
             }
