@@ -32,9 +32,8 @@ public class EasyPopupWindow extends PopupWindow {
     public void set(List<MenuItem> menuItems, OnPopupWindowClickListener windowClickListener) {
         View contentView = getContentView();
         ListView listView = contentView.findViewById(R.id.listView);
+        final LayoutInflater inflater = LayoutInflater.from(contentView.getContext());
         listView.setAdapter(new BaseAdapter() {
-            private final LayoutInflater inflater = LayoutInflater.from(contentView.getContext());
-
             @Override
             public int getCount() {
                 return menuItems.size();
