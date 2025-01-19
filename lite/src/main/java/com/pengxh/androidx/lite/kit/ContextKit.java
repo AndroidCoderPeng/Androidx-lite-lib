@@ -1,25 +1,18 @@
 package com.pengxh.androidx.lite.kit;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Insets;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.Settings;
-import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
-
-import androidx.core.app.ActivityCompat;
 
 import com.pengxh.androidx.lite.utils.LiteConstant;
 
@@ -28,27 +21,25 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-@SuppressLint("MissingPermission")
 public class ContextKit {
 
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (manager == null) {
+        Network network = manager.getActiveNetwork();
+        if (network == null) {
             return false;
-        } else {
-            NetworkInfo netWorkInfo = manager.getActiveNetworkInfo();
-            if (netWorkInfo != null) {
-                return netWorkInfo.isAvailable();
-            }
         }
-        return false;
+        NetworkCapabilities networkCapabilities = manager.getNetworkCapabilities(network);
+        if (networkCapabilities == null) {
+            return false;
+        }
+        return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }
 
     public static <T> void navigatePageTo(Context context, Class<T> t) {
@@ -92,42 +83,6 @@ public class ContextKit {
             return data.toString();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        return "";
-    }
-
-    //获取SimSerialNumber
-    @SuppressLint({"HardwareIds"})
-    public static String getSimCardSerialNumber(Context context) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            //Android 10改为获取Android_ID
-            return Settings.System.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        } else {
-            TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            Class<?> telephonyClass;
-            try {
-                telephonyClass = Class.forName(telephony.getClass().getName());
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    return "";
-                }
-                String imei = telephony.getDeviceId();
-                if (TextUtils.isEmpty(imei)) {
-                    Method m = telephonyClass.getMethod("getSimSerialNumber", int.class);
-                    //主卡，卡1
-                    String mainCard = (String) m.invoke(telephony, 0);
-                    //副卡，卡2
-                    String otherCard = (String) m.invoke(telephony, 1);
-                    if (TextUtils.isEmpty(mainCard)) {
-                        return otherCard;
-                    } else {
-                        return mainCard;
-                    }
-                } else {
-                    return imei;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
         return "";
     }
