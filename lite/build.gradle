@@ -25,7 +25,6 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.7.1'
     def base_version = "1.6.1"
     implementation "androidx.appcompat:appcompat:${base_version}"
     implementation "com.google.android.material:material:${base_version}"
