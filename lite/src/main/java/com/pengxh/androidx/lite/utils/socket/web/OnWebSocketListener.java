@@ -15,5 +15,7 @@ public interface OnWebSocketListener {
 
     void onClientDisconnected(WebSocket webSocket, int code, String reason);
 
-    void onFailure(WebSocket webSocket);
+    void onFailure(WebSocket webSocket, Throwable throwable);
+
+    void onMaxRetryReached();
 }

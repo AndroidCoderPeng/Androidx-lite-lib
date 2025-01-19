@@ -21,13 +21,13 @@ import java.util.List;
  * 不可编辑图片适配器
  * 仅支持 {@link android.widget.GridView}
  */
-public class ReadOnlyImageAdapter extends BaseAdapter {
+public class GridViewImageAdapter extends BaseAdapter {
 
     private final Context context;
     private final int screenWidth;
-    private List<String> images;
+    private final List<String> images;
 
-    public ReadOnlyImageAdapter(Context context, @Nullable List<String> images) {
+    public GridViewImageAdapter(Context context, @Nullable List<String> images) {
         this.context = context;
         this.images = images;
         this.screenWidth = ContextKit.getScreenWidth(context);

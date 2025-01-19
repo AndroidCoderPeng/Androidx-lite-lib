@@ -27,7 +27,6 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
     private final int viewWidth;
     private final int imageCountLimit;
     private final int spanCount;
-    private final LayoutInflater layoutInflater;
 
     /**
      * 数量可编辑图片适配器
@@ -43,13 +42,12 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
         this.viewWidth = viewWidth;
         this.imageCountLimit = imageCountLimit;
         this.spanCount = spanCount;
-        this.layoutInflater = LayoutInflater.from(context);
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(layoutInflater.inflate(R.layout.item_editable_rv_g, parent, false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_editable_rv_g, parent, false));
     }
 
     @Override

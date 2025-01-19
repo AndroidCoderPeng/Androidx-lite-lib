@@ -47,7 +47,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> impl
             @Override
             public void onClick(View v) {
                 if (tcpClient.isRunning()) {
-                    tcpClient.stop();
+                    tcpClient.stop(false);
                 } else {
                     tcpClient.start("192.168.161.200", 3000);
                 }

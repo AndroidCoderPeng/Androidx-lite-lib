@@ -10,8 +10,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileKit {
-    private static final String TAG = "FileHub";
-
     public static String read(File file) {
         StringBuilder builder;
         try {

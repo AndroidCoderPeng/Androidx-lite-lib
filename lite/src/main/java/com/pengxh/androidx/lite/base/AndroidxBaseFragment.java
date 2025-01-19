@@ -32,17 +32,21 @@ public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragm
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Type type = getClass().getGenericSuperclass();
         if (type == null) {
-            throw new NullPointerException();
+            throw new IllegalStateException("Generic superclass is null");
         }
         Class<?> cls = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
         try {
             Method method = cls.getDeclaredMethod("inflate", LayoutInflater.class, ViewGroup.class, boolean.class);
-            _binding = (VB) method.invoke(null, getLayoutInflater(), container, false);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            _binding = (VB) method.invoke(null, inflater, container, false);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException("Inflate method not found in " + cls.getName(), e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Illegal access to inflate method in " + cls.getName(), e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException("Invocation target exception in inflate method in " + cls.getName(), e);
         }
         if (_binding == null) {
-            throw new NullPointerException();
+            throw new IllegalStateException("Binding is null after inflation");
         }
         return _binding.getRoot();
     }
@@ -73,10 +77,4 @@ public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragm
      * 初始化业务逻辑
      */
     protected abstract void initEvent();
-
-    @Override
-    public void onDestroyView() {
-        setBinding(null);
-        super.onDestroyView();
-    }
 }

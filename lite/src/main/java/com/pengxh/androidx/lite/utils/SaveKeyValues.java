@@ -18,23 +18,30 @@ public class SaveKeyValues {
      * 存储
      */
     public static void putValue(String key, Object object) {
+        if (key.isEmpty()) {
+            return;
+        }
+        if (object == null) {
+            removeKey(key);
+            return;
+        }
+        SharedPreferences.Editor editor = sp.edit();
+        if (object instanceof String) {
+            editor.putString(key, (String) object);
+        } else if (object instanceof Integer) {
+            editor.putInt(key, (Integer) object);
+        } else if (object instanceof Boolean) {
+            editor.putBoolean(key, (Boolean) object);
+        } else if (object instanceof Float) {
+            editor.putFloat(key, (Float) object);
+        } else if (object instanceof Long) {
+            editor.putLong(key, (Long) object);
+        } else {
+            editor.putString(key, object.toString());
+        }
         try {
-            SharedPreferences.Editor editor = sp.edit();
-            if (object instanceof String) {
-                editor.putString(key, (String) object);
-            } else if (object instanceof Integer) {
-                editor.putInt(key, (Integer) object);
-            } else if (object instanceof Boolean) {
-                editor.putBoolean(key, (Boolean) object);
-            } else if (object instanceof Float) {
-                editor.putFloat(key, (Float) object);
-            } else if (object instanceof Long) {
-                editor.putLong(key, (Long) object);
-            } else {
-                editor.putString(key, object.toString());
-            }
             editor.apply();
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -43,33 +50,34 @@ public class SaveKeyValues {
      * 获取保存的数据
      */
     public static Object getValue(String key, Object defaultObject) {
-        try {
-            if (defaultObject instanceof String) {
-                return sp.getString(key, (String) defaultObject);
-            } else if (defaultObject instanceof Integer) {
-                return sp.getInt(key, (Integer) defaultObject);
-            } else if (defaultObject instanceof Boolean) {
-                return sp.getBoolean(key, (Boolean) defaultObject);
-            } else if (defaultObject instanceof Float) {
-                return sp.getFloat(key, (Float) defaultObject);
-            } else if (defaultObject instanceof Long) {
-                return sp.getLong(key, (Long) defaultObject);
-            } else {
-                return sp.getString(key, null);
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        if (key.isEmpty()) {
+            return null;
         }
-        return null;
+        if (defaultObject instanceof String) {
+            return sp.getString(key, (String) defaultObject);
+        } else if (defaultObject instanceof Integer) {
+            return sp.getInt(key, (Integer) defaultObject);
+        } else if (defaultObject instanceof Boolean) {
+            return sp.getBoolean(key, (Boolean) defaultObject);
+        } else if (defaultObject instanceof Float) {
+            return sp.getFloat(key, (Float) defaultObject);
+        } else if (defaultObject instanceof Long) {
+            return sp.getLong(key, (Long) defaultObject);
+        } else {
+            return defaultObject;
+        }
     }
 
     /**
      * 移除某个key值已经对应的值
      */
     public static void removeKey(String key) {
+        if (key.isEmpty()) {
+            return;
+        }
         try {
             sp.edit().remove(key).apply();
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -80,7 +88,7 @@ public class SaveKeyValues {
     public static void clearAll() {
         try {
             sp.edit().clear().apply();
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -89,11 +97,9 @@ public class SaveKeyValues {
      * 查询某个key是否存在
      */
     public static boolean containsKey(String key) {
-        try {
-            return sp.contains(key);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        if (key.isEmpty()) {
+            return false;
         }
-        return false;
+        return sp.contains(key);
     }
 }

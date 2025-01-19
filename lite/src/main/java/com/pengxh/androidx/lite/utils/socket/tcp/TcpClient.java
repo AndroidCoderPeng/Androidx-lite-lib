@@ -4,6 +4,8 @@ import android.util.Log;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;
@@ -25,14 +27,16 @@ public class TcpClient {
 
     private static final String TAG = "TcpClient";
     private static final long RECONNECT_DELAY = 5L;
+    private static final int MAX_RETRY_TIMES = 10; // 设置最大重连次数
     private final Bootstrap bootStrap = new Bootstrap();
     private final NioEventLoopGroup loopGroup = new NioEventLoopGroup();
     private final OnTcpConnectStateListener listener;
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
+    private final AtomicInteger retryTimes = new AtomicInteger(0);
     private String host;
     private int port;
     private Channel channel;
-    private boolean isRunning = false;
-    private int retryTimes = 0;
+    private boolean needReconnect = true;
 
     public TcpClient(OnTcpConnectStateListener listener) {
         this.listener = listener;
@@ -49,13 +53,13 @@ public class TcpClient {
      * TcpClient 是否正在运行
      */
     public boolean isRunning() {
-        return isRunning;
+        return isRunning.get();
     }
 
     public void start(String host, int port) {
         this.host = host;
         this.port = port;
-        if (isRunning) {
+        if (isRunning.get()) {
             return;
         }
         connect();
@@ -81,7 +85,9 @@ public class TcpClient {
                             InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
                             Log.d(TAG, address.getAddress().getHostAddress() + " 已断开");
                             listener.onDisconnected();
-                            reconnect();
+                            if (needReconnect) {
+                                reconnect();
+                            }
                         }
 
                         @Override
@@ -109,13 +115,19 @@ public class TcpClient {
                     @Override
                     public void operationComplete(ChannelFuture future) throws Exception {
                         if (future.isSuccess()) {
-                            isRunning = true;
-                            retryTimes = 0;
+                            isRunning.set(true);
+                            retryTimes.set(0);
                             channel = future.channel();
+                        } else {
+                            Log.d(TAG, "连接失败: " + future.cause().getMessage());
+                            reconnect();
                         }
                     }
                 }).sync();
                 channelFuture.channel().closeFuture().sync();
+            } catch (InterruptedException e) {
+                Log.d(TAG, "连接中断: " + e.getMessage());
+                reconnect();
             } catch (Exception e) {
                 Log.d(TAG, "连接失败: " + e.getMessage());
                 reconnect();
@@ -124,18 +136,24 @@ public class TcpClient {
     }
 
     private void reconnect() {
-        retryTimes++;
-        Log.d(TAG, "开始第 " + retryTimes + " 次重连");
-        loopGroup.schedule(this::connect, RECONNECT_DELAY, TimeUnit.SECONDS);
+        int currentRetryTimes = retryTimes.incrementAndGet();
+        if (currentRetryTimes <= MAX_RETRY_TIMES) {
+            Log.w(TAG, "开始第 " + currentRetryTimes + " 次重连");
+            loopGroup.schedule(this::connect, RECONNECT_DELAY, TimeUnit.SECONDS);
+        } else {
+            Log.e(TAG, "达到最大重连次数，停止重连");
+            listener.onConnectFailed();
+        }
     }
 
-    public void stop() {
-        isRunning = false;
+    public void stop(boolean needReconnect) {
+        this.needReconnect = needReconnect;
+        isRunning.set(false);
         channel.close();
     }
 
     public void sendMessage(byte[] bytes) {
-        if (!isRunning) {
+        if (!isRunning.get()) {
             return;
         }
         channel.writeAndFlush(bytes);

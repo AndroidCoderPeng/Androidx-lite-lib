@@ -12,11 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class RecyclerViewItemDivider extends RecyclerView.ItemDecoration {
 
+    private final float leftMargin;
+    private final float rightMargin;
     private final Paint dividerPaint = new Paint();
 
-    public RecyclerViewItemDivider(int strokeWidth, int color) {
+    public RecyclerViewItemDivider(float leftMargin, float rightMargin, int color) {
+        this.leftMargin = leftMargin;
+        this.rightMargin = rightMargin;
         dividerPaint.setColor(color);
-        dividerPaint.setStrokeWidth(strokeWidth);
+        dividerPaint.setStrokeWidth(1);
     }
 
     @Override
@@ -24,7 +28,7 @@ public class RecyclerViewItemDivider extends RecyclerView.ItemDecoration {
         int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View view = parent.getChildAt(i);
-            c.drawLine(0f, view.getBottom(), view.getWidth(), view.getBottom(), dividerPaint);
+            c.drawLine(leftMargin, view.getBottom(), view.getWidth() - rightMargin, view.getBottom(), dividerPaint);
         }
     }
 }

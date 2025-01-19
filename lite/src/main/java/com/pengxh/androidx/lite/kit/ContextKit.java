@@ -78,23 +78,22 @@ public class ContextKit {
      * 获取本地Asserts文件内容
      */
     public static String readAssetsFile(Context context, String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            return "";
+        }
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(context.getAssets().open(fileName));
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             StringBuilder data = new StringBuilder();
-            String s;
-            try {
-                while ((s = bufferedReader.readLine()) != null) {
-                    data.append(s);
-                }
-                return data.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                data.append(line);
             }
+            return data.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
     }
 
     //获取SimSerialNumber

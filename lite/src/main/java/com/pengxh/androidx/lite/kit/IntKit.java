@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Locale;
 import java.util.Random;
 
 public class IntKit {
@@ -30,7 +31,7 @@ public class IntKit {
      */
     public static String appendZero(int value) {
         if (value < 10) {
-            return "0" + value;
+            return String.format(Locale.getDefault(), "0%d", value);
         } else {
             return String.valueOf(value);
         }

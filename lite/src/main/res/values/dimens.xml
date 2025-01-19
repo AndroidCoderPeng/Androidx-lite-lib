@@ -17,6 +17,7 @@
     <dimen name="lib_dp_40">40dp</dimen>
     <dimen name="lib_dp_45">45dp</dimen>
     <dimen name="lib_dp_50">50dp</dimen>
+    <dimen name="lib_dp_60">60dp</dimen>
     <dimen name="lib_dp_80">80dp</dimen>
     <dimen name="lib_dp_100">100dp</dimen>
 

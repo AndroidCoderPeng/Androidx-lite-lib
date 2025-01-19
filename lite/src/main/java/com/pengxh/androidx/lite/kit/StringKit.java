@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2018/11/16.
@@ -53,50 +54,25 @@ public class StringKit {
     /**
      * 手动换行
      */
-    public static String breakLine(String str, int length) {
-        int step;
-        if (length <= 0) {
-            step = 15;
-        } else {
-            step = length;
-        }
-
-        if (str.isEmpty()) {
+    public static String wrapLine(String str, int length) {
+        if (str == null || str.isEmpty()) {
             return str;
         }
 
-        int lines = str.length() / step;
+        // 确保 step 至少为 1
+        int step = Math.max(length, 1);
 
-        if (str.length() <= step) {
-            return str;
-        } else {
-            if (str.length() % step == 0) {
-                //整除
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < lines; i++) {
-                    if (i == lines - 1) {
-                        //最后一段文字
-                        builder.append(str.substring(i * step));
-                    } else {
-                        String s = str.substring(i * step, (i + 1) * step);
-                        builder.append(s).append("\r\n");
-                    }
-                }
-                return builder.toString();
-            } else {
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i <= lines; i++) {
-                    if (i == lines) {
-                        //最后一段文字
-                        builder.append(str.substring(i * step));
-                    } else {
-                        String s = str.substring(i * step, (i + 1) * step);
-                        builder.append(s).append("\r\n");
-                    }
-                }
-                return builder.toString();
+        StringBuilder builder = new StringBuilder();
+        int strLength = str.length();
+        for (int i = 0; i < strLength; i += step) {
+            int end = Math.min(i + step, strLength);
+            builder.append(str.substring(i, end));
+            if (end < strLength) {
+                builder.append(System.lineSeparator());
             }
         }
+
+        return builder.toString();
     }
 
     /**
@@ -200,12 +176,16 @@ public class StringKit {
 
 
     public static boolean isPhoneNumber(String number) {
+        if (number == null) {
+            return false;
+        }
+
         if (number.length() != 11) {
             return false;
-        } else {
-            String regExp = "^1[3-9]\\d{9}$";
-            return number.matches(regExp);
         }
+
+        Pattern regExpPattern = Pattern.compile("^1[3-9]\\d{9}$");
+        return regExpPattern.matcher(number).matches();
     }
 
     /**

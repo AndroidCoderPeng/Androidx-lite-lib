@@ -115,19 +115,25 @@ public class LongKit {
         return true;
     }
 
+    private static final long KB = 1024;
+    private static final long MB = KB * 1024;
+    private static final long GB = MB * 1024;
+
     public static String formatFileSize(long size) {
-        String fileSize;
         DecimalFormat df = new DecimalFormat("0.00");
         df.setRoundingMode(RoundingMode.HALF_UP);
-        if (size < 1024) {
-            fileSize = df.format(size) + "B";
-        } else if (size < 1048576) {
-            fileSize = df.format(((double) size / 1024)) + "K";
-        } else if (size < 1073741824) {
-            fileSize = df.format(((double) size / 1048576)) + "M";
-        } else {
-            fileSize = df.format(((double) size / 1073741824)) + "G";
+        if (size < 0) {
+            throw new IllegalArgumentException("文件大小不能为负数");
         }
-        return fileSize;
+
+        if (size < KB) {
+            return df.format(size) + "B";
+        } else if (size < MB) {
+            return df.format(((double) size / KB)) + " KB";
+        } else if (size < GB) {
+            return df.format(((double) size / MB)) + " MB";
+        } else {
+            return df.format(((double) size / GB)) + " GB";
+        }
     }
 }

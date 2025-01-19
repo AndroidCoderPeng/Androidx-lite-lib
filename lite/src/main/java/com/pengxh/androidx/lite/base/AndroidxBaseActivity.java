@@ -16,6 +16,10 @@ public abstract class AndroidxBaseActivity<VB extends ViewBinding> extends AppCo
 
     protected VB binding;
 
+    /**
+     * binding 是在 onCreate 方法中初始化的，并且它绑定的是 Activity 的生命周期。当 Activity 销毁时，binding 也会随之被销毁。
+     * 在大多数情况下，ViewBinding 的生命周期与 Activity 或 Fragment 的生命周期一致，因此不需要手动释放。
+     * */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,15 +32,17 @@ public abstract class AndroidxBaseActivity<VB extends ViewBinding> extends AppCo
             Method method = cls.getDeclaredMethod("inflate", LayoutInflater.class);
             binding = (VB) method.invoke(null, getLayoutInflater());
             if (binding == null) {
-                throw new NullPointerException();
+                throw new IllegalStateException("Binding inflated to null");
             }
             setContentView(binding.getRoot());
             setupTopBarLayout();
             initOnCreate(savedInstanceState);
             observeRequestState();
             initEvent();
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Failed to find inflate method", e);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("Failed to invoke inflate method", e);
         }
     }
 
@@ -59,10 +65,4 @@ public abstract class AndroidxBaseActivity<VB extends ViewBinding> extends AppCo
      * 初始化业务逻辑
      */
     protected abstract void initEvent();
-
-    @Override
-    protected void onDestroy() {
-        binding = null;
-        super.onDestroy();
-    }
 }
