@@ -2,7 +2,6 @@ package com.pengxh.androidx.lite.utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
@@ -94,11 +93,7 @@ public class HtmlRenderEngine implements Handler.Callback {
         }
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         //默认不处理图片先这样简单设置
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            textView.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            textView.setText(Html.fromHtml(html));
-        }
+        textView.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY));
 
         new Thread(renderRunnable).start();
     }
@@ -128,48 +123,25 @@ public class HtmlRenderEngine implements Handler.Callback {
                     return drawable;
                 }
             };
-            Spanned htmlText;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                htmlText = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY, imageGetter, new Html.TagHandler() {
-                    @Override
-                    public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
-                        if (tag.toLowerCase(Locale.getDefault()).equals("img")) {
-                            int length = output.length();
-                            ImageSpan[] imageSpans = output.getSpans(length - 1, length, ImageSpan.class);
-                            String imgSource = imageSpans[0].getSource();
-                            if (imgSource == null) {
-                                return;
-                            }
-                            output.setSpan(new ClickableSpan() {
-                                @Override
-                                public void onClick(@NonNull View widget) {
-                                    listener.imageSource(imgSource);
-                                }
-                            }, length - 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            Spanned htmlText = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY, imageGetter, new Html.TagHandler() {
+                @Override
+                public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
+                    if (tag.toLowerCase(Locale.getDefault()).equals("img")) {
+                        int length = output.length();
+                        ImageSpan[] imageSpans = output.getSpans(length - 1, length, ImageSpan.class);
+                        String imgSource = imageSpans[0].getSource();
+                        if (imgSource == null) {
+                            return;
                         }
-                    }
-                });
-            } else {
-                htmlText = Html.fromHtml(html, imageGetter, new Html.TagHandler() {
-                    @Override
-                    public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
-                        if (tag.toLowerCase(Locale.getDefault()).equals("img")) {
-                            int length = output.length();
-                            ImageSpan[] imageSpans = output.getSpans(length - 1, length, ImageSpan.class);
-                            String imgSource = imageSpans[0].getSource();
-                            if (imgSource == null) {
-                                return;
+                        output.setSpan(new ClickableSpan() {
+                            @Override
+                            public void onClick(@NonNull View widget) {
+                                listener.imageSource(imgSource);
                             }
-                            output.setSpan(new ClickableSpan() {
-                                @Override
-                                public void onClick(@NonNull View widget) {
-                                    listener.imageSource(imgSource);
-                                }
-                            }, length - 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
+                        }, length - 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
-                });
-            }
+                }
+            });
 
             weakReferenceHandler.post(new Runnable() {
                 @Override

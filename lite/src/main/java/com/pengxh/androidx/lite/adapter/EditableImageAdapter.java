@@ -47,16 +47,16 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_editable_rv_g, parent, false));
+        View view = LayoutInflater.from(context).inflate(R.layout.item_editable_rv_g, parent, false);
+        int imageSize = viewWidth / spanCount;
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageSize, imageSize);
+        view.findViewById(R.id.imageView).setLayoutParams(params);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         ImageView imageView = holder.getView(R.id.imageView);
-        int imageSize = viewWidth / spanCount;
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageSize, imageSize);
-        imageView.setLayoutParams(params);
-
         if (position == getItemCount() - 1 && images.size() < imageCountLimit) {
             imageView.setImageResource(R.drawable.ic_add_pic);
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +70,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
                 }
             });
         } else {
-            Glide.with(context).load(images.get(position)).into(imageView);
+            Glide.with(holder.itemView.getContext()).load(images.get(position)).into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -98,11 +98,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        if (images.size() >= imageCountLimit) {
-            return imageCountLimit;
-        } else {
-            return images.size() + 1;
-        }
+        return Math.min(imageCountLimit, images.size() + 1);
     }
 
     private OnItemClickListener itemClickListener;

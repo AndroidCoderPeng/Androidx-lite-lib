@@ -25,13 +25,10 @@ public class BitmapKit {
     /**
      * 保存图片，不压缩
      */
-    public static void saveImage(Bitmap bitmap, String imagePath) {
-        try {
-            File imageFile = new File(imagePath);
-            FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-            fileOutputStream.flush();
-            fileOutputStream.close();
+    public static void saveImage(Bitmap bitmap, String imagePath, int quality) {
+        File imageFile = new File(imagePath);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(imageFile)) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fileOutputStream);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -40,11 +37,24 @@ public class BitmapKit {
     /**
      * 旋转图片
      */
-    public static Bitmap rotateImage(int angle, Bitmap bitmap) {
+    public static Bitmap rotateImage(float angle, Bitmap bitmap) {
+        // 确保在0到360度之间
+        float rotatedAngle = (angle % 360 + 360) % 360;
+        if (rotatedAngle == 0f) {
+            return bitmap;
+        }
+
         Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
+        matrix.postRotate(rotatedAngle);
         // 创建新的图片
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+        // 尝试复用原Bitmap对象以节省内存
+        if (rotatedBitmap != bitmap) {
+            bitmap.recycle();
+        }
+
+        return rotatedBitmap;
     }
 
     /**
@@ -57,12 +67,9 @@ public class BitmapKit {
      * 默认：Base64.NO_WRAP
      */
     public static String getBase64(Bitmap bitmap) {
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream); // 压缩质量
             byte[] bitmapBytes = outputStream.toByteArray();
-            outputStream.flush();
-            outputStream.close();
             return Base64.encodeToString(bitmapBytes, Base64.NO_WRAP);
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,7 +79,7 @@ public class BitmapKit {
 
     /**
      * 圆形或者圆角图片
-     *
+     * <p>
      * 也可以用 {@link com.google.android.material.imageview.ShapeableImageView} 代替
      */
     public static Bitmap createRoundDrawable(Context context, Bitmap bitmap, int borderStroke, @ColorInt int color) {

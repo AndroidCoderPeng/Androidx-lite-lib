@@ -8,8 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import androidx.annotation.Nullable;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.pengxh.androidx.lite.R;
@@ -24,13 +22,11 @@ import java.util.List;
 public class GridViewImageAdapter extends BaseAdapter {
 
     private final Context context;
-    private final int screenWidth;
     private final List<String> images;
 
-    public GridViewImageAdapter(Context context, @Nullable List<String> images) {
+    public GridViewImageAdapter(Context context, List<String> images) {
         this.context = context;
         this.images = images;
-        this.screenWidth = ContextKit.getScreenWidth(context);
     }
 
     @Override
@@ -45,6 +41,9 @@ public class GridViewImageAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
+        if (position < 0 || position >= images.size()) {
+            throw new IndexOutOfBoundsException();
+        }
         return images.get(position);
     }
 
@@ -65,14 +64,21 @@ public class GridViewImageAdapter extends BaseAdapter {
                 .into(holder.imageView);
 
         //动态设置图片高度，和图片宽度保持一致
+        int screenWidth = ContextKit.getScreenWidth(context);
         int padding = convertView.getPaddingLeft() + convertView.getPaddingRight();
         int imageSize = (screenWidth - padding) / 3;
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageSize, imageSize);
-        holder.imageView.setLayoutParams(params);
+        if (holder.cachedLayoutParams == null) {
+            holder.cachedLayoutParams = new LinearLayout.LayoutParams(imageSize, imageSize);
+        } else {
+            holder.cachedLayoutParams.width = imageSize;
+            holder.cachedLayoutParams.height = imageSize;
+        }
+        holder.imageView.setLayoutParams(holder.cachedLayoutParams);
         return convertView;
     }
 
     private static class ItemViewHolder {
         private ImageView imageView;
+        private LinearLayout.LayoutParams cachedLayoutParams;
     }
 }

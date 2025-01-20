@@ -42,24 +42,24 @@ public class ContextKit {
         return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }
 
-    public static <T> void navigatePageTo(Context context, Class<T> t) {
-        context.startActivity(new Intent(context, t));
+    public static <T> void navigatePageTo(Context context, Class<T> activityClass) {
+        context.startActivity(new Intent(context, activityClass));
     }
 
-    public static <T> void navigatePageTo(Context context, Class<T> t, String value) {
-        Intent intent = new Intent(context, t);
+    public static <T> void navigatePageTo(Context context, Class<T> activityClass, String value) {
+        Intent intent = new Intent(context, activityClass);
         intent.putExtra(LiteConstant.INTENT_PARAM_KEY, value);
         context.startActivity(intent);
     }
 
-    public static <T> void navigatePageTo(Context context, Class<T> t, ArrayList<String> values) {
-        Intent intent = new Intent(context, t);
+    public static <T> void navigatePageTo(Context context, Class<T> activityClass, ArrayList<String> values) {
+        Intent intent = new Intent(context, activityClass);
         intent.putStringArrayListExtra(LiteConstant.INTENT_PARAM_KEY, values);
         context.startActivity(intent);
     }
 
-    public static <T> void navigatePageTo(Context context, Class<T> t, int index, ArrayList<String> imageList) {
-        Intent intent = new Intent(context, t);
+    public static <T> void navigatePageTo(Context context, Class<T> activityClass, int index, ArrayList<String> imageList) {
+        Intent intent = new Intent(context, activityClass);
         intent.putExtra(LiteConstant.BIG_IMAGE_INTENT_INDEX_KEY, index);
         intent.putStringArrayListExtra(LiteConstant.BIG_IMAGE_INTENT_DATA_KEY, imageList);
         context.startActivity(intent);
@@ -72,19 +72,20 @@ public class ContextKit {
         if (fileName == null || fileName.isEmpty()) {
             return "";
         }
-        try {
-            InputStreamReader inputStreamReader = new InputStreamReader(context.getAssets().open(fileName));
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+        try (InputStreamReader inputStreamReader = new InputStreamReader(context.getAssets().open(fileName));
+             BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
+
             StringBuilder data = new StringBuilder();
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 data.append(line);
             }
+
             return data.toString();
         } catch (IOException e) {
-            e.printStackTrace();
+            return "";
         }
-        return "";
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.pengxh.androidx.lite.adapter;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,6 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -58,16 +56,7 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
             public void onClick(View v) {
                 if (multipleSelected.containsKey(position)) {
                     multipleSelected.remove(position);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        selectedItems.removeIf(item -> item.equals(dataRows.get(position)));
-                    } else {
-                        Iterator<T> iterator = selectedItems.iterator();
-                        while (iterator.hasNext()) {
-                            if (iterator.next() == dataRows.get(position)) {
-                                iterator.remove();
-                            }
-                        }
-                    }
+                    selectedItems.removeIf(item -> item.equals(dataRows.get(position)));
                     holder.itemView.setSelected(false);
                 } else {
                     multipleSelected.put(position, true);
