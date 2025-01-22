@@ -1,0 +1,10 @@
+<resources>
+    <!-- Base application theme. -->
+    <!--    android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"-->  <!-- 圆方紫色按钮白字 -->
+    <!--    android:theme="@style/Theme.AppCompat.Light.NoActionBar"-->  <!-- 默认 -->
+    <style name="Base.Theme.AndroidLite.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your light theme here. -->
+    </style>
+
+    <style name="Theme.AndroidLite.NoActionBar" parent="Base.Theme.AndroidLite.NoActionBar" />
+</resources>

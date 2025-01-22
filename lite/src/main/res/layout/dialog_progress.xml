@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             app:indicatorColor="@color/blue"
             app:indicatorSize="@dimen/lib_dp_60"
-            app:trackColor="@color/lib_hint_color"
+            app:trackColor="@color/lib_line_color"
             app:trackCornerRadius="@dimen/lib_dp_5" />
 
         <TextView

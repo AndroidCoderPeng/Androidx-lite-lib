@@ -26,7 +26,7 @@
                 android:gravity="center_horizontal"
                 android:paddingVertical="@dimen/lib_dp_10"
                 android:text="温馨提示"
-                android:textColor="@color/lib_text_color"
+                android:textColor="@color/black"
                 android:textSize="@dimen/lib_sp_16" />
 
             <ImageView
@@ -64,12 +64,13 @@
 
         <Button
             android:id="@+id/dialogButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/dialog_button_selector"
-            android:gravity="center"
+            android:layout_height="@dimen/lib_dp_45"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:text="去设置网络"
             android:textColor="@color/blue"
-            android:textSize="@dimen/lib_sp_16" />
+            android:textSize="@dimen/lib_sp_14" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

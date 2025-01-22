@@ -37,7 +37,7 @@
                 android:gravity="center_vertical"
                 android:text="原密码"
                 android:textColor="@color/lib_text_color"
-                android:textSize="@dimen/lib_sp_16" />
+                android:textSize="@dimen/lib_sp_14" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -57,7 +57,7 @@
                     android:singleLine="true"
                     android:textColor="@color/lib_text_color"
                     android:textColorHint="@color/lib_hint_color"
-                    android:textSize="@dimen/lib_sp_16" />
+                    android:textSize="@dimen/lib_sp_14" />
             </LinearLayout>
         </LinearLayout>
 
@@ -77,7 +77,7 @@
                 android:gravity="center_vertical"
                 android:text="新密码"
                 android:textColor="@color/lib_text_color"
-                android:textSize="@dimen/lib_sp_16" />
+                android:textSize="@dimen/lib_sp_14" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -97,7 +97,7 @@
                     android:singleLine="true"
                     android:textColor="@color/lib_text_color"
                     android:textColorHint="@color/lib_hint_color"
-                    android:textSize="@dimen/lib_sp_16" />
+                    android:textSize="@dimen/lib_sp_14" />
             </LinearLayout>
         </LinearLayout>
 
@@ -117,7 +117,7 @@
                 android:gravity="center_vertical"
                 android:text="确认密码"
                 android:textColor="@color/lib_text_color"
-                android:textSize="@dimen/lib_sp_16" />
+                android:textSize="@dimen/lib_sp_14" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -137,7 +137,7 @@
                     android:singleLine="true"
                     android:textColor="@color/lib_text_color"
                     android:textColorHint="@color/lib_hint_color"
-                    android:textSize="@dimen/lib_sp_16" />
+                    android:textSize="@dimen/lib_sp_14" />
             </LinearLayout>
         </LinearLayout>
 
@@ -149,11 +149,13 @@
 
         <Button
             android:id="@+id/confirmButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="@dimen/lib_dp_45"
-            android:background="@drawable/dialog_button_selector"
-            android:text="确定"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="保存"
             android:textColor="@color/blue"
-            android:textSize="@dimen/lib_sp_16" />
+            android:textSize="@dimen/lib_sp_14" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

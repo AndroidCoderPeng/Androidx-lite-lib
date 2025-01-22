@@ -1,14 +1,13 @@
 package com.pengxh.androidx.lite.widget;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
@@ -17,6 +16,7 @@ import com.pengxh.androidx.lite.R;
 
 public class KeyBoardView extends LinearLayout implements View.OnClickListener {
 
+    private static final String TAG = "KeyBoardView";
     private KeyboardClickListener listener = null;
 
     public KeyBoardView(Context context, @Nullable AttributeSet attrs) {
@@ -55,19 +55,15 @@ public class KeyBoardView extends LinearLayout implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v instanceof TextView) {
-            // 如果点击的是TextView
-            String value = ((TextView) v).getText().toString();
-            if (!TextUtils.isEmpty(value)) {
-                if (listener != null) {
-                    listener.onClick(value);
-                }
-            }
-        } else if (v instanceof ImageView) {
-            // 如果是图片那肯定点击的是删除
-            if (listener != null) {
-                listener.onDelete();
-            }
+        if (listener == null) {
+            Log.e(TAG, "onClick: ", new NullPointerException("listener is null"));
+            return;
+        }
+        String value = ((Button) v).getText().toString();
+        if (value.equals("DEL")) {
+            listener.onDelete();
+        } else {
+            listener.onClick(value);
         }
     }
 

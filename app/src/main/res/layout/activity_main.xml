@@ -46,15 +46,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_10"
-            android:text="按住录音"
-            android:textColor="@color/black" />
+            android:text="按住录音" />
 
         <Button
             android:id="@+id/socketButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_10"
-            android:text="连接"
-            android:textColor="@color/black" />
+            android:text="连接" />
+
+        <com.pengxh.androidx.lite.widget.KeyBoardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </RelativeLayout>
