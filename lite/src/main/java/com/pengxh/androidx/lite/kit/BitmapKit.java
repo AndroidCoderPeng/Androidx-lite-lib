@@ -47,14 +47,7 @@ public class BitmapKit {
         Matrix matrix = new Matrix();
         matrix.postRotate(rotatedAngle);
         // 创建新的图片
-        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-        // 尝试复用原Bitmap对象以节省内存
-        if (rotatedBitmap != bitmap) {
-            bitmap.recycle();
-        }
-
-        return rotatedBitmap;
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     /**
