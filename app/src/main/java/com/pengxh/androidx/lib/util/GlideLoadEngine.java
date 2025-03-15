@@ -11,13 +11,11 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
-import com.pengxh.androidx.lib.R;
 
 public class GlideLoadEngine implements ImageEngine {
 
@@ -84,7 +82,6 @@ public class GlideLoadEngine implements ImageEngine {
                 .override(180, 180)
                 .sizeMultiplier(0.5f)
                 .transform(new CenterCrop(), new RoundedCorners(8))
-                .placeholder(R.mipmap.load_image_error)
                 .into(imageView);
     }
 
@@ -100,9 +97,6 @@ public class GlideLoadEngine implements ImageEngine {
 
     @Override
     public void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
-        Glide.with(context)
-                .load(url)
-                .apply(new RequestOptions().placeholder(R.mipmap.load_image_error))
-                .into(imageView);
+        Glide.with(context).load(url).into(imageView);
     }
 }
