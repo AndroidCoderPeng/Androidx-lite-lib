@@ -34,6 +34,8 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("io.reactivex:rxjava:1.3.8")
+    implementation("io.reactivex:rxandroid:1.2.1")
     implementation("com.squareup.retrofit2:adapter-rxjava:2.8.1")
     //返回值转换器
     implementation("com.squareup.retrofit2:converter-gson:2.8.1")
