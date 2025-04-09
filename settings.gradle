@@ -1,2 +1,0 @@
-rootProject.name = "Androidx-lite-lib"
-include ':app',':lite'
