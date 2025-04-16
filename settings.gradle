@@ -17,5 +17,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Androidx-lite-lib"
-include(":app")
-include(":lite")
+include ':app'
+include ':lite'
