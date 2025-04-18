@@ -7,26 +7,23 @@
 
     <ImageView
         android:id="@+id/leftButton"
-        android:layout_width="@dimen/lib_dp_25"
-        android:layout_height="@dimen/lib_dp_25"
+        android:layout_width="@dimen/lib_dp_45"
+        android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_margin="@dimen/lib_dp_10"
-        android:scaleType="centerInside" />
+        android:padding="@dimen/lib_dp_10" />
 
     <TextView
         android:id="@+id/titleView"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginVertical="@dimen/lib_dp_10"
         android:layout_weight="1"
         android:gravity="center"
         android:singleLine="true" />
 
     <ImageView
         android:id="@+id/rightButton"
-        android:layout_width="@dimen/lib_dp_25"
-        android:layout_height="@dimen/lib_dp_25"
+        android:layout_width="@dimen/lib_dp_45"
+        android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_margin="@dimen/lib_dp_10"
-        android:scaleType="centerInside" />
+        android:padding="@dimen/lib_dp_10" />
 </LinearLayout>
