@@ -46,4 +46,8 @@
         <attr name="tbv_text_color" format="color" />
         <attr name="tbv_smaller_title" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="EmptyView">
+        <attr name="show_reload_button" format="boolean" />
+    </declare-styleable>
 </resources>
