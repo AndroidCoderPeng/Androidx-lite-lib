@@ -4,6 +4,9 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -18,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 /**
@@ -218,5 +222,29 @@ public class StringKit {
 
     public static void show(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private static final AtomicReference<Gson> gson = new AtomicReference<>();
+
+    public static Gson getGson() {
+        Gson instance = gson.get();
+        if (instance == null) {
+            synchronized (Gson.class) {
+                instance = gson.get();
+                if (instance == null) {
+                    instance = new Gson();
+                    gson.set(instance);
+                }
+            }
+        }
+        return instance;
+    }
+
+    public static <T> T unpackingResponse(String response, Class<T> clazz) {
+        return getGson().fromJson(response, clazz);
+    }
+
+    public static <T> T unpackingResponse(String response, TypeToken<T> typeToken) {
+        return getGson().fromJson(response, typeToken.getType());
     }
 }
