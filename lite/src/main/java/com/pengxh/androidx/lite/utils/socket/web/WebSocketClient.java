@@ -1,14 +1,17 @@
 package com.pengxh.androidx.lite.utils.socket.web;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -19,15 +22,18 @@ import okio.ByteString;
 
 public class WebSocketClient {
     private static final String TAG = "WebSocketClient";
-    private static final long RECONNECT_DELAY_MS = 5000L;
-    private static final int MAX_RETRY_TIMES = 10; // 设置最大重连次数
-    private final AtomicBoolean isRunning = new AtomicBoolean(false);
-    private final AtomicInteger retryTimes = new AtomicInteger(0);
-    private final ReentrantLock lock = new ReentrantLock();
+    private static final int MAX_RETRY_TIMES = 10;
+    private static final long RECONNECT_DELAY_SECONDS = 15L;
+    private static final int NORMAL_CLOSE = 1000;
+    private static final int SERVER_CLOSE = 1001;
     private final OnWebSocketListener listener;
     private final OkHttpClient httpClient;
-    private WebSocket webSocket;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private String url;
+    private WebSocket webSocket;
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
+    private final AtomicInteger retryTimes = new AtomicInteger(0);
 
     public WebSocketClient(OnWebSocketListener listener) {
         this.listener = listener;
@@ -41,23 +47,32 @@ public class WebSocketClient {
         return isRunning.get();
     }
 
+    private boolean isValidWebSocketUrl(String url) {
+        return url != null && !url.isEmpty() && (url.startsWith("ws://") || url.startsWith("wss://"));
+    }
+
     public void start(String url) {
-        if (url.isEmpty() || !url.startsWith("ws://") && !url.startsWith("wss://")) {
-            Log.e(TAG, "Invalid URL: " + url);
-            listener.onFailure(null, null);
-            return;
-        }
         this.url = url;
-        if (isRunning.get()) {
-            return;
-        }
+        connect();
+    }
+
+    public void start() {
         connect();
     }
 
     public void connect() {
-        lock.lock();
+        if (!isValidWebSocketUrl(url)) {
+            Log.e(TAG, "Invalid URL: " + url);
+            return;
+        }
+
+        if (isRunning()) {
+            Log.d(TAG, "connect: WebSocketClient 正在运行");
+            return;
+        }
+
         try {
-            Log.d(TAG, "connect: " + url);
+            Log.d(TAG, "开始连接: " + url);
             Request request = new Request.Builder().url(url).build();
             webSocket = httpClient.newWebSocket(request, new WebSocketListener() {
                 @Override
@@ -84,14 +99,7 @@ public class WebSocketClient {
                 public void onClosing(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
                     super.onClosing(webSocket, code, reason);
                     listener.onServerDisconnected(webSocket, code, reason);
-                    /**
-                     * APP主动断开，code = 1000
-                     * 服务器主动断开，code = 1001
-                     * <p>
-                     * APP主动断开，onClosing和onClosed都会走
-                     * 服务器主动断开，只走onClosing
-                     * */
-                    if (code == 1001) {
+                    if (code == SERVER_CLOSE) {
                         Log.d(TAG, code + ", " + reason);
                         reconnect();
                     }
@@ -114,35 +122,48 @@ public class WebSocketClient {
                     reconnect();
                 }
             });
-        } finally {
-            lock.unlock();
+        } catch (Exception e) {
+            Log.e(TAG, "WebSocket 连接异常", e);
+            listener.onFailure(null, e);
+            reconnect();
         }
     }
 
     private void reconnect() {
-        new Thread(() -> {
-            if (retryTimes.get() <= MAX_RETRY_TIMES) {
-                int currentRetryTimes = retryTimes.incrementAndGet();
-                Log.d(TAG, "开始第 " + currentRetryTimes + "次重连");
-                try {
-                    Thread.sleep(RECONNECT_DELAY_MS);
-                    connect();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                Log.e(TAG, "达到最大重连次数，停止重连");
-                listener.onMaxRetryReached();
+        if (retryTimes.get() >= MAX_RETRY_TIMES) {
+            Log.e(TAG, "达到最大重连次数，停止重连");
+            runOnUiThread(listener::onMaxRetryReached);
+            return;
+        }
+
+        int currentRetry = retryTimes.incrementAndGet();
+        Log.d(TAG, "开始第 " + currentRetry + " 次重连");
+
+        executor.submit(() -> {
+            try {
+                Thread.sleep(RECONNECT_DELAY_SECONDS);
+                runOnUiThread(this::connect);
+            } catch (InterruptedException ignored) {
             }
-        }).start();
+        });
     }
 
     public void stop() {
+        Log.d(TAG, url + " 断开连接");
         if (webSocket != null) {
-            Log.d(TAG, url + " 断开连接");
-            webSocket.close(1000, "Application Request Close");
-            isRunning.set(false);
-            webSocket = null;
+            try {
+                webSocket.close(NORMAL_CLOSE, "Application Request Close");
+            } catch (Exception ignored) {
+            }
+        }
+        isRunning.set(false);
+    }
+
+    private void runOnUiThread(Runnable runnable) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            runnable.run();
+        } else {
+            mainHandler.post(runnable);
         }
     }
 }
