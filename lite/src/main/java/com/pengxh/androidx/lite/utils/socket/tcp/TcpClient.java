@@ -3,6 +3,8 @@ package com.pengxh.androidx.lite.utils.socket.tcp;
 import android.util.Log;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,16 +28,20 @@ import io.netty.handler.timeout.IdleStateHandler;
 public class TcpClient {
 
     private static final String TAG = "TcpClient";
-    private static final long RECONNECT_DELAY = 15L;
-    private static final int MAX_RETRY_TIMES = 10; // 设置最大重连次数
+    private static final long INITIAL_IDLE_TIME = 15L;
+    private static final int MAX_RETRY_TIMES = 10;
+    private static final long RECONNECT_DELAY_SECONDS = 15L;
+    private static final int RECEIVE_BUFFER_MIN = 5000;
+    private static final int RECEIVE_BUFFER_MAX = 8000;
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final NioEventLoopGroup loopGroup = new NioEventLoopGroup();
     private final OnTcpConnectStateListener listener;
+    private String host = "";
+    private int port = 0;
+    private boolean needReconnect = false;
+    private Channel channel = null;
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private final AtomicInteger retryTimes = new AtomicInteger(0);
-    private String host;
-    private int port;
-    private Channel channel;
-    private boolean needReconnect = true;
 
     public TcpClient(OnTcpConnectStateListener listener) {
         this.listener = listener;
@@ -51,81 +57,71 @@ public class TcpClient {
     public void start(String host, int port) {
         this.host = host;
         this.port = port;
-        if (isRunning.get()) {
-            Log.d(TAG, "start: TcpClient 正在运行");
-            return;
-        }
+        connect();
+    }
+
+    public void start() {
         connect();
     }
 
     private class SimpleChannelInitializer extends ChannelInitializer<SocketChannel> {
         @Override
-        protected void initChannel(SocketChannel ch) throws Exception {
-            ch.pipeline()
-                    .addLast(new ByteArrayDecoder())
-                    .addLast(new ByteArrayEncoder())
-                    .addLast(new IdleStateHandler(15, 15, 60, TimeUnit.SECONDS))//如果连接没有接收或发送数据超过60秒钟就发送一次心跳
-                    .addLast(new SimpleChannelInboundHandler<byte[]>() {
-                        @Override
-                        public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                            InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
-                            Log.d(TAG, address.getAddress().getHostAddress() + " 已连接");
-                            listener.onConnected();
-                        }
+        protected void initChannel(SocketChannel ch) {
+            ch.pipeline().addLast(new ByteArrayDecoder());
+            ch.pipeline().addLast(new ByteArrayEncoder());
+            ch.pipeline().addLast(new IdleStateHandler(INITIAL_IDLE_TIME, INITIAL_IDLE_TIME, 60, TimeUnit.SECONDS));
+            ch.pipeline().addLast(new SimpleChannelInboundHandler<byte[]>() {
+                @Override
+                public void channelActive(ChannelHandlerContext ctx) {
+                    InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
+                    Log.d(TAG, address.getAddress().getHostAddress() + " 已连接");
+                    listener.onConnected();
+                }
 
-                        @Override
-                        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-                            InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
-                            Log.d(TAG, address.getAddress().getHostAddress() + " 已断开");
-                            listener.onDisconnected();
-                            if (needReconnect) {
-                                reconnect();
-                            }
-                        }
+                @Override
+                public void channelInactive(ChannelHandlerContext ctx) {
+                    InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
+                    Log.d(TAG, address.getAddress().getHostAddress() + " 已断开");
+                    listener.onDisconnected();
+                    if (needReconnect) {
+                        reconnect();
+                    }
+                }
 
-                        @Override
-                        protected void channelRead0(ChannelHandlerContext ctx, byte[] msg) throws Exception {
-                            listener.onMessageReceived(msg);
-                        }
+                @Override
+                protected void channelRead0(ChannelHandlerContext ctx, byte[] msg) {
+                    listener.onMessageReceived(msg);
+                }
 
-                        @Override
-                        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-                            Log.d(TAG, "exceptionCaught: " + cause.getMessage());
-                            listener.onConnectFailed();
-                            ctx.close();
-                            isRunning.set(false);
-                        }
-                    });
+                @Override
+                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+                    Log.d(TAG, "exceptionCaught: " + cause.getMessage());
+                    listener.onConnectFailed();
+                    ctx.close();
+                    isRunning.set(false);
+                }
+            });
         }
     }
 
     private synchronized void connect() {
-        if (channel != null && channel.isActive()) {
-            Log.d(TAG, "connect: TcpClient 正在运行");
+        if (isRunning()) {
+            Log.d(TAG, "start: TcpClient 正在运行");
             return;
         }
         new Thread(() -> {
             try {
-                Log.d(TAG, "start connect: " + host + ":" + port);
-                Bootstrap bootStrap = new Bootstrap();
-                bootStrap.group(loopGroup)
-                        .channel(NioSocketChannel.class)
-                        .option(ChannelOption.TCP_NODELAY, true) //无阻塞
-                        .option(ChannelOption.SO_KEEPALIVE, true) //长连接
-                        .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(5000, 5000, 8000))
-                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-                        .handler(new SimpleChannelInitializer());
-                ChannelFuture channelFuture = bootStrap.connect(host, port).addListener(new ChannelFutureListener() {
-                    @Override
-                    public void operationComplete(ChannelFuture future) throws Exception {
-                        if (future.isSuccess()) {
-                            isRunning.set(true);
-                            retryTimes.set(0);
-                            channel = future.channel();
-                        }
+                Log.d(TAG, "开始连接: " + host + ":" + port);
+                Bootstrap bootstrap = createBootstrap();
+                ChannelFuture future = bootstrap.connect(host, port).addListener((ChannelFutureListener) f -> {
+                    if (f.isSuccess()) {
+                        isRunning.set(true);
+                        retryTimes.set(0);
+                        channel = f.channel();
                     }
                 }).sync();
-                channelFuture.channel().closeFuture().sync();
+
+                future.channel().closeFuture().sync();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -135,11 +131,23 @@ public class TcpClient {
         }).start();
     }
 
+    private Bootstrap createBootstrap() {
+        return new Bootstrap()
+                .group(loopGroup)
+                .channel(NioSocketChannel.class)
+                .option(ChannelOption.TCP_NODELAY, true)
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                .option(ChannelOption.RCVBUF_ALLOCATOR,
+                        new AdaptiveRecvByteBufAllocator(RECEIVE_BUFFER_MIN, RECEIVE_BUFFER_MIN, RECEIVE_BUFFER_MAX))
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                .handler(new SimpleChannelInitializer());
+    }
+
     private void reconnect() {
         int currentRetryTimes = retryTimes.incrementAndGet();
         if (currentRetryTimes <= MAX_RETRY_TIMES) {
-            Log.w(TAG, "开始第 " + currentRetryTimes + " 次重连");
-            loopGroup.schedule(this::connect, RECONNECT_DELAY, TimeUnit.SECONDS);
+            Log.d(TAG, "开始第 " + currentRetryTimes + " 次重连");
+            scheduler.schedule(this::connect, RECONNECT_DELAY_SECONDS, TimeUnit.SECONDS);
         } else {
             Log.e(TAG, "达到最大重连次数，停止重连");
             listener.onConnectFailed();
@@ -149,13 +157,13 @@ public class TcpClient {
     public void stop(boolean needReconnect) {
         this.needReconnect = needReconnect;
         isRunning.set(false);
-        channel.close();
+        if (channel != null && channel.isOpen()) {
+            channel.close();
+        }
     }
 
     public void sendMessage(byte[] bytes) {
-        if (!isRunning.get()) {
-            return;
-        }
+        if (!isRunning() || channel == null) return;
         channel.writeAndFlush(bytes);
     }
 }
