@@ -113,15 +113,14 @@ public class TcpClient {
             try {
                 Log.d(TAG, "开始连接: " + host + ":" + port);
                 Bootstrap bootstrap = createBootstrap();
-                ChannelFuture future = bootstrap.connect(host, port).addListener((ChannelFutureListener) f -> {
-                    if (f.isSuccess()) {
+                ChannelFuture channelFuture = bootstrap.connect(host, port).addListener((ChannelFutureListener) future -> {
+                    if (future.isSuccess()) {
                         isRunning.set(true);
                         retryTimes.set(0);
-                        channel = f.channel();
+                        channel = future.channel();
                     }
                 }).sync();
-
-                future.channel().closeFuture().sync();
+                channelFuture.channel().closeFuture().sync();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (Exception e) {
