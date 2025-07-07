@@ -77,6 +77,9 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
      * 加载更多
      */
     public void loadMore(List<T> newRows) {
+        if (newRows.isEmpty()) {
+            return;
+        }
         int startPosition = dataRows.size();
         dataRows.addAll(newRows);
         notifyItemRangeInserted(startPosition, newRows.size());

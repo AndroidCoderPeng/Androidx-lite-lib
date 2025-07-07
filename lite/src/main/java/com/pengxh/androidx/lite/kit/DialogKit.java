@@ -34,8 +34,9 @@ public class DialogKit {
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         window.getDecorView().setBackgroundColor(Color.TRANSPARENT);
         window.setGravity(gravity);
-        //设置Dialog出现的动画
-        window.setWindowAnimations(resId);
+        if (resId != 0) {
+            window.setWindowAnimations(resId);
+        }
         WindowManager.LayoutParams params = window.getAttributes();
         double r = ratio;
         if (r >= 1) {

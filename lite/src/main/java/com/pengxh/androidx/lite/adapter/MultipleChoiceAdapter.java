@@ -77,6 +77,9 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
      * 加载更多
      */
     public void loadMore(List<T> newRows) {
+        if (newRows.isEmpty()) {
+            return;
+        }
         int startPosition = dataRows.size();
         this.dataRows.addAll(newRows);
         notifyItemRangeInserted(startPosition, newRows.size());

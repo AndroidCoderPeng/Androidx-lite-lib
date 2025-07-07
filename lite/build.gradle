@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id('com.android.library')
 }
@@ -8,6 +10,7 @@ android {
 
     defaultConfig {
         minSdk 26
+        versionName '1.1.6'
 
         consumerProguardFiles('consumer-rules.pro')
     }
@@ -28,6 +31,17 @@ android {
         buildConfig true
         viewBinding true
     }
+
+    libraryVariants.configureEach {
+        outputs.configureEach {
+            outputFileName = "android-lite-lib_${getBuildDate()}_${defaultConfig.versionName}.aar"
+        }
+    }
+}
+
+static def getBuildDate() {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.CHINA)
+    return dateFormat.format(System.currentTimeMillis())
 }
 
 dependencies {
@@ -47,9 +61,9 @@ dependencies {
     //okhttp3日志拦截器
     implementation 'com.squareup.okhttp3:logging-interceptor:4.6.0'
     //图片加载
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
     //官方Json解析库
-    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.google.code.gson:gson:2.11.0'
     //Socket
     implementation 'io.netty:netty-all:4.1.23.Final'
     //汉字转拼音（多音字无法完美转换）

@@ -23,10 +23,12 @@ public class GridViewImageAdapter extends BaseAdapter {
 
     private final Context context;
     private final List<String> images;
+    private final int screenWidth;
 
     public GridViewImageAdapter(Context context, List<String> images) {
         this.context = context;
         this.images = images;
+        this.screenWidth = ContextKit.getScreenWidth(context);
     }
 
     @Override
@@ -64,7 +66,6 @@ public class GridViewImageAdapter extends BaseAdapter {
                 .into(holder.imageView);
 
         //动态设置图片高度，和图片宽度保持一致
-        int screenWidth = ContextKit.getScreenWidth(context);
         int padding = convertView.getPaddingLeft() + convertView.getPaddingRight();
         int imageSize = (screenWidth - padding) / 3;
         if (holder.cachedLayoutParams == null) {
