@@ -3,6 +3,7 @@ package com.pengxh.androidx.lite.utils.socket.tcp;
 import android.util.Log;
 
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +36,7 @@ public class TcpClient {
     private static final int RECEIVE_BUFFER_MAX = 8000;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final NioEventLoopGroup loopGroup = new NioEventLoopGroup();
-    private final OnTcpConnectStateListener listener;
+    private final OnStateChangedListener listener;
     private String host = "";
     private int port = 0;
     private boolean needReconnect = false;
@@ -43,7 +44,7 @@ public class TcpClient {
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private final AtomicInteger retryTimes = new AtomicInteger(0);
 
-    public TcpClient(OnTcpConnectStateListener listener) {
+    public TcpClient(OnStateChangedListener listener) {
         this.listener = listener;
     }
 
@@ -90,7 +91,7 @@ public class TcpClient {
 
                 @Override
                 protected void channelRead0(ChannelHandlerContext ctx, byte[] msg) {
-                    listener.onMessageReceived(msg);
+                    listener.onReceivedData(msg);
                 }
 
                 @Override
@@ -161,8 +162,14 @@ public class TcpClient {
         }
     }
 
-    public void sendMessage(byte[] bytes) {
+    public void send(Object msg) {
         if (!isRunning() || channel == null) return;
-        channel.writeAndFlush(bytes);
+        if (msg instanceof String) {
+            channel.writeAndFlush(((String) msg).getBytes(StandardCharsets.UTF_8));
+        } else if (msg instanceof byte[]) {
+            channel.writeAndFlush(msg);
+        } else {
+            throw new IllegalArgumentException("msg must be String or byte[]");
+        }
     }
 }

@@ -7,13 +7,11 @@ import okio.ByteString;
 public interface OnWebSocketListener {
     void onOpen(WebSocket webSocket, Response response);
 
-    void onMessageResponse(WebSocket webSocket, String message);
+    void onDataReceived(WebSocket webSocket, String message);
 
-    void onMessageResponse(WebSocket webSocket, ByteString bytes);
+    void onDataReceived(WebSocket webSocket, ByteString bytes);
 
-    void onServerDisconnected(WebSocket webSocket, int code, String reason);
-
-    void onClientDisconnected(WebSocket webSocket, int code, String reason);
+    void onDisconnected(WebSocket webSocket, int code, String reason);
 
     void onFailure(WebSocket webSocket, Throwable throwable);
 

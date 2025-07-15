@@ -23,11 +23,11 @@ public class UdpClient {
     private static final int RECEIVE_BUFFER_SIZE = 1024;
     private static final int SEND_BUFFER_SIZE = 1024;
     private final NioEventLoopGroup loopGroup = new NioEventLoopGroup();
-    private final OnUdpMessageListener listener;
+    private final OnDataReceivedListener listener;
     private InetSocketAddress socketAddress;
     private Channel channel = null;
 
-    public UdpClient(OnUdpMessageListener listener) {
+    public UdpClient(OnDataReceivedListener listener) {
         this.listener = listener;
     }
 
@@ -41,7 +41,7 @@ public class UdpClient {
                     ByteBuf byteBuf = msg.content();
                     byte[] bytes = new byte[byteBuf.readableBytes()];
                     byteBuf.readBytes(bytes);
-                    listener.onReceivedUdpMessage(bytes);
+                    listener.onReceivedData(bytes);
                 }
             });
         }
@@ -74,19 +74,22 @@ public class UdpClient {
                 .handler(new SimpleChannelInitializer());
     }
 
-    public void sendMessage(String value) {
-        ByteBuf byteBuf = Unpooled.copiedBuffer(value, CharsetUtil.UTF_8);
+    public void send(Object msg) {
+        if (msg instanceof String) {
+            ByteBuf byteBuf = Unpooled.copiedBuffer(((String) msg).getBytes(CharsetUtil.UTF_8));
+            writeAndFlush(byteBuf);
+        } else if (msg instanceof byte[]) {
+            ByteBuf byteBuf = Unpooled.copiedBuffer((byte[]) msg);
+            writeAndFlush(byteBuf);
+        } else if (msg instanceof ByteBuf) {
+            writeAndFlush((ByteBuf) msg);
+        } else {
+            throw new IllegalArgumentException("msg must be String or byte[] or ByteBuf");
+        }
+    }
+
+    private void writeAndFlush(ByteBuf byteBuf) {
         DatagramPacket datagramPacket = new DatagramPacket(byteBuf, socketAddress);
-        channel.writeAndFlush(datagramPacket);
-    }
-
-    public void sendMessage(byte[] value) {
-        DatagramPacket datagramPacket = new DatagramPacket(Unpooled.copiedBuffer(value), socketAddress);
-        channel.writeAndFlush(datagramPacket);
-    }
-
-    public void sendMessage(ByteBuf value) {
-        DatagramPacket datagramPacket = new DatagramPacket(Unpooled.copiedBuffer(value), socketAddress);
         channel.writeAndFlush(datagramPacket);
     }
 }

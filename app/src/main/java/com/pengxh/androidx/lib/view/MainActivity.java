@@ -21,7 +21,7 @@ import com.pengxh.androidx.lite.base.AndroidxBaseActivity;
 import com.pengxh.androidx.lite.kit.ContextKit;
 import com.pengxh.androidx.lite.kit.LongKit;
 import com.pengxh.androidx.lite.kit.StringKit;
-import com.pengxh.androidx.lite.utils.socket.tcp.OnTcpConnectStateListener;
+import com.pengxh.androidx.lite.utils.socket.tcp.OnStateChangedListener;
 import com.pengxh.androidx.lite.utils.socket.tcp.TcpClient;
 import com.pengxh.androidx.lite.widget.TitleBarView;
 import com.pengxh.androidx.lite.widget.audio.AudioPopupWindow;
@@ -30,7 +30,7 @@ import com.pengxh.androidx.lite.widget.audio.AudioRecodeHelper;
 import java.io.File;
 import java.io.IOException;
 
-public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> implements OnTcpConnectStateListener {
+public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> implements OnStateChangedListener {
 
     private static final String TAG = "MainActivity";
     private final Context context = this;
@@ -61,7 +61,7 @@ public class MainActivity extends AndroidxBaseActivity<ActivityMainBinding> impl
     }
 
     @Override
-    public void onMessageReceived(byte[] bytes) {
+    public void onReceivedData(byte[] bytes) {
 
     }
 
