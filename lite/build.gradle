@@ -24,6 +24,11 @@ afterEvaluate {
             }
         }
     }
+    tasks.withType(PublishToMavenLocal).tap {
+        configureEach {
+            dependsOn("bundleReleaseAar")
+        }
+    }
 }
 
 //static def getBuildDate() {
