@@ -1,6 +1,8 @@
 package com.pengxh.androidx.lite.adapter;
 
 import android.annotation.SuppressLint;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 /**
  * RecyclerView普通列表适配器
@@ -55,33 +59,51 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
         if (newRows.isEmpty()) {
             return;
         }
-        if (itemComparator == null) {
+        if (itemComparator != null) {
+            List<T> oldDataSnapshot = new ArrayList<>(dataRows); // 旧数据副本
+            List<T> newDataSnapshot = new ArrayList<>(newRows); // 新数据副本
             DiffUtil.Callback diffCallback = new DiffUtil.Callback() {
 
                 @Override
                 public int getOldListSize() {
-                    return dataRows.size();
+                    return oldDataSnapshot.size();
                 }
 
                 @Override
                 public int getNewListSize() {
-                    return newRows.size();
+                    return newDataSnapshot.size();
                 }
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    return itemComparator.areItemsTheSame(dataRows.get(oldItemPosition), newRows.get(newItemPosition));
+                    return itemComparator.areItemsTheSame(
+                            oldDataSnapshot.get(oldItemPosition),
+                            newDataSnapshot.get(newItemPosition)
+                    );
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    return itemComparator.areContentsTheSame(dataRows.get(oldItemPosition), newRows.get(newItemPosition));
+                    return itemComparator.areContentsTheSame(
+                            oldDataSnapshot.get(oldItemPosition),
+                            newDataSnapshot.get(newItemPosition)
+                    );
                 }
             };
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback, true);
-            dataRows.clear();
-            dataRows.addAll(newRows);
-            diffResult.dispatchUpdatesTo(this);
+
+            // 在子线程计算 Diff
+            Executors.newSingleThreadExecutor().execute(() -> {
+                try {
+                    DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffCallback);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        result.dispatchUpdatesTo(NormalRecyclerAdapter.this);
+                        dataRows.clear();
+                        dataRows.addAll(newDataSnapshot);
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
         } else {
             dataRows.clear();
             dataRows.addAll(newRows);
