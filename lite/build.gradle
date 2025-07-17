@@ -2,6 +2,28 @@
 
 plugins {
     id('com.android.library')
+    id('maven-publish')
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = 'com.github.AndroidCoderPeng'
+                artifactId = 'Androidx-lite-lib'
+                version = android.defaultConfig.versionName
+
+                // 指定输出的 aar 文件
+                artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+            }
+        }
+        repositories {
+            maven {
+                name = "JitPack"
+                url = uri("https://jitpack.io")
+            }
+        }
+    }
 }
 
 //static def getBuildDate() {
