@@ -1,14 +1,14 @@
-import java.text.SimpleDateFormat
+//import java.text.SimpleDateFormat
 
 plugins {
     id('com.android.library')
 }
 
-static def getBuildDate() {
-    def date = new Date()
-    def dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault())
-    return dateFormat.format(date)
-}
+//static def getBuildDate() {
+//    def date = new Date()
+//    def dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+//    return dateFormat.format(date)
+//}
 
 android {
     namespace 'com.pengxh.androidx.lite'
@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         minSdk 26
-        versionName '1.1.6.1'
+        versionName '1.1.7'
 
         consumerProguardFiles('consumer-rules.pro')
     }
@@ -38,11 +38,11 @@ android {
         viewBinding true
     }
 
-    libraryVariants.configureEach {
-        outputs.configureEach {
-            outputFileName = "android-lite-lib_${getBuildDate()}_${defaultConfig.versionName}.aar"
-        }
-    }
+//    libraryVariants.configureEach {
+//        outputs.configureEach {
+//            outputFileName = "android-lite-lib_${getBuildDate()}_${defaultConfig.versionName}.aar"
+//        }
+//    }
 }
 
 dependencies {
