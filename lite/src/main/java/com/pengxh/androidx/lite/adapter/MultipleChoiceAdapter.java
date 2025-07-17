@@ -78,11 +78,13 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
      */
     public void loadMore(List<T> newRows) {
         if (newRows.isEmpty()) {
+            Log.d(TAG, "loadMore: newRows isEmpty");
             return;
         }
         int startPosition = dataRows.size();
-        this.dataRows.addAll(newRows);
-        notifyItemRangeInserted(startPosition, newRows.size());
+        int newSize = newRows.size();
+        dataRows.addAll(newRows);
+        notifyItemRangeInserted(startPosition, newSize);
     }
 
     public abstract void convertView(ViewHolder viewHolder, int position, T item);

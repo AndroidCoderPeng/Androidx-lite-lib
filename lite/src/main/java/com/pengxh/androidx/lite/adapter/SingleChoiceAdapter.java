@@ -78,11 +78,13 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
      */
     public void loadMore(List<T> newRows) {
         if (newRows.isEmpty()) {
+            Log.d(TAG, "loadMore: newRows isEmpty");
             return;
         }
         int startPosition = dataRows.size();
+        int newSize = newRows.size();
         dataRows.addAll(newRows);
-        notifyItemRangeInserted(startPosition, newRows.size());
+        notifyItemRangeInserted(startPosition, newSize);
     }
 
     public abstract void convertView(ViewHolder viewHolder, int position, T item);

@@ -3,6 +3,7 @@ package com.pengxh.androidx.lite.adapter;
 import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,13 +58,17 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
 
     public void refresh(List<T> newRows, ItemComparator<T> itemComparator) {
         if (newRows.isEmpty()) {
+            Log.d(TAG, "refresh: newRows isEmpty");
             return;
         }
+
+        int oldSize = dataRows.size();
+
         if (itemComparator != null) {
             List<T> oldDataSnapshot = new ArrayList<>(dataRows); // 旧数据副本
             List<T> newDataSnapshot = new ArrayList<>(newRows); // 新数据副本
-            DiffUtil.Callback diffCallback = new DiffUtil.Callback() {
 
+            DiffUtil.Callback diffCallback = new DiffUtil.Callback() {
                 @Override
                 public int getOldListSize() {
                     return oldDataSnapshot.size();
@@ -77,16 +82,14 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
                     return itemComparator.areItemsTheSame(
-                            oldDataSnapshot.get(oldItemPosition),
-                            newDataSnapshot.get(newItemPosition)
+                            oldDataSnapshot.get(oldItemPosition), newDataSnapshot.get(newItemPosition)
                     );
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                     return itemComparator.areContentsTheSame(
-                            oldDataSnapshot.get(oldItemPosition),
-                            newDataSnapshot.get(newItemPosition)
+                            oldDataSnapshot.get(oldItemPosition), newDataSnapshot.get(newItemPosition)
                     );
                 }
             };
@@ -96,18 +99,24 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
                 try {
                     DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffCallback);
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        result.dispatchUpdatesTo(NormalRecyclerAdapter.this);
                         dataRows.clear();
                         dataRows.addAll(newDataSnapshot);
+                        result.dispatchUpdatesTo(NormalRecyclerAdapter.this);
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
         } else {
+            int newSize = newRows.size();
             dataRows.clear();
             dataRows.addAll(newRows);
-            notifyItemRangeChanged(0, dataRows.size());
+
+            // 新数据比旧数据少，需要通知删除部分 item ，否则会越界
+            if (newSize < oldSize) {
+                notifyItemRangeRemoved(newSize, oldSize - newSize);
+            }
+            notifyItemRangeChanged(0, newSize);
         }
     }
 
@@ -116,11 +125,13 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
      */
     public void loadMore(List<T> newRows) {
         if (newRows.isEmpty()) {
+            Log.d(TAG, "loadMore: newRows isEmpty");
             return;
         }
-        int startPosition = this.dataRows.size();
-        this.dataRows.addAll(newRows);
-        notifyItemRangeInserted(startPosition, newRows.size());
+        int startPosition = dataRows.size();
+        int newSize = newRows.size();
+        dataRows.addAll(newRows);
+        notifyItemRangeInserted(startPosition, newSize);
     }
 
     public abstract void convertView(ViewHolder viewHolder, int position, T item);
