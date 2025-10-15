@@ -3,15 +3,16 @@ package com.pengxh.androidx.lite.utils;
 /**
  * 网络请求状态类（用于关注返回值的情况）
  */
+@SuppressWarnings("all")
 public class HttpResponseState<T> {
-    // 私有构造函数，防止外部实例化
-    private HttpResponseState() {
+
+    protected HttpResponseState() {
     }
 
     /**
      * 加载中状态
      */
-    public static final class Loading<T> extends HttpResponseState<T> {
+    private static final class Loading<T> extends HttpResponseState<T> {
     }
 
     /**
@@ -54,5 +55,33 @@ public class HttpResponseState<T> {
         public Throwable getEx() {
             return ex;
         }
+    }
+
+    public boolean isLoading() {
+        return this instanceof Loading;
+    }
+
+    public boolean isSuccess() {
+        return this instanceof Success;
+    }
+
+    public boolean isError() {
+        return this instanceof Error;
+    }
+
+    public static <T> HttpResponseState<T> loading() {
+        return new Loading<>();
+    }
+
+    public static <T> HttpResponseState<T> success(T body) {
+        return new Success<>(body);
+    }
+
+    public static <T> HttpResponseState<T> error(Integer code, String message, Throwable ex) {
+        return new Error<>(code, message, ex);
+    }
+
+    public static <T> HttpResponseState<T> error(String message) {
+        return new Error<>(null, message, null);
     }
 }

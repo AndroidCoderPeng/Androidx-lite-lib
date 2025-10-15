@@ -19,8 +19,8 @@ public class RecyclerViewItemDivider extends RecyclerView.ItemDecoration {
     public RecyclerViewItemDivider(float leftMargin, float rightMargin, int color) {
         this.leftMargin = leftMargin;
         this.rightMargin = rightMargin;
-        dividerPaint.setColor(color);
-        dividerPaint.setStrokeWidth(1);
+        this.dividerPaint.setColor(color);
+        this.dividerPaint.setStrokeWidth(1);
     }
 
     @Override
