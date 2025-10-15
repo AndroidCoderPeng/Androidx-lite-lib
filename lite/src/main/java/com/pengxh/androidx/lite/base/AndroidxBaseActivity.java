@@ -14,12 +14,13 @@ import java.lang.reflect.Type;
 
 public abstract class AndroidxBaseActivity<VB extends ViewBinding> extends AppCompatActivity {
 
-    protected VB binding;
+    protected VB mBinding;
 
     /**
      * binding 是在 onCreate 方法中初始化的，并且它绑定的是 Activity 的生命周期。当 Activity 销毁时，binding 也会随之被销毁。
      * 在大多数情况下，ViewBinding 的生命周期与 Activity 或 Fragment 的生命周期一致，因此不需要手动释放。
      * */
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,11 +31,11 @@ public abstract class AndroidxBaseActivity<VB extends ViewBinding> extends AppCo
         Class<?> cls = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
         try {
             Method method = cls.getDeclaredMethod("inflate", LayoutInflater.class);
-            binding = (VB) method.invoke(null, getLayoutInflater());
-            if (binding == null) {
+            mBinding = (VB) method.invoke(null, getLayoutInflater());
+            if (mBinding == null) {
                 throw new IllegalStateException("Binding inflated to null");
             }
-            setContentView(binding.getRoot());
+            setContentView(mBinding.getRoot());
             setupTopBarLayout();
             initOnCreate(savedInstanceState);
             observeRequestState();

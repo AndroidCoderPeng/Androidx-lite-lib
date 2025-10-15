@@ -18,13 +18,13 @@ import java.util.List;
 public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     private static final String TAG = "SingleChoiceAdapter";
-    private final int xmlResource;
-    private final List<T> dataRows;
+    private final int mXmlResource;
+    private final List<T> mDataRows;
     //选择的位置
     private int selectedPosition = -1;
 
     public void setSelectedPosition(int position) {
-        if (position >= 0 && position < dataRows.size()) {
+        if (position >= 0 && position < mDataRows.size()) {
             selectedPosition = position;
         } else {
             Log.d(TAG, "Invalid position: $position");
@@ -32,25 +32,25 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
     }
 
     public SingleChoiceAdapter(@LayoutRes int xmlResource, List<T> dataRows) {
-        this.xmlResource = xmlResource;
-        this.dataRows = dataRows;
+        this.mXmlResource = xmlResource;
+        this.mDataRows = dataRows;
     }
 
     @Override
     public int getItemCount() {
-        return dataRows.size();
+        return mDataRows.size();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(xmlResource, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(mXmlResource, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        if (position >= 0 && position < dataRows.size()) {
-            convertView(holder, position, dataRows.get(position));
+        if (position >= 0 && position < mDataRows.size()) {
+            convertView(holder, position, mDataRows.get(position));
 
             holder.itemView.setSelected(holder.getLayoutPosition() == selectedPosition);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +64,7 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
                         if (itemCheckedListener == null) {
                             return;
                         }
-                        itemCheckedListener.onItemChecked(position, dataRows.get(position));
+                        itemCheckedListener.onItemChecked(position, mDataRows.get(position));
                     }
                 }
             });
@@ -81,9 +81,9 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
             Log.d(TAG, "loadMore: newRows isEmpty");
             return;
         }
-        int startPosition = dataRows.size();
+        int startPosition = mDataRows.size();
         int newSize = newRows.size();
-        dataRows.addAll(newRows);
+        mDataRows.addAll(newRows);
         notifyItemRangeInserted(startPosition, newSize);
     }
 

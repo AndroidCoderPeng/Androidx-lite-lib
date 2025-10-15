@@ -22,11 +22,11 @@ import java.util.List;
 public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private static final String TAG = "EditableImageAdapter";
-    private final Context context;
-    private final List<String> images;
-    private final int viewWidth;
-    private final int imageCountLimit;
-    private final int spanCount;
+    private final Context mContext;
+    private final List<String> mImages;
+    private final int mViewWidth;
+    private final int mImageCountLimit;
+    private final int mSpanCount;
 
     /**
      * 数量可编辑图片适配器
@@ -37,18 +37,18 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
      * @param spanCount       每行显示的图片数目
      */
     public EditableImageAdapter(Context context, List<String> images, int viewWidth, int imageCountLimit, int spanCount) {
-        this.context = context;
-        this.images = images;
-        this.viewWidth = viewWidth;
-        this.imageCountLimit = imageCountLimit;
-        this.spanCount = spanCount;
+        this.mContext = context;
+        this.mImages = images;
+        this.mViewWidth = viewWidth;
+        this.mImageCountLimit = imageCountLimit;
+        this.mSpanCount = spanCount;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_editable_rv_g, parent, false);
-        int imageSize = viewWidth / spanCount;
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_editable_rv_g, parent, false);
+        int imageSize = mViewWidth / mSpanCount;
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageSize, imageSize);
         view.findViewById(R.id.imageView).setLayoutParams(params);
         return new ViewHolder(view);
@@ -57,7 +57,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         ImageView imageView = holder.getView(R.id.imageView);
-        if (position == getItemCount() - 1 && images.size() < imageCountLimit) {
+        if (position == getItemCount() - 1 && mImages.size() < mImageCountLimit) {
             imageView.setImageResource(R.drawable.ic_add_pic);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -70,7 +70,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
                 }
             });
         } else {
-            Glide.with(holder.itemView.getContext()).load(images.get(position)).into(imageView);
+            Glide.with(holder.itemView.getContext()).load(mImages.get(position)).into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -98,7 +98,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return Math.min(imageCountLimit, images.size() + 1);
+        return Math.min(mImageCountLimit, mImages.size() + 1);
     }
 
     private OnItemClickListener itemClickListener;

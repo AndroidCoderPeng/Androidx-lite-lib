@@ -23,35 +23,35 @@ import java.util.concurrent.Executors;
 public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     private static final String TAG = "NormalRecyclerAdapter";
-    private final int xmlResource;
-    private final List<T> dataRows;
+    private final int mXmlResource;
+    private final List<T> mDataRows;
 
     public NormalRecyclerAdapter(@LayoutRes int xmlResource, List<T> dataRows) {
-        this.xmlResource = xmlResource;
-        this.dataRows = dataRows;
+        this.mXmlResource = xmlResource;
+        this.mDataRows = dataRows;
     }
 
     @Override
     public int getItemCount() {
-        return dataRows.size();
+        return mDataRows.size();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(xmlResource, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(mXmlResource, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        convertView(holder, position, dataRows.get(position));
+        convertView(holder, position, mDataRows.get(position));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (itemClickedListener == null) {
                     return;
                 }
-                itemClickedListener.onItemClicked(position, dataRows.get(position));
+                itemClickedListener.onItemClicked(position, mDataRows.get(position));
             }
         });
     }
@@ -62,10 +62,10 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
             return;
         }
 
-        int oldSize = dataRows.size();
+        int oldSize = mDataRows.size();
 
         if (itemComparator != null) {
-            List<T> oldDataSnapshot = new ArrayList<>(dataRows); // 旧数据副本
+            List<T> oldDataSnapshot = new ArrayList<>(mDataRows); // 旧数据副本
             List<T> newDataSnapshot = new ArrayList<>(newRows); // 新数据副本
 
             DiffUtil.Callback diffCallback = new DiffUtil.Callback() {
@@ -99,8 +99,8 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
                 try {
                     DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffCallback);
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        dataRows.clear();
-                        dataRows.addAll(newDataSnapshot);
+                        mDataRows.clear();
+                        mDataRows.addAll(newDataSnapshot);
                         result.dispatchUpdatesTo(NormalRecyclerAdapter.this);
                     });
                 } catch (Exception e) {
@@ -109,8 +109,8 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
             });
         } else {
             int newSize = newRows.size();
-            dataRows.clear();
-            dataRows.addAll(newRows);
+            mDataRows.clear();
+            mDataRows.addAll(newRows);
 
             // 新数据比旧数据少，需要通知删除部分 item ，否则会越界
             if (newSize < oldSize) {
@@ -128,9 +128,9 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
             Log.d(TAG, "loadMore: newRows isEmpty");
             return;
         }
-        int startPosition = dataRows.size();
+        int startPosition = mDataRows.size();
         int newSize = newRows.size();
-        dataRows.addAll(newRows);
+        mDataRows.addAll(newRows);
         notifyItemRangeInserted(startPosition, newSize);
     }
 

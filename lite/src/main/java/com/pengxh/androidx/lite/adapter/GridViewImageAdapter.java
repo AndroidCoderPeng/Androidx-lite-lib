@@ -21,14 +21,14 @@ import java.util.List;
  */
 public class GridViewImageAdapter extends BaseAdapter {
 
-    private final Context context;
-    private final List<String> images;
-    private final int screenWidth;
+    private final Context mContext;
+    private final List<String> mImages;
+    private final int mScreenWidth;
 
     public GridViewImageAdapter(Context context, List<String> images) {
-        this.context = context;
-        this.images = images;
-        this.screenWidth = ContextKit.getScreenWidth(context);
+        this.mContext = context;
+        this.mImages = images;
+        this.mScreenWidth = ContextKit.getScreenWidth(context);
     }
 
     @Override
@@ -38,36 +38,36 @@ public class GridViewImageAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return images.size();
+        return mImages.size();
     }
 
     @Override
     public Object getItem(int position) {
-        if (position < 0 || position >= images.size()) {
+        if (position < 0 || position >= mImages.size()) {
             throw new IndexOutOfBoundsException();
         }
-        return images.get(position);
+        return mImages.get(position);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ItemViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_readonly_gv, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_readonly_gv, null);
             holder = new ItemViewHolder();
             holder.imageView = convertView.findViewById(R.id.imageView);
             convertView.setTag(holder);
         } else {
             holder = (ItemViewHolder) convertView.getTag();
         }
-        Glide.with(context)
-                .load(images.get(position))
+        Glide.with(mContext)
+                .load(mImages.get(position))
                 .apply(new RequestOptions().error(R.mipmap.load_image_error))
                 .into(holder.imageView);
 
         //动态设置图片高度，和图片宽度保持一致
         int padding = convertView.getPaddingLeft() + convertView.getPaddingRight();
-        int imageSize = (screenWidth - padding) / 3;
+        int imageSize = (mScreenWidth - padding) / 3;
         if (holder.cachedLayoutParams == null) {
             holder.cachedLayoutParams = new LinearLayout.LayoutParams(imageSize, imageSize);
         } else {

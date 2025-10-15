@@ -16,8 +16,8 @@ import com.bumptech.glide.Glide;
 
 public class ViewHolder extends RecyclerView.ViewHolder {
 
-    private final View convertView = itemView;
-    private final SparseArray<View> views = new SparseArray<>();
+    private final View mConvertView = itemView;
+    private final SparseArray<View> mViews = new SparseArray<>();
 
     public ViewHolder(View view) {
         super(view);
@@ -39,10 +39,10 @@ public class ViewHolder extends RecyclerView.ViewHolder {
      * @return 控件</ T>
      */
     public <T extends View> T getView(@IdRes int res) {
-        View view = views.get(res);
+        View view = mViews.get(res);
         if (view == null) {
-            view = convertView.findViewById(res);
-            views.put(res, view);
+            view = mConvertView.findViewById(res);
+            mViews.put(res, view);
         }
         return (T) view;
     }
@@ -162,7 +162,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     public ViewHolder setImageResource(@IdRes int idRes, String imageUrl) {
         View view = getView(idRes);
         if (view instanceof ImageView) {
-            Glide.with(convertView).load(imageUrl).into((ImageView) view);
+            Glide.with(mConvertView).load(imageUrl).into((ImageView) view);
         }
         return this;
     }

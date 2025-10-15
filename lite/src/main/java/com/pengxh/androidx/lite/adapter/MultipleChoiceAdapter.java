@@ -20,47 +20,47 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     private static final String TAG = "MultipleChoiceAdapter";
-    private final int xmlResource;
-    private final List<T> dataRows;
-    private final ConcurrentHashMap<Integer, Boolean> multipleSelected = new ConcurrentHashMap<>();
-    private final CopyOnWriteArrayList<T> selectedItems = new CopyOnWriteArrayList<>();
+    private final int mXmlResource;
+    private final List<T> mDataRows;
+    private final ConcurrentHashMap<Integer, Boolean> mMultipleSelected = new ConcurrentHashMap<>();
+    private final CopyOnWriteArrayList<T> mSelectedItems = new CopyOnWriteArrayList<>();
 
     public MultipleChoiceAdapter(@LayoutRes int xmlResource, List<T> dataRows) {
-        this.xmlResource = xmlResource;
-        this.dataRows = dataRows;
+        this.mXmlResource = xmlResource;
+        this.mDataRows = dataRows;
     }
 
     @Override
     public int getItemCount() {
-        return dataRows.size();
+        return mDataRows.size();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(xmlResource, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(mXmlResource, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        if (position < 0 || position >= dataRows.size()) {
+        if (position < 0 || position >= mDataRows.size()) {
             Log.d(TAG, "Invalid position: " + position);
             return;
         }
 
-        convertView(holder, position, dataRows.get(position));
+        convertView(holder, position, mDataRows.get(position));
 
-        holder.itemView.setSelected(multipleSelected.containsKey(position));
+        holder.itemView.setSelected(mMultipleSelected.containsKey(position));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (multipleSelected.containsKey(position)) {
-                    multipleSelected.remove(position);
-                    selectedItems.removeIf(item -> item.equals(dataRows.get(position)));
+                if (mMultipleSelected.containsKey(position)) {
+                    mMultipleSelected.remove(position);
+                    mSelectedItems.removeIf(item -> item.equals(mDataRows.get(position)));
                     holder.itemView.setSelected(false);
                 } else {
-                    multipleSelected.put(position, true);
-                    selectedItems.add(dataRows.get(position));
+                    mMultipleSelected.put(position, true);
+                    mSelectedItems.add(mDataRows.get(position));
                     holder.itemView.setSelected(true);
                 }
 
@@ -68,7 +68,7 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
                     Log.d(TAG, "No listener set for item checked events");
                     return;
                 }
-                itemCheckedListener.onItemChecked(selectedItems);
+                itemCheckedListener.onItemChecked(mSelectedItems);
             }
         });
     }
@@ -81,9 +81,9 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
             Log.d(TAG, "loadMore: newRows isEmpty");
             return;
         }
-        int startPosition = dataRows.size();
+        int startPosition = mDataRows.size();
         int newSize = newRows.size();
-        dataRows.addAll(newRows);
+        mDataRows.addAll(newRows);
         notifyItemRangeInserted(startPosition, newSize);
     }
 

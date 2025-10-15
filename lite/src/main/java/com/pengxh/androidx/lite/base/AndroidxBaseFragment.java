@@ -17,16 +17,17 @@ import java.lang.reflect.Type;
 
 public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragment {
 
-    private VB _binding;
+    private VB mBinding;
 
     public VB getBinding() {
-        return _binding;
+        return mBinding;
     }
 
-    public void setBinding(VB _binding) {
-        this._binding = _binding;
+    public void setBinding(VB binding) {
+        this.mBinding = binding;
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragm
         Class<?> cls = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
         try {
             Method method = cls.getDeclaredMethod("inflate", LayoutInflater.class, ViewGroup.class, boolean.class);
-            _binding = (VB) method.invoke(null, inflater, container, false);
+            mBinding = (VB) method.invoke(null, inflater, container, false);
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException("Inflate method not found in " + cls.getName(), e);
         } catch (IllegalAccessException e) {
@@ -45,10 +46,10 @@ public abstract class AndroidxBaseFragment<VB extends ViewBinding> extends Fragm
         } catch (InvocationTargetException e) {
             throw new IllegalStateException("Invocation target exception in inflate method in " + cls.getName(), e);
         }
-        if (_binding == null) {
+        if (mBinding == null) {
             throw new IllegalStateException("Binding is null after inflation");
         }
-        return _binding.getRoot();
+        return mBinding.getRoot();
     }
 
 
