@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +26,10 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class TcpClient {
 
@@ -59,6 +64,13 @@ public class TcpClient {
         this.host = host;
         this.port = port;
         connect();
+    }
+
+    public void start(String host, int port, boolean force) {
+        if (force) {
+            isRunning.set(false);
+        }
+        start(host, port);
     }
 
     public void start() {
@@ -110,25 +122,45 @@ public class TcpClient {
             Log.d(TAG, "start: TcpClient 正在运行");
             return;
         }
-        new Thread(() -> {
-            try {
+        Observable.fromCallable(new Callable<ChannelFuture>() {
+            @Override
+            public ChannelFuture call() throws Exception {
                 Log.d(TAG, "开始连接: " + host + ":" + port);
                 Bootstrap bootstrap = createBootstrap();
-                ChannelFuture channelFuture = bootstrap.connect(host, port).addListener((ChannelFutureListener) future -> {
-                    if (future.isSuccess()) {
-                        isRunning.set(true);
-                        retryTimes.set(0);
-                        channel = future.channel();
+                ChannelFuture channelFuture = bootstrap.connect(host, port).addListener(new ChannelFutureListener() {
+                    @Override
+                    public void operationComplete(ChannelFuture future) {
+                        if (future.isSuccess()) {
+                            isRunning.set(true);
+                            retryTimes.set(0);
+                            channel = future.channel();
+                        }
                     }
                 }).sync();
-                channelFuture.channel().closeFuture().sync();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
+                return channelFuture.channel().closeFuture().sync();
+            }
+        }).subscribeOn(Schedulers.io()).subscribe(new Observer<ChannelFuture>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(ChannelFuture future) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "connect: " + e.getMessage(), e);
                 reconnect();
             }
-        }).start();
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
     private Bootstrap createBootstrap() {
@@ -137,8 +169,7 @@ public class TcpClient {
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.RCVBUF_ALLOCATOR,
-                        new AdaptiveRecvByteBufAllocator(RECEIVE_BUFFER_MIN, RECEIVE_BUFFER_MIN, RECEIVE_BUFFER_MAX))
+                .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(RECEIVE_BUFFER_MIN, RECEIVE_BUFFER_MIN, RECEIVE_BUFFER_MAX))
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
                 .handler(new SimpleChannelInitializer());
     }

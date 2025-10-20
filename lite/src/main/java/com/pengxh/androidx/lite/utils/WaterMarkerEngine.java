@@ -11,7 +11,7 @@ import android.text.TextPaint;
 
 import androidx.annotation.NonNull;
 
-import com.pengxh.androidx.lite.annotations.WaterMarkPosition;
+import com.pengxh.androidx.lite.enums.WaterMarkPosition;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,7 +24,7 @@ public class WaterMarkerEngine implements Handler.Callback {
     private final int textColor;
     private final float textSize;
     private final float textMargin;
-    private final int position;
+    private final WaterMarkPosition position;
     private final String fileName;
     private final OnWaterMarkerAddedListener listener;
     private final WeakReferenceHandler weakReferenceHandler = new WeakReferenceHandler(this);
@@ -40,7 +40,7 @@ public class WaterMarkerEngine implements Handler.Callback {
         private int textColor = Color.WHITE;
         private float textSize = 16f;
         private float textMargin = 10f;
-        private int position = WaterMarkPosition.RIGHT_BOTTOM;
+        private WaterMarkPosition position = WaterMarkPosition.RIGHT_BOTTOM;
         private String fileName;
         private OnWaterMarkerAddedListener addedListener;
 
@@ -87,7 +87,7 @@ public class WaterMarkerEngine implements Handler.Callback {
         /**
          * 设置水印文字位置
          */
-        public Builder setMarkerPosition(@WaterMarkPosition int position) {
+        public Builder setMarkerPosition(WaterMarkPosition position) {
             this.position = position;
             return this;
         }
@@ -150,19 +150,19 @@ public class WaterMarkerEngine implements Handler.Callback {
                 int bitmapWidth = copyBitmap.getWidth();
                 int bitmapHeight = copyBitmap.getHeight();
                 switch (position) {
-                    case WaterMarkPosition.LEFT_TOP:
+                    case LEFT_TOP:
                         canvas.drawText(marker, textMargin, textMargin, textPaint);
                         break;
-                    case WaterMarkPosition.RIGHT_TOP:
+                    case RIGHT_TOP:
                         canvas.drawText(marker, bitmapWidth - textRect.width() - textMargin, textMargin, textPaint);
                         break;
-                    case WaterMarkPosition.LEFT_BOTTOM:
+                    case LEFT_BOTTOM:
                         canvas.drawText(marker, textMargin, bitmapHeight - textMargin, textPaint);
                         break;
-                    case WaterMarkPosition.RIGHT_BOTTOM:
+                    case RIGHT_BOTTOM:
                         canvas.drawText(marker, bitmapWidth - textRect.width() - textMargin, bitmapHeight - textMargin, textPaint);
                         break;
-                    case WaterMarkPosition.CENTER:
+                    case CENTER:
                         canvas.drawText(marker, (bitmapWidth - textRect.width()) / 2f, bitmapHeight / 2f, textPaint);
                         break;
                 }

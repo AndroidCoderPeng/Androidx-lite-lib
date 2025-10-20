@@ -54,8 +54,11 @@ public class WebSocketClient {
         connect();
     }
 
-    public void start() {
-        connect();
+    public void start(String url, boolean force) {
+        if (force) {
+            isRunning.set(false);
+        }
+        start(url);
     }
 
     public void connect() {
