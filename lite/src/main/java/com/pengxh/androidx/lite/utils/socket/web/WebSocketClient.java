@@ -23,19 +23,20 @@ import okio.ByteString;
 public class WebSocketClient {
     private static final String TAG = "WebSocketClient";
     private static final int MAX_RETRY_TIMES = 10;
-    private static final long RECONNECT_DELAY_SECONDS = 15L;
+    private static final long RECONNECT_DELAY_TIME = 15 * 1000L;
     private final OnWebSocketListener listener;
     private final OkHttpClient httpClient;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private String url;
     private WebSocket webSocket;
+    private boolean needReconnect = true;
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private final AtomicInteger retryTimes = new AtomicInteger(0);
 
     public WebSocketClient(OnWebSocketListener listener) {
         this.listener = listener;
-        this.httpClient = new OkHttpClient.Builder().readTimeout(0, TimeUnit.MILLISECONDS).build();
+        this.httpClient = new OkHttpClient.Builder().readTimeout(15, TimeUnit.SECONDS).build();
     }
 
     /**
@@ -78,6 +79,7 @@ public class WebSocketClient {
             @Override
             public void onOpen(@NonNull WebSocket webSocket, @NonNull Response response) {
                 super.onOpen(webSocket, response);
+                Log.d(TAG, "onOpen: WebSocket已连接");
                 listener.onOpen(webSocket, response);
                 isRunning.set(true);
                 retryTimes.set(0);
@@ -96,18 +98,10 @@ public class WebSocketClient {
             }
 
             @Override
-            public void onClosing(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
-                super.onClosing(webSocket, code, reason);
-                listener.onDisconnected(webSocket, code, reason);
-            }
-
-            //无论是由于服务端主动断开连接还是由于其他原因，都会走这个回调
-            @Override
             public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
                 super.onClosed(webSocket, code, reason);
-                Log.d(TAG, code + ", " + reason);
+                Log.d(TAG, "onOpen: WebSocket已断开");
                 listener.onDisconnected(webSocket, code, reason);
-                reconnect();
             }
 
             @Override
@@ -115,7 +109,11 @@ public class WebSocketClient {
                 super.onFailure(webSocket, t, response);
                 Log.d(TAG, "onFailure: " + t.getMessage());
                 listener.onFailure(webSocket, t);
-                reconnect();
+                webSocket.close(1000, "");
+                isRunning.set(false);
+                if (needReconnect) {
+                    reconnect();
+                }
             }
         });
     }
@@ -123,7 +121,6 @@ public class WebSocketClient {
     private void reconnect() {
         if (retryTimes.get() >= MAX_RETRY_TIMES) {
             Log.e(TAG, "达到最大重连次数，停止重连");
-            runOnUiThread(listener::onMaxRetryReached);
             return;
         }
 
@@ -132,7 +129,7 @@ public class WebSocketClient {
 
         executor.submit(() -> {
             try {
-                Thread.sleep(RECONNECT_DELAY_SECONDS);
+                Thread.sleep(RECONNECT_DELAY_TIME);
                 runOnUiThread(this::connect);
             } catch (InterruptedException ignored) {
             }
@@ -142,8 +139,9 @@ public class WebSocketClient {
     /**
      * 1000 indicates a normal closure, meaning that the purpose for which the connection was established has been fulfilled
      */
-    public void stop() {
+    public void stop(boolean needReconnect) {
         Log.d(TAG, url + " 断开连接");
+        this.needReconnect = needReconnect;
         if (webSocket != null) {
             try {
                 webSocket.close(1000, "Application Request Close");
