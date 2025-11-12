@@ -69,6 +69,7 @@ public class TcpClient {
     public void start(String host, int port, boolean force) {
         if (force) {
             isRunning.set(false);
+            channel.close();
         }
         start(host, port);
     }

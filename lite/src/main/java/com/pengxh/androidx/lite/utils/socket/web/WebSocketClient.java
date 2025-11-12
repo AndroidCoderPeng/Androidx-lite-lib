@@ -58,6 +58,7 @@ public class WebSocketClient {
     public void start(String url, boolean force) {
         if (force) {
             isRunning.set(false);
+            webSocket.close(1000, "Application Request Close");
         }
         start(url);
     }
