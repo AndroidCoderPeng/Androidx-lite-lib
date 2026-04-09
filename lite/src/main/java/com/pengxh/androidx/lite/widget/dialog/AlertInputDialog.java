@@ -69,7 +69,7 @@ public class AlertInputDialog extends Dialog {
     }
 
     private AlertInputDialog(Builder builder) {
-        super(builder.context, R.style.UserDefinedDialogStyle);
+        super(builder.context);
         this.context = builder.context;
         this.title = builder.title;
         this.hint = builder.hint;

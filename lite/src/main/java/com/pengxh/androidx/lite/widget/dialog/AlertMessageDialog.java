@@ -59,7 +59,7 @@ public class AlertMessageDialog extends Dialog {
     }
 
     private AlertMessageDialog(Builder builder) {
-        super(builder.context, R.style.UserDefinedDialogStyle);
+        super(builder.context);
         this.title = builder.title;
         this.message = builder.message;
         this.positiveBtn = builder.positiveBtn;

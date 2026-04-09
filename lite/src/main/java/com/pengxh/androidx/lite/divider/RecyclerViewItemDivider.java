@@ -2,6 +2,7 @@ package com.pengxh.androidx.lite.divider;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,12 @@ public class RecyclerViewItemDivider extends RecyclerView.ItemDecoration {
         this.rightMargin = rightMargin;
         this.dividerPaint.setColor(color);
         this.dividerPaint.setStrokeWidth(1);
+    }
+
+    // 为分割线预留 1px 空间，避免内容重叠
+    @Override
+    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+        outRect.set(0, 0, 0, 1);
     }
 
     @Override

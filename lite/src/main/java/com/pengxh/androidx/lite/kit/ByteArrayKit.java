@@ -2,20 +2,31 @@ package com.pengxh.androidx.lite.kit;
 
 public class ByteArrayKit {
     public static String toHex(byte[] bytes) {
-        char[] hexArray = "0123456789ABCDEF".toCharArray();
-        char[] hexChars = new char[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int i = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[i >>> 4];
-            hexChars[j * 2 + 1] = hexArray[i & 0x0F];
+        if (bytes == null) {
+            return null;
         }
-        return new String(hexChars);
+
+        StringBuilder result = new StringBuilder(bytes.length * 2);
+        for (byte aByte : bytes) {
+            int i = aByte & 0xFF;
+            result.append("0123456789ABCDEF".charAt(i >> 4));
+            result.append("0123456789ABCDEF".charAt(i & 0x0F));
+        }
+        return result.toString();
     }
 
-    public static String toAsciiCode(byte[] bytes) {
+    public static String toAscIICode(byte[] bytes) {
+        if (bytes == null) {
+            return null;
+        }
+
         StringBuilder builder = new StringBuilder();
-        for (byte aByte : bytes) {
-            builder.append((char) aByte);
+        for (byte b : bytes) {
+            int charValue = b & 0xFF;
+            // 只转换可打印的ASCII字符 (32-126)，其他字符忽略
+            if (charValue >= 32 && charValue <= 126) {
+                builder.append((char) charValue);
+            }
         }
         return builder.toString();
     }

@@ -1,15 +1,15 @@
 package com.pengxh.androidx.lite.kit;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Insets;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Environment;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
@@ -20,17 +20,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
 public class ContextKit {
 
     public static boolean isNetworkConnected(Context context) {
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager manager = context.getSystemService(ConnectivityManager.class);
         Network network = manager.getActiveNetwork();
         if (network == null) {
             return false;
@@ -40,6 +38,23 @@ public class ContextKit {
             return false;
         }
         return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+    }
+
+    /**
+     * 判断指定包名的应用是否存在
+     */
+    public static boolean isApplicationExist(Context context, String packageName) {
+        PackageManager packageManager = context.getSystemService(PackageManager.class);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0));
+            } else {
+                packageManager.getPackageInfo(packageName, 0);
+            }
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
     public static <T> void navigatePageTo(Context context, Class<T> activityClass) {
@@ -99,43 +114,26 @@ public class ContextKit {
      * 获取屏幕高度，兼容Android 11+
      */
     public static int getScreenHeight(Context context) {
-        return context.getResources().getDisplayMetrics().heightPixels + getStatusBarHeight(context);
+        return context.getResources().getDisplayMetrics().heightPixels;
     }
 
     /**
-     * 获取状态栏高度，兼容Android 11+
+     * 获取状态栏高度
      */
+    @SuppressLint(value = "InternalInsetResource")
     public static int getStatusBarHeight(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            WindowManager windowManager = context.getSystemService(WindowManager.class);
             WindowMetrics windowMetrics = windowManager.getCurrentWindowMetrics();
             WindowInsets windowInsets = windowMetrics.getWindowInsets();
 
             Insets insets = windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.statusBars());
             return insets.top;
         } else {
-            if (Build.MANUFACTURER.toLowerCase(Locale.ROOT).equals("xiaomi")) {
-                int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
-                if (resourceId > 0) {
-                    return context.getResources().getDimensionPixelSize(resourceId);
-                } else {
-                    return 0;
-                }
+            int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                return context.getResources().getDimensionPixelSize(resourceId);
             } else {
-                try {
-                    Class<?> clazz = Class.forName("com.android.internal.R$dimen");
-                    Object obj = clazz.newInstance();
-                    Field field = clazz.getField("status_bar_height");
-                    if (field.get(obj) == null) {
-                        return 0;
-                    }
-                    int x = Integer.parseInt(Objects.requireNonNull(field.get(obj)).toString());
-                    if (x > 0) {
-                        return context.getResources().getDimensionPixelSize(x);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 return 0;
             }
         }
@@ -148,23 +146,7 @@ public class ContextKit {
      * Density 密度
      */
     public static Float getScreenDensity(Context context) {
-        WindowManager windowManager = (WindowManager) context.getSystemService(android.content.Context.WINDOW_SERVICE);
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        Display display;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            display = context.getDisplay();
-        } else {
-            display = windowManager.getDefaultDisplay();
-        }
-        if (display == null) {
-            return 0f;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return context.getResources().getDisplayMetrics().density;
-        } else {
-            display.getMetrics(displayMetrics);
-            return displayMetrics.density;
-        }
+        return context.getResources().getDisplayMetrics().density;
     }
 
     public static File createLogFile(Context context) {

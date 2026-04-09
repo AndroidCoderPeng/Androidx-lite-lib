@@ -3,7 +3,6 @@ package com.pengxh.androidx.lite.kit;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
@@ -68,18 +67,6 @@ public class IntKit {
     public static int dp2px(Context context, int value) {
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
         String result = decimalFormat.format(value * ContextKit.getScreenDensity(context));
-        return Integer.parseInt(result);
-    }
-
-    /**
-     * sp转px
-     */
-    public static int sp2px(Context context, int value) {
-        float floatValue = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_SP, value, context.getResources().getDisplayMetrics()
-        );
-        decimalFormat.setRoundingMode(RoundingMode.CEILING);
-        String result = decimalFormat.format(floatValue);
         return Integer.parseInt(result);
     }
 }

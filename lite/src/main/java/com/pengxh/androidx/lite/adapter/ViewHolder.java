@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +15,6 @@ import com.bumptech.glide.Glide;
 
 public class ViewHolder extends RecyclerView.ViewHolder {
 
-    private final View mConvertView = itemView;
     private final SparseArray<View> mViews = new SparseArray<>();
 
     public ViewHolder(View view) {
@@ -36,12 +34,15 @@ public class ViewHolder extends RecyclerView.ViewHolder {
      *
      * @param <T> 类型
      * @param res 控件ID
-     * @return 控件</ T>
+     * @return 控件<T>
      */
     public <T extends View> T getView(@IdRes int res) {
         View view = mViews.get(res);
         if (view == null) {
-            view = mConvertView.findViewById(res);
+            view = itemView.findViewById(res);
+            if (view == null) {
+                throw new IllegalArgumentException("No view found with id: " + res);
+            }
             mViews.put(res, view);
         }
         return (T) view;
@@ -49,6 +50,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     /**
      * 提供TextView和Button设置文本简化操作
+     * 注意: Button继承自TextView,无需单独判断
      *
      * @param idRes        控件ID
      * @param charSequence 字符串
@@ -58,14 +60,13 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         View view = getView(idRes);
         if (view instanceof TextView) {
             ((TextView) view).setText(charSequence);
-        } else if (view instanceof Button) {
-            ((Button) view).setText(charSequence);
         }
         return this;
     }
 
     /**
      * 提供TextView和Button设置文本颜色简化操作
+     * 注意: Button继承自TextView,无需单独判断
      *
      * @param idRes 控件ID
      * @param color 颜色
@@ -75,8 +76,6 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         View view = getView(idRes);
         if (view instanceof TextView) {
             ((TextView) view).setTextColor(color);
-        } else if (view instanceof Button) {
-            ((Button) view).setTextColor(color);
         }
         return this;
     }
@@ -162,7 +161,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     public ViewHolder setImageResource(@IdRes int idRes, String imageUrl) {
         View view = getView(idRes);
         if (view instanceof ImageView) {
-            Glide.with(mConvertView).load(imageUrl).into((ImageView) view);
+            Glide.with(itemView).load(imageUrl).into((ImageView) view);
         }
         return this;
     }

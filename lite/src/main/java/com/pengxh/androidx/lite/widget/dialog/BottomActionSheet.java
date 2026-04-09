@@ -65,7 +65,7 @@ public class BottomActionSheet extends Dialog {
     }
 
     private BottomActionSheet(Builder builder) {
-        super(builder.context, R.style.UserDefinedActionStyle);
+        super(builder.context);
         this.ctx = builder.context;
         this.sheetItems = builder.actionItems;
         this.itemTextColor = builder.color;

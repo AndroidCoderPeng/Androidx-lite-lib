@@ -1,13 +1,12 @@
 package com.pengxh.androidx.lite.kit;
 
-import android.util.Base64;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Base64;
 
 public class FileKit {
     public static String read(File file) {
@@ -53,8 +52,8 @@ public class FileKit {
             fis.close();
             bos.close();
 
-            byte[] imgBytes = bos.toByteArray();
-            return Base64.encodeToString(imgBytes, Base64.NO_WRAP);
+            byte[] imageBytes = bos.toByteArray();
+            return Base64.getEncoder().encodeToString(imageBytes);
         } catch (Exception e) {
             return null;
         }
@@ -70,7 +69,7 @@ public class FileKit {
             if (files != null) {
                 for (File f : files) {
                     if (f.isDirectory()) {
-                        calculateFileSize(f);
+                        size += calculateFileSize(f);
                     } else {
                         size += f.length();
                     }
@@ -91,6 +90,8 @@ public class FileKit {
                     deleteFile(f);
                 }
             }
+            // 删除空目录
+            file.delete();
         } else if (file.exists()) {
             file.delete();
         }

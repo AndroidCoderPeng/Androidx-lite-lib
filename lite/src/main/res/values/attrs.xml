@@ -14,16 +14,6 @@
         <attr name="cpb_hide_text" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="AirDashBoardView">
-        <attr name="air_ring_radius" format="dimension" />
-        <attr name="air_ring_background" format="color" />
-        <attr name="air_ring_foreground" format="color" />
-        <attr name="air_ring_stroke" format="dimension" />
-
-        <attr name="air_center_text_size" format="dimension" />
-        <attr name="air_center_text_color" format="color" />
-    </declare-styleable>
-
     <declare-styleable name="SteeringWheelView">
         <attr name="ctrl_diameter" format="dimension" />
     </declare-styleable>

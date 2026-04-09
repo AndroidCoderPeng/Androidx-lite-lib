@@ -17,7 +17,7 @@ public class ProgressDialog extends Dialog {
     private TextView progressText;
 
     private ProgressDialog(Context context) {
-        super(context, R.style.UserDefinedDialogStyle);
+        super(context);
     }
 
     @Override

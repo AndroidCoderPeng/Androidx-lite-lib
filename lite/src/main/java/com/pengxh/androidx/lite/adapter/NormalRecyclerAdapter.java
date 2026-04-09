@@ -8,13 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -26,9 +27,9 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
     private final int mXmlResource;
     private final List<T> mDataRows;
 
-    public NormalRecyclerAdapter(@LayoutRes int xmlResource, List<T> dataRows) {
+    public NormalRecyclerAdapter(int xmlResource, List<T> dataRows) {
         this.mXmlResource = xmlResource;
-        this.mDataRows = dataRows;
+        this.mDataRows = Collections.synchronizedList(dataRows);
     }
 
     @Override
@@ -44,18 +45,29 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        convertView(holder, position, mDataRows.get(position));
+        if (position < 0 || position >= mDataRows.size()) {
+            Log.w(TAG, "onBindViewHolder: invalid position=" + position + ", size=" + mDataRows.size());
+            return;
+        }
+
+        T item = mDataRows.get(position);
+        convertView(holder, position, item);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (itemClickedListener == null) {
                     return;
                 }
-                itemClickedListener.onItemClicked(position, mDataRows.get(position));
+                // 点击时重新获取当前 position 对应的 item
+                int currentPosition = holder.getBindingAdapterPosition();
+                if (currentPosition != RecyclerView.NO_POSITION && currentPosition < mDataRows.size()) {
+                    itemClickedListener.onItemClicked(currentPosition, mDataRows.get(currentPosition));
+                }
             }
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void refresh(List<T> newRows, ItemComparator<T> itemComparator) {
         if (newRows.isEmpty()) {
             Log.d(TAG, "refresh: newRows isEmpty");
@@ -81,36 +93,40 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    return itemComparator.areItemsTheSame(
-                            oldDataSnapshot.get(oldItemPosition), newDataSnapshot.get(newItemPosition)
-                    );
+                    return itemComparator.areItemsTheSame(oldDataSnapshot.get(oldItemPosition), newDataSnapshot.get(newItemPosition));
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    return itemComparator.areContentsTheSame(
-                            oldDataSnapshot.get(oldItemPosition), newDataSnapshot.get(newItemPosition)
-                    );
+                    return itemComparator.areContentsTheSame(oldDataSnapshot.get(oldItemPosition), newDataSnapshot.get(newItemPosition));
                 }
             };
 
             // 在子线程计算 Diff
-            Executors.newSingleThreadExecutor().execute(() -> {
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.execute(() -> {
                 try {
                     DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffCallback);
-                    new Handler(Looper.getMainLooper()).post(() -> {
+                    synchronized (mDataRows) {
                         mDataRows.clear();
                         mDataRows.addAll(newDataSnapshot);
-                        result.dispatchUpdatesTo(NormalRecyclerAdapter.this);
-                    });
+                    }
+                    new Handler(Looper.getMainLooper()).post(() -> result.dispatchUpdatesTo(NormalRecyclerAdapter.this));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    // 回退到全量刷新
+                    synchronized (mDataRows) {
+                        mDataRows.clear();
+                        mDataRows.addAll(newDataSnapshot);
+                    }
+                    notifyDataSetChanged();
                 }
             });
         } else {
             int newSize = newRows.size();
-            mDataRows.clear();
-            mDataRows.addAll(newRows);
+            synchronized(mDataRows) {
+                mDataRows.clear();
+                mDataRows.addAll(newRows);
+            }
 
             // 新数据比旧数据少，需要通知删除部分 item ，否则会越界
             if (newSize < oldSize) {
@@ -130,7 +146,9 @@ public abstract class NormalRecyclerAdapter<T> extends RecyclerView.Adapter<View
         }
         int startPosition = mDataRows.size();
         int newSize = newRows.size();
-        mDataRows.addAll(newRows);
+        synchronized(mDataRows) {
+            mDataRows.addAll(newRows);
+        }
         notifyItemRangeInserted(startPosition, newSize);
     }
 

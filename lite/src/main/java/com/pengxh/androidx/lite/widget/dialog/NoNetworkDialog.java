@@ -35,7 +35,7 @@ public class NoNetworkDialog extends Dialog {
     }
 
     private NoNetworkDialog(Builder builder) {
-        super(builder.context, R.style.UserDefinedDialogStyle);
+        super(builder.context);
         this.listener = builder.listener;
     }
 

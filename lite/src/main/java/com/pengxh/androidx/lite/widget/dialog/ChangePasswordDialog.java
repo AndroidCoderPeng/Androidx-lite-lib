@@ -37,7 +37,7 @@ public class ChangePasswordDialog extends Dialog {
     }
 
     private ChangePasswordDialog(Builder builder) {
-        super(builder.context, R.style.UserDefinedDialogStyle);
+        super(builder.context);
         this.context = builder.context;
         this.listener = builder.listener;
     }

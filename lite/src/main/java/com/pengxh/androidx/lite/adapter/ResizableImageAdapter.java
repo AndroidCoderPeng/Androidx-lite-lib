@@ -1,7 +1,6 @@
 package com.pengxh.androidx.lite.adapter;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,35 +18,30 @@ import java.util.List;
 /**
  * 数量可编辑图片适配器
  */
-public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
+public class ResizableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-    private static final String TAG = "EditableImageAdapter";
-    private final Context mContext;
+    private static final String TAG = "ResizableImageAdapter";
     private final List<String> mImages;
     private final int mViewWidth;
-    private final int mImageCountLimit;
-    private final int mSpanCount;
+    private final int mLimit = 9;
+    private boolean mShowAddButton;
 
     /**
      * 数量可编辑图片适配器
      *
-     * @param context         使用适配的上下文
-     * @param viewWidth       RecyclerView实际宽度，一般情况下就是屏幕宽度，但是如果有其他控件和它在同一行，需要计算实际宽度，不然无法正确显示RecyclerView item的布局
-     * @param imageCountLimit 最多显示的图片数目
-     * @param spanCount       每行显示的图片数目
+     * @param viewWidth RecyclerView实际宽度，一般情况下就是屏幕宽度，但是如果有其他控件和它在同一行，需要计算实际宽度，不然无法正确显示RecyclerView item的布局
      */
-    public EditableImageAdapter(Context context, List<String> images, int viewWidth, int imageCountLimit, int spanCount) {
-        this.mContext = context;
-        this.mImages = images;
+    public ResizableImageAdapter(List<String> mImages, int viewWidth) {
+        this.mImages = mImages;
         this.mViewWidth = viewWidth;
-        this.mImageCountLimit = imageCountLimit;
-        this.mSpanCount = spanCount;
+        this.mShowAddButton = mImages.size() < mLimit;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_editable_rv_g, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_editable_rv_g, parent, false);
+        int mSpanCount = 3;
         int imageSize = mViewWidth / mSpanCount;
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageSize, imageSize);
         view.findViewById(R.id.imageView).setLayoutParams(params);
@@ -57,7 +51,7 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         ImageView imageView = holder.getView(R.id.imageView);
-        if (position == getItemCount() - 1 && mImages.size() < mImageCountLimit) {
+        if (position == getItemCount() - 1 && mImages.size() < mLimit) {
             imageView.setImageResource(R.drawable.ic_add_pic);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -98,7 +92,11 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return Math.min(mImageCountLimit, mImages.size() + 1);
+        if (mShowAddButton) {
+            return mImages.size() + 1;
+        } else {
+            return mImages.size();
+        }
     }
 
     private OnItemClickListener itemClickListener;
@@ -113,5 +111,46 @@ public class EditableImageAdapter extends RecyclerView.Adapter<ViewHolder> {
         void onItemClick(int position);
 
         void onItemLongClick(View view, int position);
+    }
+
+    public void addItem(String imagePath) {
+        if (mImages.size() >= mLimit) return;
+        mImages.add(imagePath);
+        int insertedPosition = mImages.size() - 1;  // 新图片的位置
+        if (mImages.size() == mLimit) {
+            // 加到第9张：加号按钮消失，先通知 removed，再通知图片 inserted
+            mShowAddButton = false;
+            notifyItemRemoved(insertedPosition);   // 加号按钮消失
+            notifyItemInserted(insertedPosition); // 第9张图片出现（同一位置，RecyclerView 会正确处理）
+        } else {
+            // 普通插入：加号按钮往后移动一格
+            notifyItemInserted(insertedPosition);
+        }
+    }
+
+    public void removeItem(int position) {
+        if (position < 0 || position >= mImages.size()) return;
+        boolean wasAtLimit = mImages.size() == mLimit;
+        mImages.remove(position);
+        if (wasAtLimit) {
+            // 从9张删到8张：加号按钮重新出现
+            mShowAddButton = true;
+            notifyItemRemoved(position);
+            notifyItemInserted(mImages.size()); // 加号按钮在末尾出现
+        } else {
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void clear() {
+        int oldCount = getItemCount();
+        mImages.clear();
+        mShowAddButton = true;  // 清空后加号按钮重新显示
+        notifyItemRangeRemoved(0, oldCount);
+    }
+
+
+    public List<String> getImages() {
+        return mImages;
     }
 }

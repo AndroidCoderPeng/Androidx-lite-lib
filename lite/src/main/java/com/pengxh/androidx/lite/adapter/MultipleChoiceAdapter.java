@@ -6,28 +6,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
 
 /**
  * RecyclerView多选适配器
+ * <p>
+ * 注意：此方案要求 T 正确实现 equals() 和 hashCode()
  */
 public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     private static final String TAG = "MultipleChoiceAdapter";
     private final int mXmlResource;
     private final List<T> mDataRows;
-    private final ConcurrentHashMap<Integer, Boolean> mMultipleSelected = new ConcurrentHashMap<>();
-    private final CopyOnWriteArrayList<T> mSelectedItems = new CopyOnWriteArrayList<>();
+    private final Set<T> mSelectedItems = Collections.synchronizedSet(new HashSet<>());
 
-    public MultipleChoiceAdapter(@LayoutRes int xmlResource, List<T> dataRows) {
+    public MultipleChoiceAdapter(int xmlResource, List<T> dataRows) {
         this.mXmlResource = xmlResource;
-        this.mDataRows = dataRows;
+        this.mDataRows = Collections.synchronizedList(dataRows);
     }
 
     @Override
@@ -43,32 +45,28 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        if (position < 0 || position >= mDataRows.size()) {
-            Log.d(TAG, "Invalid position: " + position);
-            return;
-        }
+        T item = mDataRows.get(position);
+        convertView(holder, position, item);
 
-        convertView(holder, position, mDataRows.get(position));
-
-        holder.itemView.setSelected(mMultipleSelected.containsKey(position));
+        holder.itemView.setSelected(mSelectedItems.contains(item));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mMultipleSelected.containsKey(position)) {
-                    mMultipleSelected.remove(position);
-                    mSelectedItems.removeIf(item -> item.equals(mDataRows.get(position)));
-                    holder.itemView.setSelected(false);
-                } else {
-                    mMultipleSelected.put(position, true);
-                    mSelectedItems.add(mDataRows.get(position));
-                    holder.itemView.setSelected(true);
+                synchronized (mSelectedItems) {
+                    if (mSelectedItems.contains(item)) {
+                        mSelectedItems.remove(item);
+                        holder.itemView.setSelected(false);
+                    } else {
+                        mSelectedItems.add(item);
+                        holder.itemView.setSelected(true);
+                    }
                 }
 
                 if (itemCheckedListener == null) {
                     Log.d(TAG, "No listener set for item checked events");
                     return;
                 }
-                itemCheckedListener.onItemChecked(mSelectedItems);
+                itemCheckedListener.onItemChecked(new ArrayList<>(mSelectedItems));
             }
         });
     }
@@ -83,7 +81,9 @@ public abstract class MultipleChoiceAdapter<T> extends RecyclerView.Adapter<View
         }
         int startPosition = mDataRows.size();
         int newSize = newRows.size();
-        mDataRows.addAll(newRows);
+        synchronized(mDataRows) {
+            mDataRows.addAll(newRows);
+        }
         notifyItemRangeInserted(startPosition, newSize);
     }
 

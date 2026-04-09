@@ -45,7 +45,7 @@ public class UpdateDialog extends Dialog {
     }
 
     private UpdateDialog(Builder builder) {
-        super(builder.context, R.style.UserDefinedDialogStyle);
+        super(builder.context);
         this.message = builder.message;
         this.listener = builder.listener;
     }

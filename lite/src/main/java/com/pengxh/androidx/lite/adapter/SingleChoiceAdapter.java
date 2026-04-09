@@ -10,6 +10,7 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,19 +22,15 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
     private final int mXmlResource;
     private final List<T> mDataRows;
     //选择的位置
-    private int selectedPosition = -1;
+    private T mSelectedItem;
 
-    public void setSelectedPosition(int position) {
-        if (position >= 0 && position < mDataRows.size()) {
-            selectedPosition = position;
-        } else {
-            Log.d(TAG, "Invalid position: $position");
-        }
+    public void setSelectedItem(T item) {
+        mSelectedItem = item;
     }
 
     public SingleChoiceAdapter(@LayoutRes int xmlResource, List<T> dataRows) {
         this.mXmlResource = xmlResource;
-        this.mDataRows = dataRows;
+        this.mDataRows = Collections.synchronizedList(dataRows);
     }
 
     @Override
@@ -49,28 +46,34 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        if (position >= 0 && position < mDataRows.size()) {
-            convertView(holder, position, mDataRows.get(position));
+        T item = mDataRows.get(position);
+        convertView(holder, position, item);
 
-            holder.itemView.setSelected(holder.getLayoutPosition() == selectedPosition);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (holder.getLayoutPosition() != selectedPosition) {
-                        int oldPosition = selectedPosition;
-                        selectedPosition = holder.getLayoutPosition();
-                        holder.itemView.setSelected(true);
+        // 根据 item 是否等于选中的 item 设置状态
+        boolean isSelected = item == mSelectedItem;
+        holder.itemView.setSelected(isSelected);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (item != mSelectedItem) {
+                    T oldItem = mSelectedItem;
+                    mSelectedItem = item;
+
+                    int oldPosition = mDataRows.indexOf(oldItem);
+                    if (oldPosition != -1) {
                         notifyItemChanged(oldPosition);
-                        if (itemCheckedListener == null) {
-                            return;
-                        }
-                        itemCheckedListener.onItemChecked(position, mDataRows.get(position));
                     }
+
+                    notifyItemChanged(oldPosition);
+
+                    if (itemCheckedListener == null) {
+                        return;
+                    }
+                    itemCheckedListener.onItemChecked(position, item);
                 }
-            });
-        } else {
-            Log.d(TAG, "Invalid position: $position");
-        }
+            }
+        });
     }
 
     /**
@@ -83,7 +86,9 @@ public abstract class SingleChoiceAdapter<T> extends RecyclerView.Adapter<ViewHo
         }
         int startPosition = mDataRows.size();
         int newSize = newRows.size();
-        mDataRows.addAll(newRows);
+        synchronized(mDataRows) {
+            mDataRows.addAll(newRows);
+        }
         notifyItemRangeInserted(startPosition, newSize);
     }
 
