@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <com.pengxh.androidx.lite.widget.TitleBarView
-        android:id="@+id/titleView"
+    <com.pengxh.androidx.lib.calendar.CalendarView
+        android:id="@+id/calendarView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/purple_500"
-        app:tbv_left_image="@drawable/ic_title_left"
-        app:tbv_right_image="@drawable/ic_title_right"
-        app:tbv_show_left_image="true"
-        app:tbv_show_right_image="true"
-        app:tbv_smaller_title="false"
-        app:tbv_text="@string/app_name"
-        app:tbv_text_color="@color/white" />
-
+        android:layout_height="wrap_content" />
 </LinearLayout>
