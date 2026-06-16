@@ -28,7 +28,7 @@
             android:layout_marginHorizontal="@dimen/lib_dp_20"
             android:background="@drawable/dialog_bg_hint_layout">
 
-            <com.pengxh.androidx.lite.widget.DeleteEditText
+            <com.pengxh.androidx.lite.widget.DeletableEditText
                 android:id="@+id/dialogInputView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

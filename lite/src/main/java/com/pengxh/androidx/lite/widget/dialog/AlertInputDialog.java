@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.pengxh.androidx.lite.R;
 import com.pengxh.androidx.lite.kit.DialogKit;
 import com.pengxh.androidx.lite.kit.StringKit;
-import com.pengxh.androidx.lite.widget.DeleteEditText;
+import com.pengxh.androidx.lite.widget.DeletableEditText;
 
 /**
  * 输入对话框
@@ -89,7 +89,7 @@ public class AlertInputDialog extends Dialog {
 
     private void initView() {
         TextView dialogTitleView = findViewById(R.id.dialogTitleView);
-        DeleteEditText dialogInputView = findViewById(R.id.dialogInputView);
+        DeletableEditText dialogInputView = findViewById(R.id.dialogInputView);
         Button dialogCancelButton = findViewById(R.id.dialogCancelButton);
         Button dialogConfirmButton = findViewById(R.id.dialogConfirmButton);
 
