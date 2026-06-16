@@ -23,16 +23,6 @@
         <item name="android:windowExitAnimation">@anim/action_dialog_hide</item>
     </style>
 
-    <style name="AudioPlayerViewBaseStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">@dimen/lib_dp_35</item>
-        <item name="android:paddingStart">@dimen/lib_dp_10</item>
-        <item name="android:paddingEnd">@dimen/lib_dp_10</item>
-        <item name="android:drawablePadding">@dimen/lib_dp_10</item>
-        <item name="android:drawableStart">@drawable/ic_audio_icon3</item>
-        <item name="android:gravity">left|center_vertical</item>
-    </style>
-
     <style name="TopRoundedStyle">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopLeft">10dp</item>

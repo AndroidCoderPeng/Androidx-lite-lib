@@ -21,13 +21,13 @@ public class NewsDetailsActivity extends AndroidxBaseActivity<ActivityNewsDetail
     protected void initOnCreate(@Nullable Bundle savedInstanceState) {
         ArrayList<String> params = getIntent().getStringArrayListExtra(LiteConstant.INTENT_PARAM_KEY);
 
-        binding.newsTitle.setText(params.get(0));
-        binding.newsSrc.setText(params.get(1));
-        binding.newsTime.setText(params.get(2));
+        mBinding.newsTitle.setText(params.get(0));
+        mBinding.newsSrc.setText(params.get(1));
+        mBinding.newsTime.setText(params.get(2));
 
         new HtmlRenderEngine.Builder()
                 .setContext(this)
-                .setTargetView(binding.newsContent)
+                .setTargetView(mBinding.newsContent)
                 .setHtmlContent(params.get(3))
                 .setOnGetImageSourceListener(new HtmlRenderEngine.OnGetImageSourceListener() {
                     @Override
